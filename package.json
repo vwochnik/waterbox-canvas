@@ -1,0 +1,66 @@
+{
+  "name": "waterbox-canvas",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "type": "module",
+  "main": "dist/waterbox-canvas.umd.js",
+  "module": "dist/waterbox-canvas.es.js",
+  "browser": "dist/waterbox-canvas.browser.js",
+  "typings": "dist/types/waterbox-canvas.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Vincent Wochnik <v.wochnik@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vwochnik/waterbox-canvas/"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "clean": "rimraf dist",
+    "build": "rollup -c rollup.config.ts",
+    "docs": "typedoc",
+    "format": "prettier --write \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\" --ignore-path .gitignore",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "generate-readme": "ts-node tools/generate-readme",
+    "deploy-docs": "ts-node tools/gh-pages-publish"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.2.0",
+    "colord": "^2.9.3",
+    "colors": "^1.4.0",
+    "cross-env": "^10.1.0",
+    "gray-matter": "^4.0.3",
+    "jest": "^30.2.0",
+    "jest-config": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "liquidjs": "^10.24.0",
+    "marked": "^17.0.1",
+    "prettier": "^3.8.1",
+    "rimraf": "^6.1.2",
+    "rollup": "^4.57.1",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-serve": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "shelljs": "^0.10.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^9.0.0",
+    "typedoc": "^0.28.16",
+    "typescript": "^5.9.3"
+  }
+}
