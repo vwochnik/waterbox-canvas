@@ -6,7 +6,7 @@ export interface Options extends BaseOptions {
   value: number;
   backColor: Color;
   waterColor: Color;
-  frontColor: Color;
+  frontColor?: Color;
   backPattern?: Pattern;
   waterPattern?: Pattern;
   frontPattern?: Pattern;
@@ -14,7 +14,6 @@ export interface Options extends BaseOptions {
   divisions: number;
   separatorSize: number;
   clipEdges: boolean;
-  drawFront: boolean;
 }
 
 export interface Color {
@@ -48,7 +47,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   value: false,
   backColor: false,
   waterColor: false,
-  frontColor: false,
+  frontColor: true,
   backPattern: true,
   waterPattern: true,
   frontPattern: true,
@@ -56,7 +55,6 @@ export const optionsWithOptionality: Optionality<Options> = {
   divisions: false,
   separatorSize: false,
   clipEdges: false,
-  drawFront: false,
 };
 
 export const defaultOptions: Options = {
@@ -88,5 +86,4 @@ export const defaultOptions: Options = {
   divisions: 10,
   separatorSize: 0.5,
   clipEdges: true,
-  drawFront: true,
 };

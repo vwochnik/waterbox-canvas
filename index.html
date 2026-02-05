@@ -227,8 +227,8 @@ const waterbox = createWaterbox(canvas)
 <p>Get or set the water color.</p>
 <h4><code>frontColor</code></h4>
 <ul>
-<li><code>frontColor(): Color</code></li>
-<li><code>frontColor(value: Color): Waterbox</code></li>
+<li><code>frontColor(): Color | undefined</code></li>
+<li><code>frontColor(value?: Color): Waterbox</code></li>
 </ul>
 <p>Get or set the front color.</p>
 <h4><code>backPattern</code></h4>
@@ -273,12 +273,6 @@ const waterbox = createWaterbox(canvas)
 <li><code>clipEdges(value: boolean): Waterbox</code></li>
 </ul>
 <p>Get or set whether edges are clipped.</p>
-<h4><code>drawFront</code></h4>
-<ul>
-<li><code>drawFront(): boolean</code></li>
-<li><code>drawFront(value: boolean): Waterbox</code></li>
-</ul>
-<p>Get or set whether the front is drawn.</p>
 <h4><code>options</code></h4>
 <ul>
 <li><code>options(): Options</code></li>
@@ -299,6 +293,11 @@ const waterbox = createWaterbox(canvas)
       name: 'grid',
       size: 10,
       alpha: 0.1
+    });
+
+    waterbox.frontColor({
+      fill: 'rgba(0,0,0,0.0)',
+      stroke: 'rgba(255, 255, 255, 0.8)'
     });
 
     (function update() {

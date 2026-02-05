@@ -23,7 +23,7 @@ options:
   description: Get or set the water color.
 - name: frontColor
   type: Color
-  optional: false
+  optional: true
   description: Get or set the front color.
 - name: backPattern
   type: Pattern
@@ -53,10 +53,6 @@ options:
   type: boolean
   optional: false
   description: Get or set whether edges are clipped.
-- name: drawFront
-  type: boolean
-  optional: false
-  description: Get or set whether the front is drawn.
 ---
 > A simple library that renders an isometric water box on a canvas
 

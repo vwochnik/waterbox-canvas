@@ -142,6 +142,11 @@ body {
       alpha: 0.1
     });
 
+    waterbox.frontColor({
+      fill: 'rgba(0,0,0,0.0)',
+      stroke: 'rgba(255, 255, 255, 0.8)'
+    });
+
     (function update() {
       const v = waterbox.value();
       waterbox.value((v + 1) % 100).render();

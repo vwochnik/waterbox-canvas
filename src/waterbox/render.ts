@@ -24,7 +24,7 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, divisions, separatorSize, clipEdges, drawFront, backColor, frontColor, waterColor } =
+  const { width, height, value, strokeWidth, divisions, separatorSize, clipEdges, backColor, frontColor, waterColor } =
     options;
 
   const actualWidth = Math.min(width, height),
@@ -183,7 +183,7 @@ export function render(
     );
   }
 
-  if (drawFront) {
+  if (frontColor) {
     const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
     const rightFrontWallArea: Area = {
       x: rect.x + rect.w / 2,

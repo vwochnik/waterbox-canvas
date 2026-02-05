@@ -33,7 +33,14 @@ export function validateColor(color: Color): Color {
   };
 }
 
-export function validatePattern(pattern?: Pattern): Pattern | undefined {
+export function validateOptionalColor(color?: Color): Color | undefined {
+  if (color === undefined) {
+    return undefined;
+  }
+  return validateColor(color);
+}
+
+export function validateOptionalPattern(pattern?: Pattern): Pattern | undefined {
   if (pattern === undefined) {
     return undefined;
   }

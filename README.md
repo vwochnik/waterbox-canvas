@@ -130,8 +130,8 @@ Get or set the water color.
 
 #### `frontColor`
 
-* `frontColor(): Color`
-* `frontColor(value: Color): Waterbox`
+* `frontColor(): Color | undefined`
+* `frontColor(value?: Color): Waterbox`
 
 Get or set the front color.
 
@@ -183,13 +183,6 @@ Get or set the separator size.
 * `clipEdges(value: boolean): Waterbox`
 
 Get or set whether edges are clipped.
-
-#### `drawFront`
-
-* `drawFront(): boolean`
-* `drawFront(value: boolean): Waterbox`
-
-Get or set whether the front is drawn.
 
 #### `options`
 
