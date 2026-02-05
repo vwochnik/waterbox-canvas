@@ -136,10 +136,8 @@ body {
     const waterbox = Waterbox.createWaterbox(canvas);
 
     waterbox.waterPattern({
-      type: 'predefined',
-      name: 'grid',
-      size: 10,
-      alpha: 0.1
+      type: "custom",
+      creator: getWaterTexture
     });
 
     waterbox.frontColor({
@@ -152,6 +150,42 @@ body {
       waterbox.value((v + 1) % 100).render();
       setTimeout(update, 1000 / 30);
     })();
+    function getWaterTexture(ctx) {
+      const size = 128; // Size of the pattern tile
+      const patternCanvas = new OffscreenCanvas(0, 0);
+      const pCtx = patternCanvas.getContext('2d');
+
+      patternCanvas.width = size;
+      patternCanvas.height = size;
+
+      // 2. Setup ripple style
+      pCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)'; // Soft white highlights
+      pCtx.lineWidth = 2;
+      pCtx.lineCap = 'round';
+
+      // 3. Draw "Voronoi-lite" ripples
+      // We draw several curved paths to simulate light catching the crest of waves
+      for (let i = 0; i < 15; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const w = 20 + Math.random() * 40;
+        const h = 10 + Math.random() * 20;
+
+        pCtx.beginPath();
+        // Drawing an arc or ellipse segment to mimic wave crests
+        pCtx.ellipse(x, y, w, h, Math.random() * Math.PI, 0, Math.PI * 0.5);
+        pCtx.stroke();
+
+        // Add a smaller, brighter "sparkle" line for depth
+        pCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        pCtx.beginPath();
+        pCtx.ellipse(x + 2, y + 2, w, h, Math.random() * Math.PI, 0, Math.PI * 0.4);
+        pCtx.stroke();
+      }
+
+      // 4. Create and return the pattern
+      return ctx.createPattern(patternCanvas, 'repeat');
+    }
   </script>
 </body>
 </html>
