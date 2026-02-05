@@ -24,36 +24,8 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, divisions, separatorSize, clipEdges, drawFront } =
+  const { width, height, value, strokeWidth, divisions, separatorSize, clipEdges, drawFront, backColor, frontColor, waterColor } =
     options;
-
-  const [
-    waterFillColor,
-    waterFillColorLight,
-    waterFillColorDark,
-    waterStrokeColor,
-    backFillColor,
-    backFillColorLight,
-    backFillColorDark,
-    backStrokeColor,
-    frontFillColor,
-    frontFillColorLight,
-    frontFillColorDark,
-    frontStrokeColor,
-  ] = [
-    options.waterColor.fill,
-    options.waterColor.lighter!,
-    options.waterColor.darker!,
-    options.waterColor.stroke,
-    options.backColor.fill,
-    options.backColor.lighter!,
-    options.backColor.darker!,
-    options.backColor.stroke,
-    options.frontColor.fill,
-    options.frontColor.lighter!,
-    options.frontColor.darker!,
-    options.frontColor.stroke,
-  ];
 
   const actualWidth = Math.min(width, height),
     rect: Area = {
@@ -75,7 +47,7 @@ export function render(
     (ctx) => {
       rhombusPath(ctx, bottomRhombusArea, 'bottom');
     },
-    backFillColor,
+    backColor.fill,
     tempContext,
     width,
     height,
@@ -87,7 +59,7 @@ export function render(
     (ctx) => {
       wallPath(ctx, leftBackWallArea, size, 0, -size.h / 2, 'back');
     },
-    backFillColorLight,
+    backColor.lighter ?? backColor.fill,
     tempContext,
     width,
     height,
@@ -99,7 +71,7 @@ export function render(
     (ctx) => {
       wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
     },
-    backFillColorDark,
+    backColor.darker ?? backColor.fill,
     tempContext,
     width,
     height,
@@ -129,7 +101,7 @@ export function render(
   paintEdges(
     bufferContext,
     backPaths,
-    backStrokeColor,
+    backColor.stroke,
     strokeWidth,
     clipEdges,
     tempContext,
@@ -164,7 +136,7 @@ export function render(
       (ctx) => {
         wallPath(ctx, leftFillWallArea, size, 0, size.h / 2, 'front');
       },
-      waterFillColorDark,
+      waterColor.darker ?? waterColor.fill,
       tempContext,
       width,
       height,
@@ -176,7 +148,7 @@ export function render(
       (ctx) => {
         wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front');
       },
-      waterFillColorLight,
+      waterColor.lighter ?? waterColor.fill,
       tempContext,
       width,
       height,
@@ -188,7 +160,7 @@ export function render(
       (ctx) => {
         rhombusPath(ctx, fillTopRhombusArea, 'top');
       },
-      waterFillColor,
+      waterColor.fill,
       tempContext,
       width,
       height,
@@ -202,7 +174,7 @@ export function render(
         (ctx) => wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front'),
         (ctx) => rhombusPath(ctx, fillTopRhombusArea, 'top'),
       ],
-      waterStrokeColor,
+      waterColor.stroke,
       strokeWidth,
       clipEdges,
       tempContext,
@@ -226,7 +198,7 @@ export function render(
       (ctx) => {
         wallPath(ctx, leftFrontWallArea, size, 0, size.h / 2, 'front');
       },
-      frontFillColorDark,
+      frontColor.darker ?? frontColor.fill,
       tempContext,
       width,
       height,
@@ -238,7 +210,7 @@ export function render(
       (ctx) => {
         wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front');
       },
-      frontFillColorLight,
+      frontColor.lighter ?? frontColor.fill,
       tempContext,
       width,
       height,
@@ -250,7 +222,7 @@ export function render(
       (ctx) => {
         rhombusPath(ctx, topRhombusArea, 'top');
       },
-      frontFillColor,
+      frontColor.fill,
       tempContext,
       width,
       height,
@@ -264,7 +236,7 @@ export function render(
         (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front'),
         (ctx) => rhombusPath(ctx, topRhombusArea, 'top'),
       ],
-      frontStrokeColor,
+      frontColor.stroke,
       strokeWidth,
       clipEdges,
       tempContext,
