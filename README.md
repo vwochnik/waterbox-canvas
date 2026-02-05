@@ -1,7 +1,5 @@
 # Waterbox Canvas
 
-Hello, this is the README layout.
-
 > A simple library that renders an isometric water box on a canvas
 
 `waterbox-canvas` is a TypeScript/JavaScript library for rendering a water level visualization on an HTML5 Canvas or OffscreenCanvas.
