@@ -52,6 +52,7 @@ export function validateOptionalPattern(pattern?: Pattern): Pattern | undefined 
     ['size', 'alpha'].forEach((key) => throwIfNotAPositiveNumber(pattern[key as keyof Pattern]));
   } else if (pattern.type === 'custom') {
     throwIfInvalidObject(pattern, ['type', 'creator'], false, 'pattern');
+    /* tslint:disable:strict-type-predicates */
     if (typeof pattern.creator !== 'function') {
       throw new Error('Invalid pattern creator. Creator must be a function.');
     }
@@ -78,6 +79,7 @@ export function validateSeparatorSize(size: number): number {
 }
 
 export function validateBoolean(value: boolean): boolean {
+  /* tslint:disable:strict-type-predicates */
   if (typeof value !== 'boolean') {
     throw new Error(`Invalid boolean value: ${value}.`);
   }
