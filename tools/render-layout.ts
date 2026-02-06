@@ -5,27 +5,33 @@ import { Liquid } from 'liquidjs';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 
-async function main() {
+async function main(target: string) {
   const { content: sourceContent, data: sourceData } = parse("usage.md");
 
   const renderedSource = await render(sourceContent, sourceData);
 
-  const { content: readmeLayoutContent, data: readmeLayoutData } = parse("README.layout.md");
+  if (target === "readme") {
+    const { content: readmeLayoutContent, data: readmeLayoutData } = parse("README.layout.md");
 
-  await renderToFile("README.md", readmeLayoutContent, {
-    ...readmeLayoutData,
-    ...sourceData,
-    content: renderedSource,
-  });
+    await renderToFile("README.md", readmeLayoutContent, {
+      ...readmeLayoutData,
+      ...sourceData,
+      content: renderedSource,
+    });
+  } else if (target === "html") {
+    const { content: indexLayoutContent, data: indexLayoutData } = parse("index.layout.html");
 
-  const { content: indexLayoutContent, data: indexLayoutData } = parse("index.layout.html");
+    await mkdir('public', { recursive: true });
+    await renderToFile("public/index.html", indexLayoutContent, {
+      ...indexLayoutData,
+      ...sourceData,
+      content: await marked.parse(renderedSource),
+    });
+  } else {
+    console.log(`Unknown target: ${target}`);
+    process.exit(1);
+  }
 
-  await mkdir('public', { recursive: true });
-  await renderToFile("public/index.html", indexLayoutContent, {
-    ...indexLayoutData,
-    ...sourceData,
-    content: await marked.parse(renderedSource),
-  });
 
 }
 
@@ -53,5 +59,5 @@ async function renderToFile(fileName: string, content: string, data: Record<stri
   fs.writeFileSync(path.resolve(process.cwd(), fileName), rendered);
 }
 
-main()
+main(process.argv[2])
   .catch(e => console.error(e));

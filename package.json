@@ -29,7 +29,8 @@
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
-    "generate-readme": "ts-node tools/generate-readme",
+    "render-readme": "ts-node tools/render-layout readme",
+    "render-html": "ts-node tools/render-layout html",
     "deploy-docs": "ts-node tools/gh-pages-publish"
   },
   "devDependencies": {
@@ -53,6 +54,7 @@
     "rollup": "^4.57.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
+    "rollup-plugin-shell": "^1.0.9",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "shelljs": "^0.10.0",
     "ts-jest": "^29.4.6",

@@ -5,6 +5,7 @@ import typescript from '@rollup/plugin-typescript'
 import json from '@rollup/plugin-json'
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
+import execute from "rollup-plugin-shell";
 import { readFileSync } from 'fs'
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
@@ -43,6 +44,11 @@ export default {
 
     // Serve and live reload only in watch mode
     ...(process.env.ROLLUP_WATCH ? [
+      execute({
+        commands: ["npm run render-html"],
+        hook: "generateBundle",
+      }),
+
       serve({
         open: true,
         contentBase: 'public',
