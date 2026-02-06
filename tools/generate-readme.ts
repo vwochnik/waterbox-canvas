@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { mkdir } from 'fs/promises';
 import { Liquid } from 'liquidjs';
 import matter from 'gray-matter';
 import { marked } from 'marked';
@@ -19,7 +20,8 @@ async function main() {
 
   const { content: indexLayoutContent, data: indexLayoutData } = parse("index.layout.html");
 
-  await renderToFile("index.html", indexLayoutContent, {
+  await mkdir('public', { recursive: true });
+  await renderToFile("public/index.html", indexLayoutContent, {
     ...indexLayoutData,
     ...sourceData,
     content: await marked.parse(renderedSource),

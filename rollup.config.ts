@@ -12,9 +12,13 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 export default {
   input: `src/main.ts`,
   output: [
-    { file: pkg.main, name: "Waterbox", format: 'umd', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true },
-    { file: pkg.browser, name: "Waterbox", format: 'iife', sourcemap: true }
+    ...(process.env.ROLLUP_WATCH ? [
+      { file: "public/waterbox-canvas.js", name: "Waterbox", format: 'iife', sourcemap: true }
+    ] : [
+      { file: pkg.main, name: "Waterbox", format: 'umd', sourcemap: true },
+      { file: pkg.module, format: 'es', sourcemap: true },
+      { file: pkg.browser, name: "Waterbox", format: 'iife', sourcemap: true }
+    ])
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],
@@ -24,8 +28,9 @@ export default {
   plugins: [
     // Allow json resolution
     json(),
-    // Compile TypeScript files
-    typescript(),
+    // Compile TypeScript files: use separate tsconfig for watch vs build
+    typescript({ tsconfig: process.env.ROLLUP_WATCH ? 'tsconfig.watch.json' : 'tsconfig.build.json' }),
+
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
     // Allow node_modules resolution, so you can use 'external' to control
@@ -40,8 +45,8 @@ export default {
     ...(process.env.ROLLUP_WATCH ? [
       serve({
         open: true,
+        contentBase: 'public',
         openPage: '/',
-        contentBase: '.',
         port: 3000,
       }),
       livereload(),
