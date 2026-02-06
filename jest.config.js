@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   setupFiles: ["./test/setup.ts"],
   transform: {
     ".(ts|tsx)": "ts-jest"
