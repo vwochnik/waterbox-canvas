@@ -21,8 +21,8 @@ async function main(target: string) {
   } else if (target === "html") {
     const { content: indexLayoutContent, data: indexLayoutData } = parse("index.layout.html");
 
-    await mkdir('public', { recursive: true });
-    await renderToFile("public/index.html", indexLayoutContent, {
+    await mkdir('dist/public', { recursive: true });
+    await renderToFile("dist/public/index.html", indexLayoutContent, {
       ...indexLayoutData,
       ...sourceData,
       content: await marked.parse(renderedSource),

@@ -52,6 +52,7 @@
     "prettier": "^3.8.1",
     "rimraf": "^6.1.2",
     "rollup": "^4.57.1",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
     "rollup-plugin-shell": "^1.0.9",
