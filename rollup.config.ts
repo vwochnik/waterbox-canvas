@@ -8,6 +8,7 @@ import copy from 'rollup-plugin-copy';
 import livereload from 'rollup-plugin-livereload'
 import execute from "rollup-plugin-shell";
 import { readFileSync } from 'fs'
+import { renderLayout } from './build/render-layout.ts';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
@@ -21,7 +22,7 @@ export default {
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],
   watch: {
-    include: ['src/**'],
+    include: ['src/**', 'usage.md', 'index.layout.html'],
   },
   plugins: [
     // Allow json resolution
@@ -47,10 +48,11 @@ export default {
       copySync: true,
     }),
 
-    execute({
-      commands: ["npm run render-html"],
-      hook: "buildEnd",
-      sync: true,
+    renderLayout({
+      source: "usage.md",
+      layout: "index.layout.html",
+      html: true,
+      output: "dist/public/index.html",
     }),
 
     // Serve and live reload only in watch mode
