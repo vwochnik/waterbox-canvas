@@ -1,13 +1,13 @@
 {
   "name": "waterbox-canvas",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "type": "module",
   "main": "dist/waterbox-canvas.umd.js",
   "module": "dist/waterbox-canvas.es.js",
   "browser": "dist/waterbox-canvas.browser.js",
-  "typings": "dist/types/waterbox-canvas.d.ts",
+  "typings": "dist/types/main.d.ts",
   "files": [
     "dist"
   ],
