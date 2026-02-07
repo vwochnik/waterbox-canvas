@@ -77,7 +77,7 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
   let options!: T;
 
   function update(updatedKeys: (keyof T)[], diff: Partial<T>) {
-    options = updatedKeys.reduce(
+    const newOptions = updatedKeys.reduce(
       (newOptions, key) => {
         const value = diff[key];
         if (value === undefined) {
@@ -93,7 +93,8 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
       },
       { ...options },
     );
-    updated?.(updatedKeys, { ...options });
+    updated?.(updatedKeys, { ...newOptions });
+    options = newOptions;
   }
 
   // Per-option getter/setters
