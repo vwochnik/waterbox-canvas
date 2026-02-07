@@ -24,8 +24,18 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, divisions, separatorSize, clipEdges, backColor, frontColor, waterColor } =
-    options;
+  const {
+    width,
+    height,
+    value,
+    strokeWidth,
+    divisions,
+    separatorSize,
+    clipEdges,
+    backColor,
+    frontColor,
+    waterColor,
+  } = options;
 
   const actualWidth = Math.min(width, height),
     rect: Area = {

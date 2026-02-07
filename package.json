@@ -21,11 +21,11 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' 'build/**/*.ts'",
     "clean": "rimraf dist",
     "build": "rollup -c rollup.config.ts",
     "docs": "typedoc",
-    "format": "prettier --write \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\" --ignore-path .gitignore",
+    "format": "prettier --write \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\" \"build/**/*.{ts,js}\" --ignore-path .gitignore",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
