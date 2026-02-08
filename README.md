@@ -37,10 +37,10 @@ pnpm add waterbox-canvas
 
 ### Browser (Direct Include)
 
-You can also use the UMD build directly in the browser:
+There is a build specifically for the browser:
 
 ```html
-<script src="dist/waterbox-canvas.umd.js"></script>
+<script src="dist/waterbox-canvas.browser.js"></script>
 ```
 
 ## Basic Usage
