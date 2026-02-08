@@ -1,12 +1,11 @@
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import sourceMaps from 'rollup-plugin-sourcemaps'
 import typescript from '@rollup/plugin-typescript'
+import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json'
 import serve from 'rollup-plugin-serve'
 import copy from 'rollup-plugin-copy';
 import livereload from 'rollup-plugin-livereload'
-import execute from "rollup-plugin-shell";
 import { readFileSync } from 'fs'
 import { renderLayout } from './build/render-layout.ts';
 
@@ -37,8 +36,15 @@ export default {
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve(),
 
-    // Resolve source maps to the original source
-    sourceMaps(),
+    ...(!process.env.ROLLUP_WATCH ? [
+      terser({
+        format: {
+          comments: false,
+        },
+        module: true,
+        ecma: 2020,
+      }),
+    ] : []),
 
     copy({
       targets: [
