@@ -28,8 +28,8 @@ export function validateColor(color: Color): Color {
 
   return {
     ...color,
-    lighter: colord(color.fill).lighten(0.2).toRgbString(),
-    darker: colord(color.fill).darken(0.2).toRgbString(),
+    lighter: colord(color.fill).lighten(0.1).toRgbString(),
+    darker: colord(color.fill).darken(0.1).toRgbString(),
   };
 }
 
