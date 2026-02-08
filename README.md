@@ -170,19 +170,12 @@ Get or set the front pattern.
 
 Get or set the stroke width.
 
-#### `divisions`
+#### `scale`
 
-* `divisions(): number`
-* `divisions(value: number): Waterbox`
+* `scale(): Scale | undefined`
+* `scale(value?: Scale): Waterbox`
 
-Get or set the number of divisions.
-
-#### `separatorSize`
-
-* `separatorSize(): number`
-* `separatorSize(value: number): Waterbox`
-
-Get or set the separator size.
+Get or set the scale.
 
 #### `clipEdges`
 

@@ -29,12 +29,11 @@ export function render(
     height,
     value,
     strokeWidth,
-    divisions,
-    separatorSize,
     clipEdges,
     backColor,
     frontColor,
     waterColor,
+    scale,
   } = options;
 
   const actualWidth = Math.min(width, height),
@@ -94,8 +93,8 @@ export function render(
     (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back'),
   ];
 
-  if (divisions !== undefined) {
-    const step = 100.0 / divisions;
+  if (scale) {
+    const step = 100.0 / scale.divisions;
 
     for (let s = step; s < 100.0; s += step) {
       const separatorArea: Area = {
@@ -104,7 +103,7 @@ export function render(
         w: size.w,
         h: size.h,
       };
-      backPaths.push((ctx) => separatorPath(ctx, separatorArea, separatorSize));
+      backPaths.push((ctx) => separatorPath(ctx, separatorArea, scale.size));
     }
   }
 

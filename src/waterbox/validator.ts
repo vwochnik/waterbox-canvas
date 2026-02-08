@@ -1,4 +1,4 @@
-import { Color, Pattern } from './options';
+import { Color, Pattern, Scale } from './options';
 import { colord } from 'colord';
 
 export function validateDimension(dimension: number): number {
@@ -66,21 +66,18 @@ export function validateStrokeWidth(width: number): number {
   return width;
 }
 
-export function validateOptionalDivisions(divisions?: number): number | undefined {
-  if (divisions === undefined) {
+export function validateOptionalScale(scale?: Scale): Scale | undefined {
+  if (scale === undefined) {
     return undefined;
   }
-  if (!Number.isInteger(divisions) || divisions < 2) {
-    throw new Error(`Invalid divisions: ${divisions}. Number must be an integer greater than 1.`);
+  throwIfInvalidObject(scale, ['divisions', 'size'], false, 'scale');
+  if (!Number.isFinite(scale.size) || scale.size < 0 || scale.size > 1) {
+    throw new Error(`Invalid scale. Size must be a number between 0 and 1.`);
   }
-  return divisions;
-}
-
-export function validateSeparatorSize(size: number): number {
-  if (!Number.isFinite(size) || size < 0 || size > 1) {
-    throw new Error(`Invalid separator size: ${size}. Number must be between 0 and 1.`);
+  if ((!Number.isInteger(scale.divisions)) || (scale.divisions < 2)) {
+    throw new Error(`Invalid scale. Divisions must be an integer greater than 1.`);
   }
-  return size;
+  return scale;
 }
 
 export function validateBoolean(value: boolean): boolean {

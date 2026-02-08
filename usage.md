@@ -41,14 +41,10 @@ options:
   type: number
   optional: false
   description: Get or set the stroke width.
-- name: divisions
-  type: number
-  optional: false
-  description: Get or set the number of divisions.
-- name: separatorSize
-  type: number
-  optional: false
-  description: Get or set the separator size.
+- name: scale
+  type: Scale
+  optional: true
+  description: Get or set the scale.
 - name: clipEdges
   type: boolean
   optional: false

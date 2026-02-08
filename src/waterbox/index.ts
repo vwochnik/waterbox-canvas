@@ -4,10 +4,9 @@ import {
   validateBoolean,
   validateColor,
   validateDimension,
-  validateOptionalDivisions,
   validateOptionalColor,
   validateOptionalPattern,
-  validateSeparatorSize,
+  validateOptionalScale,
   validateStrokeWidth,
   validateValue,
 } from './validator';
@@ -87,9 +86,8 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     backPattern: validateOptionalPattern,
     waterPattern: validateOptionalPattern,
     frontPattern: validateOptionalPattern,
+    scale: validateOptionalScale,
     strokeWidth: validateStrokeWidth,
-    divisions: validateOptionalDivisions,
-    separatorSize: validateSeparatorSize,
     clipEdges: validateBoolean,
   });
 }

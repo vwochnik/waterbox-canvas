@@ -155,8 +155,7 @@ body {
       .frontColor({
         fill: 'rgba(0,0,0,0.0)',
         stroke: 'rgba(255, 255, 255, 0.8)'
-      })
-      .separatorSize(0);
+      });
 
     const waterbox2 = Waterbox.createWaterbox(canvas2)
       .backColor({
@@ -178,8 +177,11 @@ body {
         size: 15,
         alpha: 1.0
       })
+      .scale({
+        size: 0.2,
+        divisions: 5,
+      })
       .strokeWidth(3)
-      .divisions(5)
       .clipEdges(true);
 
     const waterbox3 = Waterbox.createWaterbox(canvas3)
@@ -195,7 +197,6 @@ body {
         size: 15,
         alpha: 0.4,
       })
-      .divisions(5)
       .clipEdges(true);
 
     requestAnimationFrame(loop);
