@@ -1,14 +1,13 @@
-import shelljs from 'shelljs';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import { readFileSync, mkdtempSync, existsSync, rmSync, cpSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
 async function main() {
-  const pkg = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+  const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
   const repository = pkg.repository?.url;
   if (!repository) {
     throw new Error("Can't extract repository from package.json");
@@ -16,16 +15,16 @@ async function main() {
 
   const date = (new Date()).toISOString();
 
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "waterbox-canvas"));
+  const tempDir = mkdtempSync(join(tmpdir(), "waterbox-canvas"));
 
   process.on('exit', () => {
-    if (fs.existsSync(tempDir)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
+    if (existsSync(tempDir)) {
+      rmSync(tempDir, { recursive: true, force: true });
     }
   });
 
   console.info("Copying files to " + tempDir);
-  fs.cpSync("dist/public", tempDir, { recursive: true })
+  cpSync("dist/public", tempDir, { recursive: true })
 
   console.info("Switching to " + tempDir);
   process.chdir(tempDir);
