@@ -136,6 +136,10 @@ body {
   <script type="text/javascript">
     const canvas1 = document.getElementById('canvas1');
     const canvas2 = document.getElementById('canvas2');
+    const canvas3 = document.getElementById('canvas3');
+    let value = 0;
+    const interval = 1000 / 15;
+    let lastTime = 0;
 
     const waterbox1 = Waterbox.createWaterbox(canvas1)
       .waterPattern({
@@ -187,27 +191,33 @@ body {
       .frontColor(undefined)
       .clipEdges(true);
 
-      let hue = 0;
+    requestAnimationFrame(loop);
 
-    (function update() {
-      waterbox3.waterColor({
-        fill: `hsla(${hue}, 47%, 50%, 0.8)`,
-        lighter: `hsla(${hue}, 47%, 55%, 0.8)`,
-        darker: `hsla(${hue}, 47%, 45%, 0.8)`,
-        stroke: `hsla(${hue}, 47%, 30%, 0.8)`,
-      });
-      hue = (hue + 9) % 360;
-      increment(waterbox1, 2);
-      increment(waterbox2, 1);
-      increment(waterbox3, 1);
-      setTimeout(update, 1000 / 10);
-    })();
+    function loop(currentTime) {
+      requestAnimationFrame(loop);
 
-    function increment(waterbox, delta) {
-      const v = waterbox.value();
-      waterbox.value((v + delta) % 100).render();
+      const delta = currentTime - lastTime;
+      if (delta >= interval) {
+        lastTime = currentTime - (delta % interval);
+
+        update();
+      }
     }
-    p
+
+    function update() {
+      waterbox1.value(value).render();
+      waterbox2.value((value + 15) % 100).render();
+      waterbox3
+        .value((value + 70) % 100)
+        .waterColor({
+          fill: `hsla(${3.6 * value}, 47%, 50%, 0.8)`,
+          lighter: `hsla(${3.6 * value}, 47%, 55%, 0.8)`,
+          darker: `hsla(${3.6 * value}, 47%, 45%, 0.8)`,
+          stroke: `hsla(${3.6 * value}, 47%, 30%, 0.8)`,
+        })
+        .render();
+      value = (value + 1) % 100;
+    }
 
     function getWaterTexture(ctx) {
       const size = 512; // Size of the pattern tile
