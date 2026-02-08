@@ -1,4 +1,5 @@
-# Waterbox Canvas
+<div align="center">
+<h1># Waterbox Canvas</h1>
 
 ![waterbox-canvas](https://github.com/vwochnik/waterbox-canvas/blob/main/preview.png?raw=true "waterbox-canvas")
 
@@ -8,6 +9,7 @@
 ![Types](https://img.shields.io/npm/types/waterbox-canvas)
 ![Downloads](https://img.shields.io/npm/dm/waterbox-canvas)
 ![License](https://img.shields.io/npm/l/waterbox-canvas)
+</div>
 
 > A simple library that renders an isometric water box on a canvas
 
