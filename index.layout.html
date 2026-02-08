@@ -125,36 +125,62 @@ body {
     <h1>{{ title }}</h1>
   </div>
   <div class="demo">
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
   </div>
   <div class="readme">
     {{ content }}
   </div>
   <script src="waterbox-canvas.js" type="text/javascript"></script>
   <script type="text/javascript">
-    const canvas = document.getElementById('canvas');
-    const waterbox = Waterbox.createWaterbox(canvas);
+    const canvas1 = document.getElementById('canvas1');
+    const canvas2 = document.getElementById('canvas2');
 
-    waterbox.waterPattern({
-      type: "custom",
-      creator: getWaterTexture
-    });
+    const waterbox1 = Waterbox.createWaterbox(canvas1)
+      .waterPattern({
+        type: "custom",
+        creator: getWaterTexture
+      })
+      .waterColor({
+        fill: 'rgba(58, 123, 213, 0.9)',
+        stroke: 'rgba(42, 92, 160, 0.9)',
+        lighter: 'rgba(90, 149, 224, 0.9)',
+        darker: 'rgba(43, 95, 168, 0.9)',
+      })
+      .frontColor({
+        fill: 'rgba(0,0,0,0.0)',
+        stroke: 'rgba(255, 255, 255, 0.8)'
+      });
 
-    waterbox.waterColor({
-      fill: 'rgba(58, 123, 213, 0.9)',
-      stroke: 'rgba(42, 92, 160, 0.9)',
-      lighter: 'rgba(90, 149, 224, 0.9)',
-      darker: 'rgba(43, 95, 168, 0.9)',
-    });
-
-    waterbox.frontColor({
-      fill: 'rgba(0,0,0,0.0)',
-      stroke: 'rgba(255, 255, 255, 0.8)'
-    });
+    const waterbox2 = Waterbox.createWaterbox(canvas2)
+      .backColor({
+        fill: 'rgba(80, 80, 111, 1)',
+        lighter: 'rgba(80, 80, 111, 1)',
+        darker: 'rgba(80, 80, 111, 1)',
+        stroke: 'rgba(80, 80, 111, 1)',
+      })
+      .waterColor({
+        fill: 'rgba(176, 68, 188, 0.6)',
+        lighter: 'rgba(176, 68, 188, 0.6)',
+        darker: 'rgba(176, 68, 188, 0.6)',
+        stroke: 'rgba(176, 68, 188, 0.6)',
+      })
+      .frontColor(undefined)
+      .waterPattern({
+        type: "predefined",
+        name: "grid",
+        size: 15,
+        alpha: 1.0
+      })
+      .strokeWidth(3)
+      .divisions(5)
+      .clipEdges(true)
+      .value(50)
+      .render();
 
     (function update() {
-      const v = waterbox.value();
-      waterbox.value((v + 1) % 100).render();
+      const v = waterbox1.value();
+      waterbox1.value((v + 1) % 100).render();
       setTimeout(update, 1000 / 30);
     })();
     function getWaterTexture(ctx) {
