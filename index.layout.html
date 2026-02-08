@@ -127,6 +127,7 @@ body {
   <div class="demo">
     <canvas id="canvas1"></canvas>
     <canvas id="canvas2"></canvas>
+    <canvas id="canvas3"></canvas>
   </div>
   <div class="readme">
     {{ content }}
@@ -176,9 +177,29 @@ body {
       .divisions(5)
       .clipEdges(true);
 
+    const waterbox3 = Waterbox.createWaterbox(canvas3)
+      .backColor({
+        fill: 'rgba(80, 80, 111, 1)',
+        lighter: 'rgba(80, 80, 111, 1)',
+        darker: 'rgba(80, 80, 111, 1)',
+        stroke: 'rgba(80, 80, 111, 1)',
+      })
+      .frontColor(undefined)
+      .clipEdges(true);
+
+      let hue = 0;
+
     (function update() {
+      waterbox3.waterColor({
+        fill: `hsla(${hue}, 47%, 50%, 0.8)`,
+        lighter: `hsla(${hue}, 47%, 55%, 0.8)`,
+        darker: `hsla(${hue}, 47%, 45%, 0.8)`,
+        stroke: `hsla(${hue}, 47%, 30%, 0.8)`,
+      });
+      hue = (hue + 9) % 360;
       increment(waterbox1, 2);
       increment(waterbox2, 1);
+      increment(waterbox3, 1);
       setTimeout(update, 1000 / 10);
     })();
 
@@ -186,6 +207,8 @@ body {
       const v = waterbox.value();
       waterbox.value((v + delta) % 100).render();
     }
+    p
+
     function getWaterTexture(ctx) {
       const size = 512; // Size of the pattern tile
       const patternCanvas = new OffscreenCanvas(0, 0);
