@@ -109,84 +109,131 @@ Creates a new waterbox instance for the given canvas.
 * `width(): number`
 * `width(value: number): Waterbox`
 
-Get or set the width.
+Get or set the width of the canvas.
 
 #### `height`
 
 * `height(): number`
 * `height(value: number): Waterbox`
 
-Get or set the height.
+Get or set the height of the canvas.
 
 #### `value`
 
 * `value(): number`
 * `value(value: number): Waterbox`
 
-Get or set the value.
+Get or set the water fill level.
 
 #### `backColor`
 
 * `backColor(): Color`
 * `backColor(value: Color): Waterbox`
 
-Get or set the back color.
+Get or set the color of the backside of the rendered waterbox.
+
+##### Example
+```
+waterbox.backColor({
+  fill: 'rgba(80, 80, 111, 1)',
+  stroke: 'rgba(80, 80, 111, 1)',
+});
+```
 
 #### `waterColor`
 
 * `waterColor(): Color`
 * `waterColor(value: Color): Waterbox`
 
-Get or set the water color.
+Get or set the color of the water rendered inside the waterbox.
+
+##### Example
+```
+waterbox.waterColor({
+  fill: 'rgba(58, 123, 213, 0.9)',
+  stroke: 'rgba(42, 92, 160, 0.9)',
+  lighter: 'rgba(90, 149, 224, 0.9)',
+  darker: 'rgba(43, 95, 168, 0.9)',
+});
+```
 
 #### `frontColor`
 
 * `frontColor(): Color | undefined`
 * `frontColor(value?: Color): Waterbox`
 
-Get or set the front color.
+Get or set the color of the front of the rendered waterbox.
 
 #### `backPattern`
 
 * `backPattern(): Pattern | undefined`
 * `backPattern(value?: Pattern): Waterbox`
 
-Get or set the back pattern.
+Get or set the pattern drawn on top of the backside of the waterbox.
+
+##### Example
+```
+waterbox.backPattern({
+  type: "predefined",
+  name: "grid",
+  size: 15,
+  alpha: 1.0
+});
+```
 
 #### `waterPattern`
 
 * `waterPattern(): Pattern | undefined`
 * `waterPattern(value?: Pattern): Waterbox`
 
-Get or set the water pattern.
+Get or set the pattern drawn on top of the water.
+
+##### Example
+```
+waterbox.waterPattern({
+  type: "custom",
+  creator: (ctx) => {
+    // render pattern
+    return ctx.createPattern(patternCanvas, 'repeat');
+  } 
+});
+```
 
 #### `frontPattern`
 
 * `frontPattern(): Pattern | undefined`
 * `frontPattern(value?: Pattern): Waterbox`
 
-Get or set the front pattern.
+Get or set the pattern drawn on top of the front of the waterbox.
 
 #### `strokeWidth`
 
 * `strokeWidth(): number`
 * `strokeWidth(value: number): Waterbox`
 
-Get or set the stroke width.
+Get or set the stroke width in pixels.
 
 #### `scale`
 
 * `scale(): Scale | undefined`
 * `scale(value?: Scale): Waterbox`
 
-Get or set the scale.
+Get or set the scale drawn at the backside of the waterbox.
+
+##### Example
+```
+waterbox.scale({
+  size: 0.2,
+  divisions: 5,
+});
+```
 
 #### `clipEdges`
 
 * `clipEdges(): boolean`
 * `clipEdges(value: boolean): Waterbox`
 
-Get or set whether edges are clipped.
+Get or set whether edges are clipped from the drawn waterbox. If edges are clipped, they appear as transparent.
 
 #### `options`
 

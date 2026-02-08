@@ -31,7 +31,7 @@
     "test:watch": "jest --watch",
     "render-readme": "ts-node tools/render-readme",
     "deploy-gh-pages": "npm run prepare && ts-node tools/deploy-gh-pages.ts",
-    "prepare": "npm run build"
+    "prepare": "npm run build && npm run render-readme"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^29.0.0",
