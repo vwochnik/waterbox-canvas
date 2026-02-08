@@ -73,17 +73,11 @@ export const defaultOptions: Options = {
     lighter: 'rgba(90, 149, 224, 0.7)',
     darker: 'rgba(43, 95, 168, 0.7)',
   },
-  frontColor: {
-    fill: 'rgba(180, 180, 180, 0.1)',
-    stroke: 'rgba(150, 150, 150, 0.1)',
-    lighter: 'rgba(200, 200, 200, 0.1)',
-    darker: 'rgba(130, 130, 130, 0.2)',
-  },
   backPattern: undefined,
   waterPattern: undefined,
   frontPattern: undefined,
   strokeWidth: 1,
   divisions: 10,
   separatorSize: 0.5,
-  clipEdges: true,
+  clipEdges: false,
 };
