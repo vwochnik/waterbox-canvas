@@ -14,9 +14,9 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 export default {
   input: `src/main.ts`,
   output: [
-    { file: pkg.main, name: "Waterbox", format: 'umd', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true },
-    { file: pkg.browser, name: "Waterbox", format: 'iife', sourcemap: true }
+    { file: pkg.main, name: "Waterbox", format: 'umd' },
+    { file: pkg.module, format: 'es' },
+    { file: pkg.browser, name: "Waterbox", format: 'iife' }
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],

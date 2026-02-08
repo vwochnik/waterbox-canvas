@@ -1,8 +1,13 @@
 {
   "name": "waterbox-canvas",
   "version": "0.0.3",
-  "description": "",
-  "keywords": [],
+  "description": "A simple library that renders an isometric water box on a canvas.",
+  "keywords": [
+    "canvas",
+    "water",
+    "isometric",
+    "cube"
+  ],
   "type": "module",
   "main": "dist/waterbox-canvas.umd.js",
   "module": "dist/waterbox-canvas.es.js",
