@@ -14,7 +14,7 @@
   "author": "Vincent Wochnik <v.wochnik@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vwochnik/waterbox-canvas/"
+    "url": "git@github.com:vwochnik/waterbox-canvas.git"
   },
   "license": "MIT",
   "engines": {
@@ -30,7 +30,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "render-readme": "ts-node tools/render-readme",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "deploy-gh-pages": "npm run prepare && ts-node tools/deploy-gh-pages.ts",
     "prepare": "npm run build"
   },
   "devDependencies": {
@@ -40,6 +40,7 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.2.0",
+    "@types/shelljs": "^0.10.0",
     "colord": "^2.9.3",
     "colors": "^1.4.0",
     "cross-env": "^10.1.0",
