@@ -1,5 +1,5 @@
 <div align="center">
-<h1># {{ title }}</h1>
+<h1>{{ title }}</h1>
 
 ![waterbox-canvas](https://github.com/vwochnik/waterbox-canvas/blob/main/preview.png?raw=true "waterbox-canvas")
 
