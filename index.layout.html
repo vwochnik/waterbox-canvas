@@ -174,15 +174,18 @@ body {
       })
       .strokeWidth(3)
       .divisions(5)
-      .clipEdges(true)
-      .value(50)
-      .render();
+      .clipEdges(true);
 
     (function update() {
-      const v = waterbox1.value();
-      waterbox1.value((v + 1) % 100).render();
-      setTimeout(update, 1000 / 30);
+      increment(waterbox1, 2);
+      increment(waterbox2, 1);
+      setTimeout(update, 1000 / 10);
     })();
+
+    function increment(waterbox, delta) {
+      const v = waterbox.value();
+      waterbox.value((v + delta) % 100).render();
+    }
     function getWaterTexture(ctx) {
       const size = 512; // Size of the pattern tile
       const patternCanvas = new OffscreenCanvas(0, 0);

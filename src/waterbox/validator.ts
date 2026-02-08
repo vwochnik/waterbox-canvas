@@ -10,7 +10,7 @@ export function validateDimension(dimension: number): number {
 
 export function validateValue(value: number): number {
   if (!Number.isInteger(value) || value < 0 || value > 100) {
-    throw new Error(`Invalid value: ${value}. Value must be a valid number between 0 and 100.`);
+    throw new Error(`Invalid value: ${value}. Value must be a valid integer between 0 and 100.`);
   }
   return value;
 }
