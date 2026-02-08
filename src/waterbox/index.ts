@@ -4,7 +4,7 @@ import {
   validateBoolean,
   validateColor,
   validateDimension,
-  validateDivisions,
+  validateOptionalDivisions,
   validateOptionalColor,
   validateOptionalPattern,
   validateSeparatorSize,
@@ -88,7 +88,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     waterPattern: validateOptionalPattern,
     frontPattern: validateOptionalPattern,
     strokeWidth: validateStrokeWidth,
-    divisions: validateDivisions,
+    divisions: validateOptionalDivisions,
     separatorSize: validateSeparatorSize,
     clipEdges: validateBoolean,
   });

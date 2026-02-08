@@ -11,7 +11,7 @@ export interface Options extends BaseOptions {
   waterPattern?: Pattern;
   frontPattern?: Pattern;
   strokeWidth: number;
-  divisions: number;
+  divisions?: number;
   separatorSize: number;
   clipEdges: boolean;
 }
@@ -52,7 +52,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   waterPattern: true,
   frontPattern: true,
   strokeWidth: false,
-  divisions: false,
+  divisions: true,
   separatorSize: false,
   clipEdges: false,
 };
@@ -77,7 +77,6 @@ export const defaultOptions: Options = {
   waterPattern: undefined,
   frontPattern: undefined,
   strokeWidth: 1,
-  divisions: 10,
-  separatorSize: 0.5,
+  separatorSize: 0.125,
   clipEdges: false,
 };

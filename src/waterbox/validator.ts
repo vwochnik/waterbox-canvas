@@ -66,8 +66,13 @@ export function validateStrokeWidth(width: number): number {
   return width;
 }
 
-export function validateDivisions(divisions: number): number {
-  throwIfNotAPositiveInteger(divisions);
+export function validateOptionalDivisions(divisions?: number): number | undefined {
+  if (divisions === undefined) {
+    return undefined;
+  }
+  if (!Number.isInteger(divisions) || divisions < 2) {
+    throw new Error(`Invalid divisions: ${divisions}. Number must be an integer greater than 1.`);
+  }
   return divisions;
 }
 

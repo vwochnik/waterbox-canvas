@@ -94,7 +94,7 @@ export function render(
     (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back'),
   ];
 
-  if (divisions > 1) {
+  if (divisions !== undefined) {
     const step = 100.0 / divisions;
 
     for (let s = step; s < 100.0; s += step) {
@@ -380,7 +380,7 @@ function separatorPath(
   area: Area,
   size: number,
 ): void {
-  const s = size / 200.0;
+  const s = size / 2.0;
   ctx.beginPath();
   ctx.moveTo(area.x + area.w / 2 - area.w * s, area.y + area.h * s);
   ctx.lineTo(area.x + area.w / 2, area.y);
