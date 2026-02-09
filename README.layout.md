@@ -1,7 +1,7 @@
 <div align="center">
-<h1>{{ title }}</h1>
+<img src="https://github.com/vwochnik/waterbox-canvas/blob/main/logo.png?raw=true" width="128" height="179" alt="logo">
 
-![waterbox-canvas](https://github.com/vwochnik/waterbox-canvas/blob/main/preview.png?raw=true "waterbox-canvas")
+<h1>{{ title }}</h1>
 
 ![Build](https://github.com/vwochnik/waterbox-canvas/actions/workflows/ci.yml/badge.svg)
 ![npm](https://img.shields.io/npm/v/waterbox-canvas)
