@@ -1,6 +1,6 @@
 {
   "name": "waterbox-canvas",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple library that renders an isometric water box on a canvas.",
   "keywords": [
     "canvas",

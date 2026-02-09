@@ -41,7 +41,7 @@ export default {
         format: {
           comments: false,
         },
-        module: true,
+        module: false,
         ecma: 2020,
       }),
     ] : []),
