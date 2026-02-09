@@ -1,5 +1,5 @@
 ---
-title: Waterbox Canvas
+title: waterbox-canvas
 options:
 - name: width
   type: number
