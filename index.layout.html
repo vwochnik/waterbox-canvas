@@ -112,11 +112,28 @@ body {
     border: 0;
 }
 .demo {
+  position: relative;
   background: #efefef;
   display: flex;
   justify-content: center;
   gap: 48px;
   padding: 48px;
+}
+.demo-mode-switch {
+  position: absolute;
+  right: 3rem;
+  top: 3rem;
+  color: #101010;
+}
+.demo-mode-switch > svg {
+  width: 3rem;
+  height: 3rem;
+}
+.demo.dark {
+  background: #101010;
+}
+.demo.dark .demo-mode-switch {
+  color: #efefef;
 }
 </style>
 </head>
@@ -128,10 +145,22 @@ body {
     <canvas id="canvas1"></canvas>
     <canvas id="canvas2"></canvas>
     <canvas id="canvas3"></canvas>
+    <a href="#" class="demo-mode-switch">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M12,20.5 L12,3.5 C16.6944204,3.5 20.5,7.30557963 20.5,12 C20.5,16.6944204 16.6944204,20.5 12,20.5 Z" />
+      </svg>
+    </a>
   </div>
   <div class="readme">
     {{ content }}
   </div>
+  <script type="text/javascript">
+    document.querySelector('.demo-mode-switch')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelector('.demo').classList.toggle('dark');
+      });
+  </script>
   <script src="waterbox-canvas.js" type="text/javascript"></script>
   <script type="text/javascript">
     const canvas1 = document.getElementById('canvas1');
@@ -142,6 +171,10 @@ body {
     let lastTime = 0;
 
     const waterbox1 = Waterbox.createWaterbox(canvas1)
+      .backColor({
+        fill: "rgba(127,127,127,0.3)",
+        stroke: 'rgba(255, 255, 255, 0.8)'
+      })
       .waterPattern({
         type: "custom",
         creator: getWaterTexture
@@ -155,6 +188,10 @@ body {
       .frontColor({
         fill: 'rgba(0,0,0,0.0)',
         stroke: 'rgba(255, 255, 255, 0.8)'
+      })
+      .scale({
+        divisions: 10,
+        size: 0.1,
       });
 
     const waterbox2 = Waterbox.createWaterbox(canvas2)
