@@ -1,7 +1,5 @@
 <div align="center">
-<div style="background:#4A90E2;color:#f8f8f8;padding:1.5rem 0;margin:0 0 2rem">
-  <h1 style="margin:0;border:0;padding:0">{{ title }}</h1>
-</div>
+<h1>{{ title }}</h1>
 
 ![waterbox-canvas](https://github.com/vwochnik/waterbox-canvas/blob/main/preview.png?raw=true "waterbox-canvas")
 
