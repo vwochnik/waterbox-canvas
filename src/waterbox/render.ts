@@ -24,17 +24,8 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const {
-    width,
-    height,
-    value,
-    strokeWidth,
-    clipEdges,
-    backColor,
-    frontColor,
-    waterColor,
-    scale,
-  } = options;
+  const { width, height, value, strokeWidth, clipEdges, backColor, frontColor, waterColor, scale } =
+    options;
 
   const actualWidth = Math.min(width, height),
     rect: Area = {
@@ -51,21 +42,6 @@ export function render(
   const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
   const rightBackWallArea: Area = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
 
-  const scalePaths: PathFunction[] = [];
-  if (scale) {
-    const step = 100.0 / scale.divisions;
-
-    for (let s = step; s < 100.0; s += step) {
-      const separatorArea: Area = {
-        x: rect.x,
-        y: rect.y + rect.h - size.h - ((rect.h - size.h) * s) / 100.0,
-        w: size.w,
-        h: size.h,
-      };
-      scalePaths.push((ctx) => separatorPath(ctx, separatorArea, scale.size));
-    }
-  }
-
   paint(
     bufferContext,
     [
@@ -79,12 +55,18 @@ export function render(
         wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
       },
     ],
-    scalePaths,
-    [
-      backColor.fill,
-      backColor.lighter ?? backColor.fill,
-      backColor.darker ?? backColor.fill,
-    ],
+    scale
+      ? makeSteps(scale.divisions).map((step) => {
+          const separatorArea: Area = {
+            x: rect.x,
+            y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
+            w: size.w,
+            h: size.h,
+          };
+          return (ctx) => separatorPath(ctx, separatorArea, scale.size);
+        })
+      : [],
+    [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
     clipEdges,
@@ -201,15 +183,7 @@ function paint(
   pattern?: CanvasPattern,
 ) {
   fillPaths.forEach((path, index) => {
-    paintFilling(
-      ctx,
-      path,
-      fillColors[index],
-      tmp,
-      width,
-      height,
-      pattern,
-    );
+    paintFilling(ctx, path, fillColors[index], tmp, width, height, pattern);
   });
 
   paintEdges(
@@ -350,4 +324,10 @@ function separatorPath(
   ctx.moveTo(area.x + area.w / 2 - area.w * s, area.y + area.h * s);
   ctx.lineTo(area.x + area.w / 2, area.y);
   ctx.lineTo(area.x + area.w / 2 + area.w * s, area.y + area.h * s);
+}
+
+function makeSteps(divisions: number): number[] {
+  const step = 100 / divisions;
+
+  return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
 }

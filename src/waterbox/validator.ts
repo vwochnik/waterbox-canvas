@@ -74,7 +74,7 @@ export function validateOptionalScale(scale?: Scale): Scale | undefined {
   if (!Number.isFinite(scale.size) || scale.size < 0 || scale.size > 1) {
     throw new Error(`Invalid scale. Size must be a number between 0 and 1.`);
   }
-  if ((!Number.isInteger(scale.divisions)) || (scale.divisions < 2)) {
+  if (!Number.isInteger(scale.divisions) || scale.divisions < 2) {
     throw new Error(`Invalid scale. Divisions must be an integer greater than 1.`);
   }
   return scale;
