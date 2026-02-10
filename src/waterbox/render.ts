@@ -51,48 +51,7 @@ export function render(
   const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
   const rightBackWallArea: Area = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
 
-  paintFilling(
-    bufferContext,
-    (ctx) => {
-      rhombusPath(ctx, bottomRhombusArea, 'bottom');
-    },
-    backColor.fill,
-    tempContext,
-    width,
-    height,
-    backPattern,
-  );
-
-  paintFilling(
-    bufferContext,
-    (ctx) => {
-      wallPath(ctx, leftBackWallArea, size, 0, -size.h / 2, 'back');
-    },
-    backColor.lighter ?? backColor.fill,
-    tempContext,
-    width,
-    height,
-    backPattern,
-  );
-
-  paintFilling(
-    bufferContext,
-    (ctx) => {
-      wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
-    },
-    backColor.darker ?? backColor.fill,
-    tempContext,
-    width,
-    height,
-    backPattern,
-  );
-
-  const backPaths: PathFunction[] = [
-    (ctx) => rhombusPath(ctx, bottomRhombusArea, 'bottom'),
-    (ctx) => wallPath(ctx, leftBackWallArea, size, 0, -size.h / 2, 'back'),
-    (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back'),
-  ];
-
+  const scalePaths: PathFunction[] = [];
   if (scale) {
     const step = 100.0 / scale.divisions;
 
@@ -103,19 +62,36 @@ export function render(
         w: size.w,
         h: size.h,
       };
-      backPaths.push((ctx) => separatorPath(ctx, separatorArea, scale.size));
+      scalePaths.push((ctx) => separatorPath(ctx, separatorArea, scale.size));
     }
   }
 
-  paintEdges(
+  paint(
     bufferContext,
-    backPaths,
+    [
+      (ctx) => {
+        rhombusPath(ctx, bottomRhombusArea, 'bottom');
+      },
+      (ctx) => {
+        wallPath(ctx, leftBackWallArea, size, 0, -size.h / 2, 'back');
+      },
+      (ctx) => {
+        wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
+      },
+    ],
+    scalePaths,
+    [
+      backColor.fill,
+      backColor.lighter ?? backColor.fill,
+      backColor.darker ?? backColor.fill,
+    ],
     backColor.stroke,
     strokeWidth,
     clipEdges,
     tempContext,
     width,
     height,
+    backPattern,
   );
 
   if (value > 0) {
@@ -139,49 +115,24 @@ export function render(
       w: size.w,
       h: size.h,
     };
-
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        wallPath(ctx, leftFillWallArea, size, 0, size.h / 2, 'front');
-      },
-      waterColor.darker ?? waterColor.fill,
-      tempContext,
-      width,
-      height,
-      waterPattern,
-    );
-
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front');
-      },
-      waterColor.lighter ?? waterColor.fill,
-      tempContext,
-      width,
-      height,
-      waterPattern,
-    );
-
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        rhombusPath(ctx, fillTopRhombusArea, 'top');
-      },
-      waterColor.fill,
-      tempContext,
-      width,
-      height,
-      waterPattern,
-    );
-
-    paintEdges(
+    paint(
       bufferContext,
       [
-        (ctx) => wallPath(ctx, leftFillWallArea, size, 0, size.h / 2, 'front'),
-        (ctx) => wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front'),
-        (ctx) => rhombusPath(ctx, fillTopRhombusArea, 'top'),
+        (ctx) => {
+          wallPath(ctx, leftFillWallArea, size, 0, size.h / 2, 'front');
+        },
+        (ctx) => {
+          wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front');
+        },
+        (ctx) => {
+          rhombusPath(ctx, fillTopRhombusArea, 'top');
+        },
+      ],
+      [],
+      [
+        waterColor.darker ?? waterColor?.fill,
+        waterColor.lighter ?? waterColor.fill,
+        waterColor.fill,
       ],
       waterColor.stroke,
       strokeWidth,
@@ -189,6 +140,7 @@ export function render(
       tempContext,
       width,
       height,
+      waterPattern,
     );
   }
 
@@ -202,48 +154,24 @@ export function render(
     };
     const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
 
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        wallPath(ctx, leftFrontWallArea, size, 0, size.h / 2, 'front');
-      },
-      frontColor.darker ?? frontColor.fill,
-      tempContext,
-      width,
-      height,
-      frontPattern,
-    );
-
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front');
-      },
-      frontColor.lighter ?? frontColor.fill,
-      tempContext,
-      width,
-      height,
-      frontPattern,
-    );
-
-    paintFilling(
-      bufferContext,
-      (ctx) => {
-        rhombusPath(ctx, topRhombusArea, 'top');
-      },
-      frontColor.fill,
-      tempContext,
-      width,
-      height,
-      frontPattern,
-    );
-
-    paintEdges(
+    paint(
       bufferContext,
       [
-        (ctx) => wallPath(ctx, leftFrontWallArea, size, 0, size.h / 2, 'front'),
-        (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front'),
-        (ctx) => rhombusPath(ctx, topRhombusArea, 'top'),
+        (ctx) => {
+          wallPath(ctx, leftFrontWallArea, size, 0, size.h / 2, 'front');
+        },
+        (ctx) => {
+          wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front');
+        },
+        (ctx) => {
+          rhombusPath(ctx, topRhombusArea, 'top');
+        },
+      ],
+      [],
+      [
+        frontColor.darker ?? frontColor.fill,
+        frontColor.lighter ?? frontColor.fill,
+        frontColor.fill,
       ],
       frontColor.stroke,
       strokeWidth,
@@ -251,11 +179,49 @@ export function render(
       tempContext,
       width,
       height,
+      frontPattern,
     );
   }
 
   canvasContext.clearRect(0, 0, width, height);
   canvasContext.drawImage(bufferContext.canvas, 0, 0);
+}
+
+function paint(
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+  fillPaths: PathFunction[],
+  strokePaths: PathFunction[],
+  fillColors: string[],
+  strokeColor: string,
+  strokeWidth: number,
+  clipEdges: boolean,
+  tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+  width: number,
+  height: number,
+  pattern?: CanvasPattern,
+) {
+  fillPaths.forEach((path, index) => {
+    paintFilling(
+      ctx,
+      path,
+      fillColors[index],
+      tmp,
+      width,
+      height,
+      pattern,
+    );
+  });
+
+  paintEdges(
+    ctx,
+    [...fillPaths, ...strokePaths],
+    strokeColor,
+    strokeWidth,
+    clipEdges,
+    tmp,
+    width,
+    height,
+  );
 }
 
 function paintFilling(
