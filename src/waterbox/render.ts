@@ -42,6 +42,17 @@ export function render(
   const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
   const rightBackWallArea: Area = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
 
+  const scaleAreas = scale
+    ? makeSteps(scale.divisions).map(
+        (step): Area => ({
+          x: rect.x,
+          y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
+          w: size.w,
+          h: size.h,
+        }),
+      )
+    : [];
+
   paint(
     bufferContext,
     [
@@ -55,17 +66,7 @@ export function render(
         wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
       },
     ],
-    scale
-      ? makeSteps(scale.divisions).map((step) => {
-          const separatorArea: Area = {
-            x: rect.x,
-            y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
-            w: size.w,
-            h: size.h,
-          };
-          return (ctx) => separatorPath(ctx, separatorArea, scale.size);
-        })
-      : [],
+    scaleAreas.map((area) => (ctx) => separatorPath(ctx, area, scale?.size ?? 0)),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
