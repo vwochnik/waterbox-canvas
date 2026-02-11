@@ -1,17 +1,15 @@
 import { colord } from 'colord';
 import { Options } from './options';
 
-interface Area {
+type Size = {
+  w: number;
+  h: number;
+};
+
+type Rectangle = {
   x: number;
   y: number;
-  w: number;
-  h: number;
-}
-
-interface Size {
-  w: number;
-  h: number;
-}
+} & Size;
 
 type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void;
 
@@ -28,7 +26,7 @@ export function render(
     options;
 
   const actualWidth = Math.min(width, height),
-    rect: Area = {
+    rect: Rectangle = {
       x: width / 2 - actualWidth / 2 + strokeWidth / 2,
       y: strokeWidth / 2,
       w: actualWidth - strokeWidth - 1,
@@ -38,13 +36,13 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
-  const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-  const rightBackWallArea: Area = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
+  const bottomRhombusRect: Rectangle = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
+  const leftBackWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
+  const rightBackWallRect: Rectangle = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
 
-  const scaleAreas = scale
+  const scaleRects = scale
     ? makeSteps(scale.divisions).map(
-        (step): Area => ({
+        (step): Rectangle => ({
           x: rect.x,
           y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
           w: size.w,
@@ -57,16 +55,16 @@ export function render(
     bufferContext,
     [
       (ctx) => {
-        rhombusPath(ctx, bottomRhombusArea, 'bottom');
+        rhombusPath(ctx, bottomRhombusRect, 'bottom');
       },
       (ctx) => {
-        wallPath(ctx, leftBackWallArea, size, 0, -size.h / 2, 'back');
+        wallPath(ctx, leftBackWallRect, size, 0, -size.h / 2, 'back');
       },
       (ctx) => {
-        wallPath(ctx, rightBackWallArea, size, -size.h / 2, 0, 'back');
+        wallPath(ctx, rightBackWallRect, size, -size.h / 2, 0, 'back');
       },
     ],
-    scaleAreas.map((area) => (ctx) => separatorPath(ctx, area, scale?.size ?? 0)),
+    scaleRects.map((rect) => (ctx) => separatorPath(ctx, rect, scale?.size ?? 0)),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
@@ -80,19 +78,19 @@ export function render(
   if (value > 0) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-    const leftFillWallArea: Area = {
+    const leftFillWallRect: Rectangle = {
       x: rect.x,
       y: rect.y + rect.h - fillHeight,
       w: size.w / 2,
       h: fillHeight,
     };
-    const rightFillWallArea: Area = {
+    const rightFillWallRect: Rectangle = {
       x: rect.x + rect.w / 2,
       y: rect.y + rect.h - fillHeight,
       w: size.w / 2,
       h: fillHeight,
     };
-    const fillTopRhombusArea: Area = {
+    const fillTopRhombusRect: Rectangle = {
       x: rect.x,
       y: rect.y + rect.h - fillHeight,
       w: size.w,
@@ -102,13 +100,13 @@ export function render(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFillWallArea, size, 0, size.h / 2, 'front');
+          wallPath(ctx, leftFillWallRect, size, 0, size.h / 2, 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFillWallArea, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rightFillWallRect, size, size.h / 2, 0, 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, fillTopRhombusArea, 'top');
+          rhombusPath(ctx, fillTopRhombusRect, 'top');
         },
       ],
       [],
@@ -128,26 +126,26 @@ export function render(
   }
 
   if (frontColor) {
-    const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-    const rightFrontWallArea: Area = {
+    const leftFrontWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
+    const rightFrontWallRect: Rectangle = {
       x: rect.x + rect.w / 2,
       y: rect.y,
       w: size.w / 2,
       h: rect.h,
     };
-    const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
+    const topRhombusRect: Rectangle = { x: rect.x, y: rect.y, w: size.w, h: size.h };
 
     paint(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFrontWallArea, size, 0, size.h / 2, 'front');
+          wallPath(ctx, leftFrontWallRect, size, 0, size.h / 2, 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFrontWallArea, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rightFrontWallRect, size, size.h / 2, 0, 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, topRhombusArea, 'top');
+          rhombusPath(ctx, topRhombusRect, 'top');
         },
       ],
       [],
@@ -268,14 +266,14 @@ function paintEdges(
 
 function rhombusPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  area: Area,
+  rect: Rectangle,
   position: 'top' | 'bottom',
 ): void {
-  const a = 0.5 * Math.hypot(area.w, area.h),
+  const a = 0.5 * Math.hypot(rect.w, rect.h),
     b = Math.sqrt(2 * a * a);
 
-  ctx.translate(area.x + area.w / 2, area.y + area.h / 2);
-  ctx.scale(area.w / b, area.h / b);
+  ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
+  ctx.scale(rect.w / b, rect.h / b);
   ctx.rotate(Math.PI / 4);
 
   ctx.beginPath();
@@ -290,16 +288,16 @@ function rhombusPath(
 
 function wallPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  area: Area,
+  rect: Rectangle,
   size: Size,
   leftOffset: number,
   rightOffset: number,
   facing: 'back' | 'front',
 ): void {
-  const x = area.x,
-    y = area.y + size.h / 2,
-    w = area.w,
-    h = area.h - size.h;
+  const x = rect.x,
+    y = rect.y + size.h / 2,
+    w = rect.w,
+    h = rect.h - size.h;
 
   const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
 
@@ -317,14 +315,14 @@ function wallPath(
 
 function separatorPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  area: Area,
+  rect: Rectangle,
   size: number,
 ): void {
   const s = size / 2.0;
   ctx.beginPath();
-  ctx.moveTo(area.x + area.w / 2 - area.w * s, area.y + area.h * s);
-  ctx.lineTo(area.x + area.w / 2, area.y);
-  ctx.lineTo(area.x + area.w / 2 + area.w * s, area.y + area.h * s);
+  ctx.moveTo(rect.x + rect.w / 2 - rect.w * s, rect.y + rect.h * s);
+  ctx.lineTo(rect.x + rect.w / 2, rect.y);
+  ctx.lineTo(rect.x + rect.w / 2 + rect.w * s, rect.y + rect.h * s);
 }
 
 function makeSteps(divisions: number): number[] {
