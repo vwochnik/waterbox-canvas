@@ -26,7 +26,7 @@ describe('Waterbox', () => {
       throw new Error('should have thrown');
     } catch (e: unknown) {
       expect((e as Error).message).toEqual(
-        'Invalid dimension: 0. Dimension must be a positive integer.',
+        'Invalid width: Invalid dimension: 0. Dimension must be a positive integer.',
       );
     }
   });
@@ -54,7 +54,7 @@ describe('Waterbox', () => {
       waterbox.waterPattern(pattern);
       throw new Error('should have thrown');
     } catch (e: unknown) {
-      expect((e as Error).message).toEqual('Invalid number: -1. Number must be positive.');
+      expect((e as Error).message).toEqual('Invalid waterPattern: Invalid number: -1. Number must be positive.');
     }
   });
 

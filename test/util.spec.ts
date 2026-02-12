@@ -90,7 +90,7 @@ describe('util', () => {
         inst.num(undefined as unknown as number);
         throw new Error('should have thrown');
       } catch (e: unknown) {
-        expect((e as Error).message).toEqual('Required option cannot be undefined.');
+        expect((e as Error).message).toEqual('Invalid num: Required option cannot be undefined.');
       }
     });
 
@@ -115,7 +115,7 @@ describe('util', () => {
         inst.num(-1);
         throw new Error('should have thrown');
       } catch (e: unknown) {
-        expect((e as Error).message).toEqual('num must be non-negative');
+        expect((e as Error).message).toEqual('Invalid num: num must be non-negative');
       }
       expect(updated).toHaveBeenCalledTimes(3);
     });

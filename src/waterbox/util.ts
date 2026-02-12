@@ -82,7 +82,7 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
         const value = diff[key];
         if (value === undefined) {
           if (!keysWithOptionality[key]) {
-            throw new Error(`Required option cannot be undefined.`);
+            throw new Error(`Invalid ${key as string}: Required option cannot be undefined.`);
           }
           delete newOptions[key];
         } else {
