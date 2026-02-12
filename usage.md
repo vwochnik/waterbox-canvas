@@ -13,30 +13,31 @@ options:
   type: number
   optional: false
   description: Get or set the water fill level.
-- name: backColor
-  type: Color
+- name: backColorScheme
+  type: ColorScheme
   optional: false
-  description: Get or set the color of the backside of the rendered waterbox.
+  description: Get or set the color scheme of the backside of the rendered waterbox.
   example: |
-    waterbox.backColor({
+    waterbox.backColorScheme({
       fill: 'rgba(80, 80, 111, 1)',
       stroke: 'rgba(80, 80, 111, 1)',
+      contrast: 0.1
     });
-- name: waterColor
-  type: Color
+- name: waterColorScheme
+  type: ColorScheme
   optional: false
-  description: Get or set the color of the water rendered inside the waterbox.
+  description: Get or set the color scheme of the water rendered inside the waterbox.
   example: |
-    waterbox.waterColor({
+    waterbox.waterColorScheme({
       fill: 'rgba(58, 123, 213, 0.9)',
       stroke: 'rgba(42, 92, 160, 0.9)',
       lighter: 'rgba(90, 149, 224, 0.9)',
       darker: 'rgba(43, 95, 168, 0.9)',
     });
-- name: frontColor
-  type: Color
+- name: frontColorScheme
+  type: ColorScheme
   optional: true
-  description: Get or set the color of the front of the rendered waterbox.
+  description: Get or set the color scheme of the front of the rendered waterbox.
 - name: backPattern
   type: Pattern
   optional: true
@@ -152,7 +153,7 @@ const waterbox = createWaterbox(canvas)
   .height(120)
   .divisions(5)
   .strokeWidth(1.5)
-  .waterbox.waterColor({
+  .waterColorScheme({
     fill: 'rgba(33, 150, 243, 0.8)',
     stroke: 'rgba(25, 118, 210, 0.8)',
     lighter: 'rgba(66, 165, 245, 0.8)',

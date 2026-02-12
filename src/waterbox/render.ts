@@ -1,5 +1,5 @@
 import { colord } from 'colord';
-import { Color, Options } from './options';
+import { ColorScheme, Options } from './options';
 
 type Size = {
   w: number;
@@ -25,9 +25,9 @@ export function render(
   const { width, height, value, strokeWidth, clipEdges, scale } =
     options;
 
-  const backColor = getColors(options.backColor);
-  const waterColor = getColors(options.waterColor);
-  const frontColor = options.frontColor ? getColors(options.frontColor) : undefined;
+  const backColor = getColors(options.backColorScheme);
+  const waterColor = getColors(options.waterColorScheme);
+  const frontColor = options.frontColorScheme ? getColors(options.frontColorScheme) : undefined;
 
   const actualWidth = Math.min(width, height),
     rect: Rectangle = {
@@ -335,19 +335,19 @@ function makeSteps(divisions: number): number[] {
   return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
 }
 
-function getColors(color: Color): {
+function getColors(colorScheme: ColorScheme): {
   stroke: string;
   fill: string;
   lighter: string;
   darker: string;
 } {
-  if ("contrast" in color) {
+  if ("contrast" in colorScheme) {
     return {
-      fill: color.fill,
-      stroke: color.stroke,
-      lighter: colord(color.fill).lighten(color.contrast).toRgbString(),
-      darker: colord(color.fill).darken(color.contrast).toRgbString(),
+      fill: colorScheme.fill,
+      stroke: colorScheme.stroke,
+      lighter: colord(colorScheme.fill).lighten(colorScheme.contrast).toRgbString(),
+      darker: colord(colorScheme.fill).darken(colorScheme.contrast).toRgbString(),
     };
   }
-  return { ...color };
+  return { ...colorScheme };
 }

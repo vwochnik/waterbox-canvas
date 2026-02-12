@@ -4,9 +4,9 @@ export interface Options extends BaseOptions {
   width: number;
   height: number;
   value: number;
-  backColor: Color;
-  waterColor: Color;
-  frontColor?: Color;
+  backColorScheme: ColorScheme;
+  waterColorScheme: ColorScheme;
+  frontColorScheme?: ColorScheme;
   backPattern?: Pattern;
   waterPattern?: Pattern;
   frontPattern?: Pattern;
@@ -15,15 +15,21 @@ export interface Options extends BaseOptions {
   clipEdges: boolean;
 }
 
-export type Color = {
+export type BaseColorScheme = {
   fill: string;
   stroke: string;
-} & ({
+};
+
+export type StaticColorScheme = BaseColorScheme & {
   lighter: string;
   darker: string;
-} | {
+};
+
+export type DynamicColorScheme = BaseColorScheme & {
   contrast: number;
-});
+}
+
+export type ColorScheme = StaticColorScheme | DynamicColorScheme;
 
 export type PredefinedPattern = {
   type: 'predefined';
@@ -52,9 +58,9 @@ export const optionsWithOptionality: Optionality<Options> = {
   width: false,
   height: false,
   value: false,
-  backColor: false,
-  waterColor: false,
-  frontColor: true,
+  backColorScheme: false,
+  waterColorScheme: false,
+  frontColorScheme: true,
   backPattern: true,
   waterPattern: true,
   frontPattern: true,
@@ -67,12 +73,12 @@ export const defaultOptions: Options = {
   width: 100,
   height: 200,
   value: 0,
-  backColor: {
+  backColorScheme: {
     fill: '#8d8d9f',
     stroke: '#8a8a9a',
     contrast: 0.1,
   },
-  waterColor: {
+  waterColorScheme: {
     fill: 'rgba(58, 123, 213, 0.9)',
     stroke: 'rgba(42, 92, 160, 0.9)',
     contrast: 0.1,

@@ -31,25 +31,6 @@ describe('Waterbox', () => {
     }
   });
 
-  it('can generate lighter/darker colors', () => {
-    const fill = 'rgba(100, 150, 200, 0.1)';
-
-    waterbox.backColor({ fill, stroke: '#000' });
-
-    const { lighter, darker } = waterbox.backColor();
-
-    if (!lighter || !darker) {
-      throw new Error('lighter or darker color is undefined');
-    }
-
-    const fillBrightness = colord(fill).brightness();
-    const lighterBrightness = colord(lighter).brightness();
-    const darkerBrightness = colord(darker).brightness();
-
-    expect(lighterBrightness).toBeGreaterThan(fillBrightness);
-    expect(darkerBrightness).toBeLessThan(fillBrightness);
-  });
-
   it('can set a predefined pattern', () => {
     const pattern: Pattern = { type: 'predefined', name: 'blocky', size: 10, alpha: 0.5 };
     waterbox.waterPattern(pattern);

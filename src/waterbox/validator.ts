@@ -1,4 +1,4 @@
-import { Color, Pattern, Scale } from './options';
+import { ColorScheme, Pattern, Scale } from './options';
 import { colord } from 'colord';
 
 export function validateDimension(dimension: number): number {
@@ -15,26 +15,28 @@ export function validateValue(value: number): number {
   return value;
 }
 
-export function validateColor(color: Color): Color {
-  throwIfInvalidObject(color, ['fill', 'stroke'], true, 'color');
+export function validateColorScheme(colorScheme: ColorScheme): ColorScheme {
+  throwIfInvalidObject(colorScheme, ['fill', 'stroke'], true, 'colorScheme');
 
-  throwIfInvalidColor(color.fill);
-  throwIfInvalidColor(color.stroke);
-  if ("contrast" in color) {
-    throwIfNotAPositiveNumber(color.contrast);
-  } else if ("lighter" in color && "darker" in color) {
-    throwIfInvalidColor(color.lighter);
-    throwIfInvalidColor(color.darker);
+  throwIfInvalidColor(colorScheme.fill);
+  throwIfInvalidColor(colorScheme.stroke);
+  if ("contrast" in colorScheme) {
+    throwIfNotAPositiveNumber(colorScheme.contrast);
+  } else if ("lighter" in colorScheme && "darker" in colorScheme) {
+    throwIfInvalidColor(colorScheme.lighter);
+    throwIfInvalidColor(colorScheme.darker);
+  } else {
+    throw new Error("Invalid color scheme");
   }
 
-  return color;
+  return colorScheme;
 }
 
-export function validateOptionalColor(color?: Color): Color | undefined {
-  if (color === undefined) {
+export function validateOptionalColorScheme(colorScheme?: ColorScheme): ColorScheme | undefined {
+  if (colorScheme === undefined) {
     return undefined;
   }
-  return validateColor(color);
+  return validateColorScheme(colorScheme);
 }
 
 export function validateOptionalPattern(pattern?: Pattern): Pattern | undefined {

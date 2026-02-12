@@ -178,19 +178,20 @@ body {
     let lastTime = 0;
 
     const waterbox1 = Waterbox.createWaterbox(canvas1)
-      .backColor({
+      .backColorScheme({
         fill: "rgba(127,127,127,0.3)",
         stroke: 'rgba(255, 255, 255, 0.8)',
         contrast: 0.1,
       })
-      .waterColor({
+      .waterColorScheme({
         fill: 'rgba(92, 198, 238, 0.7)',
         stroke: 'rgba(0,0,0,0.2)',
         contrast: 0.15,
       })
-      .frontColor({
+      .frontColorScheme({
         fill: 'rgba(0,0,0,0.0)',
-        stroke: 'rgba(255, 255, 255, 0.8)'
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
       })
       .scale({
         divisions: 10,
@@ -200,19 +201,18 @@ body {
     loadWaterImage(waterbox1);
 
     const waterbox2 = Waterbox.createWaterbox(canvas2)
-      .backColor({
+      .backColorScheme({
         fill: 'rgba(80, 80, 111, 1)',
         lighter: 'rgba(80, 80, 111, 1)',
         darker: 'rgba(80, 80, 111, 1)',
         stroke: 'rgba(80, 80, 111, 1)',
       })
-      .waterColor({
+      .waterColorScheme({
         fill: 'rgba(176, 68, 188, 0.6)',
         lighter: 'rgba(176, 68, 188, 0.6)',
         darker: 'rgba(176, 68, 188, 0.6)',
         stroke: 'rgba(176, 68, 188, 0.6)',
       })
-      .frontColor(undefined)
       .waterPattern({
         type: "predefined",
         name: "grid",
@@ -227,9 +227,10 @@ body {
       .clipEdges(true);
 
     const waterbox3 = Waterbox.createWaterbox(canvas3)
-      .backColor({
+      .backColorScheme({
         fill: 'rgba(80, 80, 111, 1)',
         stroke: 'rgba(80, 80, 111, 1)',
+        contrast: 0.1,
       })
       .waterPattern({
         type: "predefined",
@@ -257,7 +258,7 @@ body {
       waterbox2.value((value + 15) % 100).render();
       waterbox3
         .value((value + 70) % 100)
-        .waterColor({
+        .waterColorScheme({
           fill: `hsla(${3.6 * value}, 47%, 50%, 0.8)`,
           lighter: `hsla(${3.6 * value}, 47%, 55%, 0.8)`,
           darker: `hsla(${3.6 * value}, 47%, 45%, 0.8)`,
