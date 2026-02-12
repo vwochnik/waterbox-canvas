@@ -87,7 +87,13 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
           delete newOptions[key];
         } else {
           const validator = validators?.[key];
-          newOptions[key] = validator ? validator(value) : value;
+          try {
+            newOptions[key] = validator ? validator(value) : value;
+          } catch (err: unknown) {
+            if (err instanceof Error) {
+              throw new Error(`Invalid ${key as string}: ${err.message}`);
+            }
+          }
         }
         return newOptions;
       },

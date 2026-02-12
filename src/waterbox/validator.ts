@@ -21,7 +21,9 @@ export function validateColorScheme(colorScheme: ColorScheme): ColorScheme {
   throwIfInvalidColor(colorScheme.fill);
   throwIfInvalidColor(colorScheme.stroke);
   if ("contrast" in colorScheme) {
-    throwIfNotAPositiveNumber(colorScheme.contrast);
+    if (!Number.isFinite(colorScheme.contrast) || colorScheme.contrast < 0 || colorScheme.contrast > 1) {
+      throw new Error(`Invalid contrast: ${colorScheme.contrast}. Number must be between 0 and 1.`);
+    }
   } else if ("lighter" in colorScheme && "darker" in colorScheme) {
     throwIfInvalidColor(colorScheme.lighter);
     throwIfInvalidColor(colorScheme.darker);
