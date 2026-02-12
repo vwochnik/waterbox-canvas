@@ -15,12 +15,15 @@ export interface Options extends BaseOptions {
   clipEdges: boolean;
 }
 
-export interface Color {
+export type Color = {
   fill: string;
   stroke: string;
-  lighter?: string;
-  darker?: string;
-}
+} & ({
+  lighter: string;
+  darker: string;
+} | {
+  contrast: number;
+});
 
 export type PredefinedPattern = {
   type: 'predefined';
@@ -67,10 +70,12 @@ export const defaultOptions: Options = {
   backColor: {
     fill: '#8d8d9f',
     stroke: '#8a8a9a',
+    contrast: 0.1,
   },
   waterColor: {
     fill: 'rgba(58, 123, 213, 0.9)',
     stroke: 'rgba(42, 92, 160, 0.9)',
+    contrast: 0.1,
   },
   backPattern: undefined,
   waterPattern: undefined,

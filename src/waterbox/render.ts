@@ -1,5 +1,5 @@
 import { colord } from 'colord';
-import { Options } from './options';
+import { Color, Options } from './options';
 
 type Size = {
   w: number;
@@ -22,8 +22,12 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, clipEdges, backColor, frontColor, waterColor, scale } =
+  const { width, height, value, strokeWidth, clipEdges, scale } =
     options;
+
+  const backColor = getColors(options.backColor);
+  const waterColor = getColors(options.waterColor);
+  const frontColor = options.frontColor ? getColors(options.frontColor) : undefined;
 
   const actualWidth = Math.min(width, height),
     rect: Rectangle = {
@@ -329,4 +333,21 @@ function makeSteps(divisions: number): number[] {
   const step = 100 / divisions;
 
   return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
+}
+
+function getColors(color: Color): {
+  stroke: string;
+  fill: string;
+  lighter: string;
+  darker: string;
+} {
+  if ("contrast" in color) {
+    return {
+      fill: color.fill,
+      stroke: color.stroke,
+      lighter: colord(color.fill).lighten(color.contrast).toRgbString(),
+      darker: colord(color.fill).darken(color.contrast).toRgbString(),
+    };
+  }
+  return { ...color };
 }

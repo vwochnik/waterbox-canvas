@@ -180,13 +180,13 @@ body {
     const waterbox1 = Waterbox.createWaterbox(canvas1)
       .backColor({
         fill: "rgba(127,127,127,0.3)",
-        stroke: 'rgba(255, 255, 255, 0.8)'
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
       })
       .waterColor({
         fill: 'rgba(92, 198, 238, 0.7)',
         stroke: 'rgba(0,0,0,0.2)',
-        lighter: 'rgba(110, 238, 255, 0.7)',
-        darker: 'rgba(74, 158, 190, 0.7)',
+        contrast: 0.15,
       })
       .frontColor({
         fill: 'rgba(0,0,0,0.0)',

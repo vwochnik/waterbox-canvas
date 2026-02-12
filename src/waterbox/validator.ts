@@ -20,17 +20,14 @@ export function validateColor(color: Color): Color {
 
   throwIfInvalidColor(color.fill);
   throwIfInvalidColor(color.stroke);
-  if (color.lighter && color.darker) {
+  if ("contrast" in color) {
+    throwIfNotAPositiveNumber(color.contrast);
+  } else if ("lighter" in color && "darker" in color) {
     throwIfInvalidColor(color.lighter);
     throwIfInvalidColor(color.darker);
-    return color;
   }
 
-  return {
-    ...color,
-    lighter: colord(color.fill).lighten(0.1).toRgbString(),
-    darker: colord(color.fill).darken(0.1).toRgbString(),
-  };
+  return color;
 }
 
 export function validateOptionalColor(color?: Color): Color | undefined {
