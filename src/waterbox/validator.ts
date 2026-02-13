@@ -96,9 +96,7 @@ function assertIsFunction(
   }
 }
 
-function assertKeys<
-  K extends readonly string[]
->(
+function assertKeys<K extends readonly string[]>(
   value: unknown,
   keys: K,
   strict: boolean
@@ -107,16 +105,14 @@ function assertKeys<
 
   const valueKeys = Object.keys(value);
 
-  const isValidLength = (!strict)
-    ? valueKeys.length >= keys.length
-    : valueKeys.length === keys.length;
-
-  if (!isValidLength) {
-    throw new Error(`Invalid object`);
+  const missingKeys = keys.filter(key => !valueKeys.includes(key));
+  if (missingKeys.length > 0) {
+      throw new Error(`Missing keys: "${missingKeys.join(", ")}"`);
   }
 
-  if (!keys.every((k) => Object.prototype.hasOwnProperty.call(value, k))) {
-    throw new Error(`Invalid object`);
+  if (strict && valueKeys.length !== keys.length) {
+    const extraKeys = valueKeys.filter(k => !keys.includes(k));
+    throw new Error(`Unexpected keys: ${extraKeys.join(", ")}`);
   }
 }
 
