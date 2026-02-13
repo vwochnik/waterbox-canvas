@@ -214,7 +214,6 @@ body {
         stroke: 'rgba(176, 68, 188, 0.6)',
       })
       .waterPattern({
-        type: "predefined",
         name: "grid",
         size: 15,
         alpha: 1.0
@@ -233,7 +232,6 @@ body {
         contrast: 0.1,
       })
       .waterPattern({
-        type: "predefined",
         name: "blocky",
         size: 15,
         alpha: 0.4,
@@ -275,7 +273,6 @@ body {
         imgCtx.globalAlpha = 0.5;
         imgCtx.drawImage(img, 0, 0);
         waterbox1.waterPattern({
-          type: "custom",
           creator: function(ctx) {
             const pattern = ctx.createPattern(imgCanvas, 'repeat');
             const matrix = new DOMMatrix();

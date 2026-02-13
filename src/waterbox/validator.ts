@@ -152,15 +152,14 @@ function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
 
 function assertIsPattern(value: unknown): asserts value is Pattern {
   assertIsObject(value);
-  assertKeys(value, ["type"], false);
 
-  if (value.type === "predefined") {
-    assertKeys(value, ["type", "name", "size", "alpha"], true);
+  if ("name" in value) {
+    assertKeys(value, ["name", "size", "alpha"], true);
     assertIsString(value.name);
     assertIsNumber(value.size, false, 0);
     assertIsNumber(value.alpha, false, 0, 1);
   } else {
-    assertKeys(value, ["type", "creator"], true);
+    assertKeys(value, ["creator"], true);
     assertIsFunction(value.creator);
   }
 }

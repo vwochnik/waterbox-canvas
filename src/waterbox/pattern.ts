@@ -4,17 +4,15 @@ export function createPattern(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pattern: Pattern,
 ): CanvasPattern {
-  if (pattern.type === 'predefined') {
+  if ("name" in pattern) {
     const canvas = createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
     const createdPattern = ctx.createPattern(canvas, 'repeat');
     if (!createdPattern) {
       throw new Error('Failed to create pattern');
     }
     return createdPattern ?? undefined;
-  } else if (pattern.type === 'custom') {
-    return pattern.creator(ctx);
   } else {
-    throw new Error(`unknown pattern type.`);
+    return pattern.creator(ctx);
   }
 }
 

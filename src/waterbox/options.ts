@@ -32,7 +32,6 @@ export type DynamicColorScheme = BaseColorScheme & {
 export type ColorScheme = StaticColorScheme | DynamicColorScheme;
 
 export type PredefinedPattern = {
-  type: 'predefined';
   name: string;
   size: number;
   alpha: number;
@@ -43,7 +42,6 @@ export type PatternCreator = (ctx: {
 }) => CanvasPattern;
 
 export type CustomPattern = {
-  type: 'custom';
   creator: PatternCreator;
 };
 
