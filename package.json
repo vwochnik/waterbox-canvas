@@ -1,6 +1,6 @@
 {
   "name": "waterbox-canvas",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple library that renders an isometric water box on a canvas.",
   "keywords": [
     "canvas",
@@ -13,9 +13,6 @@
   "module": "dist/waterbox-canvas.es.js",
   "browser": "dist/waterbox-canvas.browser.js",
   "typings": "dist/types/main.d.ts",
-  "files": [
-    "dist"
-  ],
   "author": "Vincent Wochnik <v.wochnik@gmail.com>",
   "repository": {
     "type": "git",
