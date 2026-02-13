@@ -2,140 +2,54 @@ import { ColorScheme, Pattern, Scale } from './options';
 import { parseToRgba, ColorError } from 'color2k';
 
 export function validateDimension(dimension: unknown): number {
-  /*if (!Number.isInteger(dimension) || dimension <= 0) {
-    throw new Error(`Dimension must be a positive integer`);
-  }*/
-  return dimension as number;
+  assertIsNumber(dimension, true, 1);
+  return dimension;
 }
 
-export function validateValue(value: number): number {
-  if (!Number.isInteger(value) || value < 0 || value > 100) {
-    throw new Error(`Value must be a valid integer between 0 and 100.`);
-  }
+export function validateValue(value: unknown): number {
+  assertIsNumber(value, true, 0, 100);
   return value;
 }
 
-export function validateColorScheme(colorScheme: ColorScheme): ColorScheme {
-  throwIfInvalidObject(colorScheme, ['fill', 'stroke'], true);
-
-  throwIfInvalidColor(colorScheme.fill);
-  throwIfInvalidColor(colorScheme.stroke);
-  if ('contrast' in colorScheme) {
-    throwIfInvalidObject(colorScheme, ['fill', 'stroke', 'contrast'], false);
-    if (
-      !Number.isFinite(colorScheme.contrast) ||
-      colorScheme.contrast < 0 ||
-      colorScheme.contrast > 1
-    ) {
-      throw new Error(`Contrast must be between 0 and 1`);
-    }
-  } else /*if ("lighter" in colorScheme && "darker" in colorScheme)*/ {
-    throwIfInvalidObject(colorScheme, ['fill', 'stroke', 'lighter', 'darker'], false);
-    throwIfInvalidColor(colorScheme.lighter);
-    throwIfInvalidColor(colorScheme.darker);
-  }
-
+export function validateColorScheme(colorScheme: unknown): ColorScheme {
+  assertIsColorScheme(colorScheme);
   return colorScheme;
 }
 
-export function validateOptionalColorScheme(colorScheme?: ColorScheme): ColorScheme | undefined {
+export function validateOptionalColorScheme(colorScheme?: unknown): ColorScheme | undefined {
   if (colorScheme === undefined) {
     return undefined;
   }
   return validateColorScheme(colorScheme);
 }
 
-export function validateOptionalPattern(pattern?: Pattern): Pattern | undefined {
+export function validateOptionalPattern(pattern?: unknown): Pattern | undefined {
   if (pattern === undefined) {
     return undefined;
   }
 
-  throwIfInvalidObject(pattern, ['type'], true);
-  if (pattern.type === 'predefined') {
-    throwIfInvalidObject(pattern, ['type', 'name', 'size', 'alpha'], false);
-    throwIfNotAString(pattern.name);
-    ['size', 'alpha'].forEach((key) => throwIfNotAPositiveNumber(pattern[key as keyof Pattern]));
-  } else if (pattern.type === 'custom') {
-    throwIfInvalidObject(pattern, ['type', 'creator'], false);
-    /* tslint:disable:strict-type-predicates */
-    if (typeof pattern.creator !== 'function') {
-      throw new Error('Creator must be a function');
-    }
-  }
-
+  assertIsPattern(pattern);
   return pattern;
 }
 
-export function validateStrokeWidth(width: number): number {
-  throwIfNotAPositiveNumber(width);
+export function validateStrokeWidth(width: unknown): number {
+  assertIsNumber(width, false, 0);
   return width;
 }
 
-export function validateOptionalScale(scale?: Scale): Scale | undefined {
+export function validateOptionalScale(scale?: unknown): Scale | undefined {
   if (scale === undefined) {
     return undefined;
   }
-  throwIfInvalidObject(scale, ['divisions', 'size'], false);
-  if (!Number.isFinite(scale.size) || scale.size < 0 || scale.size > 1) {
-    throw new Error(`Size must be a number between 0 and 1`);
-  }
-  if (!Number.isInteger(scale.divisions) || scale.divisions < 2) {
-    throw new Error(`Divisions must be an integer greater than 1`);
-  }
+
+  assertIsScale(scale);
   return scale;
 }
 
-export function validateBoolean(value: boolean): boolean {
-  /* tslint:disable:strict-type-predicates */
-  if (typeof value !== 'boolean') {
-    throw new Error(`Invalid boolean`);
-  }
+export function validateBoolean(value: unknown): boolean {
+  assertIsBoolean(value);
   return value;
 }
-
-function throwIfInvalidColor(color: string) {
-  try {
-    parseToRgba(color);
-  } catch (err: unknown) {
-    if (err instanceof ColorError) {
-      throw err;
-    }
-    throw new Error('Invalid color');
-  }
-}
-
-function throwIfInvalidObject(obj: any, keys: string[], hasOptionalKeys: boolean) {
-  if (typeof obj !== 'object' || obj === null) {
-    throw new Error(`Invalid object`);
-  }
-
-  const objKeys = Object.keys(obj);
-
-  const isValidLength = hasOptionalKeys
-    ? objKeys.length >= keys.length
-    : objKeys.length === keys.length;
-
-  if (!isValidLength) {
-    throw new Error(`Invalid object`);
-  }
-
-  if (!keys.every((k) => Object.prototype.hasOwnProperty.call(obj, k))) {
-    throw new Error(`Invalid object`);
-  }
-}
-
-function throwIfNotAString(value: any) {
-  if (typeof value !== 'string') {
-    throw new Error(`Invalid string`);
-  }
-}
-
-function throwIfNotAPositiveNumber(value: any) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`Invalid number`);
-  }
-}
-
 
 function assertIsNumber(value: unknown, mustBeInteger: boolean, min?: number, max?: number): asserts value is number {
   if (mustBeInteger) {
@@ -151,13 +65,113 @@ function assertIsNumber(value: unknown, mustBeInteger: boolean, min?: number, ma
   const numericValue = value as number;
   if (min !== undefined) {
     if (numericValue < min) {
-      throw new Error(`Number must be greater than ${min}`);
+      throw new Error(`Number must be greater than or equal to ${min}`);
     }
   }
 
   if (max !== undefined) {
     if (numericValue > max) {
-      throw new Error(`Number must be less than ${max}`);
+      throw new Error(`Number must be less than or equal to ${max}`);
     }
   }
+}
+
+function assertIsObject(value: unknown): asserts value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("Not an object");
+  }
+}
+
+function assertIsBoolean(value: unknown): asserts value is boolean {
+  if (typeof value !== "boolean") {
+    throw new Error("Expected a boolean");
+  }
+}
+
+function assertIsFunction(
+  value: unknown
+): asserts value is (...args: unknown[]) => unknown {
+  if (typeof value !== "function") {
+    throw new Error("Expected a function");
+  }
+}
+
+function assertKeys<
+  K extends readonly string[]
+>(
+  value: unknown,
+  keys: K,
+  strict: boolean
+): asserts value is Record<K[number], unknown> {
+  assertIsObject(value);
+
+  const valueKeys = Object.keys(value);
+
+  const isValidLength = (!strict)
+    ? valueKeys.length >= keys.length
+    : valueKeys.length === keys.length;
+
+  if (!isValidLength) {
+    throw new Error(`Invalid object`);
+  }
+
+  if (!keys.every((k) => Object.prototype.hasOwnProperty.call(value, k))) {
+    throw new Error(`Invalid object`);
+  }
+}
+
+function assertIsString(value: unknown): asserts value is string {
+  if (typeof value !== "string") {
+    throw new Error("Not a string");
+  }
+}
+
+function assertIsColor(value: unknown): asserts value is string {
+  assertIsString(value);
+  try {
+    parseToRgba(value);
+  } catch (err: unknown) {
+    if (err instanceof ColorError) {
+      throw err;
+    }
+    throw new Error('Invalid color');
+  }
+}
+
+function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
+  assertIsObject(value);
+  assertKeys(value, ["fill", "stroke"], false);
+  assertIsColor(value.fill);
+  assertIsColor(value.stroke);
+
+  if ("contrast" in value) {
+    assertKeys(value, ["fill", "stroke", "contrast"], true);
+    assertIsNumber(value.contrast, false, 0, 1);
+  } else {
+    assertKeys(value, ["fill", "stroke", "lighter", "darker"], true);
+    assertIsColor(value.lighter);
+    assertIsColor(value.darker);
+  }
+}
+
+function assertIsPattern(value: unknown): asserts value is Pattern {
+  assertIsObject(value);
+  assertKeys(value, ["type"], false);
+
+  if (value.type === "predefined") {
+    assertKeys(value, ["type", "name", "size", "alpha"], true);
+    assertIsString(value.name);
+    assertIsNumber(value.size, false, 0);
+    assertIsNumber(value.alpha, false, 0, 1);
+  } else {
+    assertKeys(value, ["type", "creator"], true);
+    assertIsFunction(value.creator);
+  }
+}
+
+function assertIsScale(value: unknown): asserts value is Scale {
+  assertIsObject(value);
+  assertKeys(value, ["divisions", "size"], true);
+  assertIsNumber(value.divisions, true, 2);
+  assertIsNumber(value.size, false, 0, 1);
 }
