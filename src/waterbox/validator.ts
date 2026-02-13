@@ -1,11 +1,11 @@
 import { ColorScheme, Pattern, Scale } from './options';
 import { parseToRgba, ColorError } from 'color2k';
 
-export function validateDimension(dimension: number): number {
-  if (!Number.isInteger(dimension) || dimension <= 0) {
+export function validateDimension(dimension: unknown): number {
+  /*if (!Number.isInteger(dimension) || dimension <= 0) {
     throw new Error(`Dimension must be a positive integer`);
-  }
-  return dimension;
+  }*/
+  return dimension as number;
 }
 
 export function validateValue(value: number): number {
@@ -133,5 +133,31 @@ function throwIfNotAString(value: any) {
 function throwIfNotAPositiveNumber(value: any) {
   if (!Number.isFinite(value) || value <= 0) {
     throw new Error(`Invalid number`);
+  }
+}
+
+
+function assertIsNumber(value: unknown, mustBeInteger: boolean, min?: number, max?: number): asserts value is number {
+  if (mustBeInteger) {
+    if (!Number.isInteger(value)) {
+      throw new Error("Not an integer");
+    }
+  } else {
+    if (!Number.isFinite(value)) {
+      throw new Error("Not a number");
+    }
+  }
+
+  const numericValue = value as number;
+  if (min !== undefined) {
+    if (numericValue < min) {
+      throw new Error(`Number must be greater than ${min}`);
+    }
+  }
+
+  if (max !== undefined) {
+    if (numericValue > max) {
+      throw new Error(`Number must be less than ${max}`);
+    }
   }
 }
