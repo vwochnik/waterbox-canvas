@@ -1,4 +1,3 @@
-import { colord } from 'colord';
 import { createWaterbox, Waterbox } from '../src/waterbox';
 import { defaultOptions, Pattern } from '../src/waterbox/options';
 
@@ -25,9 +24,7 @@ describe('Waterbox', () => {
       waterbox.width(0);
       throw new Error('should have thrown');
     } catch (e: unknown) {
-      expect((e as Error).message).toEqual(
-        'Invalid width: Invalid dimension: 0. Dimension must be a positive integer.',
-      );
+      expect((e as Error).message).toEqual('Invalid width: Dimension must be a positive integer');
     }
   });
 
@@ -54,7 +51,7 @@ describe('Waterbox', () => {
       waterbox.waterPattern(pattern);
       throw new Error('should have thrown');
     } catch (e: unknown) {
-      expect((e as Error).message).toEqual('Invalid waterPattern: Invalid number: -1. Number must be positive.');
+      expect((e as Error).message).toEqual('Invalid waterPattern: Invalid number');
     }
   });
 

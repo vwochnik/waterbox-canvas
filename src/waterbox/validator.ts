@@ -1,34 +1,38 @@
 import { ColorScheme, Pattern, Scale } from './options';
-import { parseToRgba, ColorError } from "color2k";
+import { parseToRgba, ColorError } from 'color2k';
 
 export function validateDimension(dimension: number): number {
   if (!Number.isInteger(dimension) || dimension <= 0) {
-    throw new Error(`Invalid dimension: ${dimension}. Dimension must be a positive integer.`);
+    throw new Error(`Dimension must be a positive integer`);
   }
   return dimension;
 }
 
 export function validateValue(value: number): number {
   if (!Number.isInteger(value) || value < 0 || value > 100) {
-    throw new Error(`Invalid value: ${value}. Value must be a valid integer between 0 and 100.`);
+    throw new Error(`Value must be a valid integer between 0 and 100.`);
   }
   return value;
 }
 
 export function validateColorScheme(colorScheme: ColorScheme): ColorScheme {
-  throwIfInvalidObject(colorScheme, ['fill', 'stroke'], true, 'colorScheme');
+  throwIfInvalidObject(colorScheme, ['fill', 'stroke'], true);
 
   throwIfInvalidColor(colorScheme.fill);
   throwIfInvalidColor(colorScheme.stroke);
-  if ("contrast" in colorScheme) {
-    if (!Number.isFinite(colorScheme.contrast) || colorScheme.contrast < 0 || colorScheme.contrast > 1) {
-      throw new Error(`Invalid contrast: ${colorScheme.contrast}. Number must be between 0 and 1.`);
+  if ('contrast' in colorScheme) {
+    throwIfInvalidObject(colorScheme, ['fill', 'stroke', 'contrast'], false);
+    if (
+      !Number.isFinite(colorScheme.contrast) ||
+      colorScheme.contrast < 0 ||
+      colorScheme.contrast > 1
+    ) {
+      throw new Error(`Contrast must be between 0 and 1`);
     }
-  } else if ("lighter" in colorScheme && "darker" in colorScheme) {
+  } else /*if ("lighter" in colorScheme && "darker" in colorScheme)*/ {
+    throwIfInvalidObject(colorScheme, ['fill', 'stroke', 'lighter', 'darker'], false);
     throwIfInvalidColor(colorScheme.lighter);
     throwIfInvalidColor(colorScheme.darker);
-  } else {
-    throw new Error("Invalid color scheme");
   }
 
   return colorScheme;
@@ -46,16 +50,16 @@ export function validateOptionalPattern(pattern?: Pattern): Pattern | undefined 
     return undefined;
   }
 
-  throwIfInvalidObject(pattern, ['type'], true, 'pattern');
+  throwIfInvalidObject(pattern, ['type'], true);
   if (pattern.type === 'predefined') {
-    throwIfInvalidObject(pattern, ['type', 'name', 'size', 'alpha'], false, 'pattern');
+    throwIfInvalidObject(pattern, ['type', 'name', 'size', 'alpha'], false);
     throwIfNotAString(pattern.name);
     ['size', 'alpha'].forEach((key) => throwIfNotAPositiveNumber(pattern[key as keyof Pattern]));
   } else if (pattern.type === 'custom') {
-    throwIfInvalidObject(pattern, ['type', 'creator'], false, 'pattern');
+    throwIfInvalidObject(pattern, ['type', 'creator'], false);
     /* tslint:disable:strict-type-predicates */
     if (typeof pattern.creator !== 'function') {
-      throw new Error('Invalid pattern creator. Creator must be a function.');
+      throw new Error('Creator must be a function');
     }
   }
 
@@ -71,12 +75,12 @@ export function validateOptionalScale(scale?: Scale): Scale | undefined {
   if (scale === undefined) {
     return undefined;
   }
-  throwIfInvalidObject(scale, ['divisions', 'size'], false, 'scale');
+  throwIfInvalidObject(scale, ['divisions', 'size'], false);
   if (!Number.isFinite(scale.size) || scale.size < 0 || scale.size > 1) {
-    throw new Error(`Invalid scale. Size must be a number between 0 and 1.`);
+    throw new Error(`Size must be a number between 0 and 1`);
   }
   if (!Number.isInteger(scale.divisions) || scale.divisions < 2) {
-    throw new Error(`Invalid scale. Divisions must be an integer greater than 1.`);
+    throw new Error(`Divisions must be an integer greater than 1`);
   }
   return scale;
 }
@@ -84,7 +88,7 @@ export function validateOptionalScale(scale?: Scale): Scale | undefined {
 export function validateBoolean(value: boolean): boolean {
   /* tslint:disable:strict-type-predicates */
   if (typeof value !== 'boolean') {
-    throw new Error(`Invalid boolean value: ${value}.`);
+    throw new Error(`Invalid boolean`);
   }
   return value;
 }
@@ -96,13 +100,13 @@ function throwIfInvalidColor(color: string) {
     if (err instanceof ColorError) {
       throw err;
     }
-    throw new Error("Invalid color");
+    throw new Error('Invalid color');
   }
 }
 
-function throwIfInvalidObject(obj: any, keys: string[], hasOptionalKeys: boolean, objName: string) {
+function throwIfInvalidObject(obj: any, keys: string[], hasOptionalKeys: boolean) {
   if (typeof obj !== 'object' || obj === null) {
-    throw new Error(`Invalid ${objName} object.`);
+    throw new Error(`Invalid object`);
   }
 
   const objKeys = Object.keys(obj);
@@ -112,28 +116,22 @@ function throwIfInvalidObject(obj: any, keys: string[], hasOptionalKeys: boolean
     : objKeys.length === keys.length;
 
   if (!isValidLength) {
-    throw new Error(`Invalid ${objName} object.`);
+    throw new Error(`Invalid object`);
   }
 
   if (!keys.every((k) => Object.prototype.hasOwnProperty.call(obj, k))) {
-    throw new Error(`Invalid ${objName} object.`);
+    throw new Error(`Invalid object`);
   }
 }
 
 function throwIfNotAString(value: any) {
   if (typeof value !== 'string') {
-    throw new Error(`Invalid string value: ${value}. Value must be a string.`);
+    throw new Error(`Invalid string`);
   }
 }
 
 function throwIfNotAPositiveNumber(value: any) {
   if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`Invalid number: ${value}. Number must be positive.`);
-  }
-}
-
-function throwIfNotAPositiveInteger(value: any) {
-  if (!Number.isInteger(value) || value <= 0) {
-    throw new Error(`Invalid number: ${value}. Number must be a positive integer.`);
+    throw new Error(`Invalid number`);
   }
 }

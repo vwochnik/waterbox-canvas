@@ -90,7 +90,7 @@ describe('util', () => {
         inst.num(undefined as unknown as number);
         throw new Error('should have thrown');
       } catch (e: unknown) {
-        expect((e as Error).message).toEqual('Invalid num: Required option cannot be undefined.');
+        expect((e as Error).message).toEqual('Invalid num: Required option cannot be undefined');
       }
     });
 

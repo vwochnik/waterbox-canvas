@@ -1,4 +1,4 @@
-import { darken, lighten, parseToRgba } from "color2k";
+import { darken, lighten, parseToRgba } from 'color2k';
 import { ColorScheme, Options } from './options';
 
 type Size = {
@@ -22,8 +22,7 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, clipEdges, scale } =
-    options;
+  const { width, height, value, strokeWidth, clipEdges, scale } = options;
 
   const backColor = getColors(options.backColorScheme);
   const waterColor = getColors(options.waterColorScheme);
@@ -40,9 +39,19 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const bottomRhombusRect: Rectangle = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
+  const bottomRhombusRect: Rectangle = {
+    x: rect.x,
+    y: rect.y + rect.h - size.h,
+    w: size.w,
+    h: size.h,
+  };
   const leftBackWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-  const rightBackWallRect: Rectangle = { x: rect.x + rect.w / 2, y: rect.y, w: size.w / 2, h: rect.h };
+  const rightBackWallRect: Rectangle = {
+    x: rect.x + rect.w / 2,
+    y: rect.y,
+    w: size.w / 2,
+    h: rect.h,
+  };
 
   const scaleRects = scale
     ? makeSteps(scale.divisions).map(
@@ -341,7 +350,7 @@ function getColors(colorScheme: ColorScheme): {
   lighter: string;
   darker: string;
 } {
-  if ("contrast" in colorScheme) {
+  if ('contrast' in colorScheme) {
     return {
       fill: darken(colorScheme.fill, 0),
       stroke: darken(colorScheme.stroke, 0),

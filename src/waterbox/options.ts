@@ -27,7 +27,7 @@ export type StaticColorScheme = BaseColorScheme & {
 
 export type DynamicColorScheme = BaseColorScheme & {
   contrast: number;
-}
+};
 
 export type ColorScheme = StaticColorScheme | DynamicColorScheme;
 
