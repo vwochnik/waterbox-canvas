@@ -44,7 +44,6 @@ options:
   description: Get or set the pattern drawn on top of the backside of the waterbox.
   example: |
     waterbox.backPattern({
-      type: "predefined",
       name: "grid",
       size: 15,
       alpha: 1.0
@@ -55,7 +54,6 @@ options:
   description: Get or set the pattern drawn on top of the water.
   example: |
     waterbox.waterPattern({
-      type: "custom",
       creator: (ctx) => {
         // render pattern
         return ctx.createPattern(patternCanvas, 'repeat');
