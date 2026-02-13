@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>waterbox-canvas</title>
+  <style type="text/css">
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+.title {
+  padding: 1.5rem 0.5rem;
+  background: #4A90E2;
+  color: #f8f8f8;
+  text-align: center;
+}
+.title > h1 {
+  margin: 0;
+}
+.readme {
+    word-wrap: break-word;
+    color: #1f2328;
+    background-color: #ffffff;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 45px;
+}
+
+/* Headers */
+.readme h1, .readme h2 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #d8dee4;
+}
+
+.readme h1 { font-size: 2em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
+.readme h2 { font-size: 1.5em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
+.readme h3 { font-size: 1.25em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
+
+/* Links */
+.readme a {
+    color: #0969da;
+    text-decoration: none;
+}
+
+.readme a:hover {
+    text-decoration: underline;
+}
+
+/* Lists and Paragraphs */
+.readme p, .readme ul, .readme ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* Blockquotes */
+.readme blockquote {
+    padding: 0 1em;
+    color: #636c76;
+    border-left: 0.25em solid #d0d7de;
+    margin: 0 0 16px 0;
+}
+
+/* Code Blocks & Inline Code */
+.readme code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    white-space: break-spaces;
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+.readme pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.readme pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Tables */
+.readme table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.readme table th, .readme table td {
+    padding: 6px 13px;
+    border: 1px solid #d0d7de;
+}
+
+.readme table tr {
+    background-color: #ffffff;
+    border-top: 1px solid #d8dee4;
+}
+
+.readme table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+
+/* Horizontal Rule */
+.readme hr {
+    height: 0.25em;
+    padding: 0;
+    margin: 24px 0;
+    background-color: #d8dee4;
+    border: 0;
+}
+.demo {
+  position: relative;
+  background: #efefef;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 48px;
+}
+.demo-mode-switch {
+  position: absolute;
+  right: 3rem;
+  top: 3rem;
+  color: #101010;
+}
+.demo-mode-switch > svg {
+  width: 3rem;
+  height: 3rem;
+}
+.demo.dark {
+  background: #101010;
+}
+.demo.dark .demo-mode-switch {
+  color: #efefef;
+}
+</style>
+</head>
+<body>
+  <div class="title">
+    <h1>waterbox-canvas</h1>
+  </div>
+  <div class="demo">
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+    <canvas id="canvas3"></canvas>
+    <a href="#" class="demo-mode-switch">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M12,20.5 L12,3.5 C16.6944204,3.5 20.5,7.30557963 20.5,12 C20.5,16.6944204 16.6944204,20.5 12,20.5 Z" />
+      </svg>
+    </a>
+  </div>
+  <div class="readme">
+    <blockquote>
+<p>A simple library that renders an isometric water box on a canvas</p>
+</blockquote>
+<p><code>waterbox-canvas</code> is a TypeScript/JavaScript library for rendering a water level visualization on an HTML5 Canvas or OffscreenCanvas.</p>
+<h2>Installation</h2>
+<h3>NPM</h3>
+<pre><code class="language-bash">npm install waterbox-canvas
+</code></pre>
+<h3>Yarn</h3>
+<pre><code class="language-bash">yarn add waterbox-canvas
+</code></pre>
+<h3>PNPM</h3>
+<pre><code class="language-bash">pnpm add waterbox-canvas
+</code></pre>
+<h3>Browser (Direct Include)</h3>
+<p>There is a build specifically for the browser:</p>
+<pre><code class="language-html">&lt;script src=&quot;dist/waterbox-canvas.browser.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<h2>Basic Usage</h2>
+<p>Create a canvas element:</p>
+<pre><code class="language-html">&lt;canvas id=&quot;my-canvas&quot;&gt;&lt;/canvas&gt;
+</code></pre>
+<p>Create Waterbox:</p>
+<pre><code class="language-typescript">import { createWaterbox } from &#39;waterbox-canvas&#39;;
+
+const canvas = document.getElementById(&#39;my-canvas&#39;) as HTMLCanvasElement;
+
+// Create a waterbox instance
+const waterbox = createWaterbox(canvas)
+  .width(80)
+  .height(120);
+
+// Set the water level (0-100)
+waterbox.value(50);
+
+// Render the waterbox
+waterbox.render();
+</code></pre>
+<h2>Example</h2>
+<pre><code class="language-typescript">import { createWaterbox } from &#39;waterbox-canvas&#39;;
+
+// Initialize waterbox
+const canvas = document.getElementById(&#39;waterbox&#39;) as HTMLCanvasElement;
+
+const waterbox = createWaterbox(canvas)
+  .width(80)
+  .height(120)
+  .divisions(5)
+  .strokeWidth(1.5)
+  .waterColorScheme({
+    fill: &#39;rgba(33, 150, 243, 0.8)&#39;,
+    stroke: &#39;rgba(25, 118, 210, 0.8)&#39;,
+    lighter: &#39;rgba(66, 165, 245, 0.8)&#39;,
+    darker: &#39;rgba(13, 71, 161, 0.8)&#39;
+  })
+  .value(20)
+  .render();
+</code></pre>
+<h2>API Reference</h2>
+<h3><code>createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Waterbox</code></h3>
+<p>Creates a new waterbox instance for the given canvas.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>canvas</code> - The HTML canvas or OffscreenCanvas element to render to</li>
+</ul>
+<p><strong>Returns:</strong> A Waterbox instance</p>
+<h3><code>Waterbox</code> properties</h3>
+<h4><code>width</code></h4>
+<ul>
+<li><code>width(): number</code></li>
+<li><code>width(value: number): Waterbox</code></li>
+</ul>
+<p>Get or set the width of the canvas.</p>
+<h4><code>height</code></h4>
+<ul>
+<li><code>height(): number</code></li>
+<li><code>height(value: number): Waterbox</code></li>
+</ul>
+<p>Get or set the height of the canvas.</p>
+<h4><code>value</code></h4>
+<ul>
+<li><code>value(): number</code></li>
+<li><code>value(value: number): Waterbox</code></li>
+</ul>
+<p>Get or set the water fill level.</p>
+<h4><code>backColorScheme</code></h4>
+<ul>
+<li><code>backColorScheme(): ColorScheme</code></li>
+<li><code>backColorScheme(value: ColorScheme): Waterbox</code></li>
+</ul>
+<p>Get or set the color scheme of the backside of the rendered waterbox.</p>
+<h5>Example</h5>
+<pre><code>waterbox.backColorScheme({
+  fill: &#39;rgba(80, 80, 111, 1)&#39;,
+  stroke: &#39;rgba(80, 80, 111, 1)&#39;,
+  contrast: 0.1
+});
+</code></pre>
+<h4><code>waterColorScheme</code></h4>
+<ul>
+<li><code>waterColorScheme(): ColorScheme</code></li>
+<li><code>waterColorScheme(value: ColorScheme): Waterbox</code></li>
+</ul>
+<p>Get or set the color scheme of the water rendered inside the waterbox.</p>
+<h5>Example</h5>
+<pre><code>waterbox.waterColorScheme({
+  fill: &#39;rgba(58, 123, 213, 0.9)&#39;,
+  stroke: &#39;rgba(42, 92, 160, 0.9)&#39;,
+  lighter: &#39;rgba(90, 149, 224, 0.9)&#39;,
+  darker: &#39;rgba(43, 95, 168, 0.9)&#39;,
+});
+</code></pre>
+<h4><code>frontColorScheme</code></h4>
+<ul>
+<li><code>frontColorScheme(): ColorScheme | undefined</code></li>
+<li><code>frontColorScheme(value?: ColorScheme): Waterbox</code></li>
+</ul>
+<p>Get or set the color scheme of the front of the rendered waterbox.</p>
+<h4><code>backPattern</code></h4>
+<ul>
+<li><code>backPattern(): Pattern | undefined</code></li>
+<li><code>backPattern(value?: Pattern): Waterbox</code></li>
+</ul>
+<p>Get or set the pattern drawn on top of the backside of the waterbox.</p>
+<h5>Example</h5>
+<pre><code>waterbox.backPattern({
+  name: &quot;grid&quot;,
+  size: 15,
+  alpha: 1.0
+});
+</code></pre>
+<h4><code>waterPattern</code></h4>
+<ul>
+<li><code>waterPattern(): Pattern | undefined</code></li>
+<li><code>waterPattern(value?: Pattern): Waterbox</code></li>
+</ul>
+<p>Get or set the pattern drawn on top of the water.</p>
+<h5>Example</h5>
+<pre><code>waterbox.waterPattern({
+  creator: (ctx) =&gt; {
+    // render pattern
+    return ctx.createPattern(patternCanvas, &#39;repeat&#39;);
+  } 
+});
+</code></pre>
+<h4><code>frontPattern</code></h4>
+<ul>
+<li><code>frontPattern(): Pattern | undefined</code></li>
+<li><code>frontPattern(value?: Pattern): Waterbox</code></li>
+</ul>
+<p>Get or set the pattern drawn on top of the front of the waterbox.</p>
+<h4><code>strokeWidth</code></h4>
+<ul>
+<li><code>strokeWidth(): number</code></li>
+<li><code>strokeWidth(value: number): Waterbox</code></li>
+</ul>
+<p>Get or set the stroke width in pixels.</p>
+<h4><code>scale</code></h4>
+<ul>
+<li><code>scale(): Scale | undefined</code></li>
+<li><code>scale(value?: Scale): Waterbox</code></li>
+</ul>
+<p>Get or set the scale drawn at the backside of the waterbox.</p>
+<h5>Example</h5>
+<pre><code>waterbox.scale({
+  size: 0.2,
+  divisions: 5,
+});
+</code></pre>
+<h4><code>clipEdges</code></h4>
+<ul>
+<li><code>clipEdges(): boolean</code></li>
+<li><code>clipEdges(value: boolean): Waterbox</code></li>
+</ul>
+<p>Get or set whether edges are clipped from the drawn waterbox. If edges are clipped, they appear as transparent.</p>
+<h4><code>options</code></h4>
+<ul>
+<li><code>options(): Options</code></li>
+<li><code>options(value: Partial&lt;Options&gt;): Waterbox</code></li>
+</ul>
+<p>Get or set multiple options at once.</p>
+<h2>License</h2>
+<p>MIT</p>
+
+  </div>
+  <script type="text/javascript">
+    document.querySelector('.demo-mode-switch')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelector('.demo').classList.toggle('dark');
+      });
+  </script>
+  <script src="waterbox-canvas.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    const canvas1 = document.getElementById('canvas1');
+    const canvas2 = document.getElementById('canvas2');
+    const canvas3 = document.getElementById('canvas3');
+    let value = 0;
+    const interval = 1000 / 15;
+    let lastTime = 0;
+
+    const waterbox1 = Waterbox.createWaterbox(canvas1)
+      .backColorScheme({
+        fill: "rgba(127,127,127,0.3)",
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
+      })
+      .waterColorScheme({
+        fill: 'rgba(92, 198, 238, 0.7)',
+        stroke: 'rgba(0,0,0,0.2)',
+        contrast: 0.15,
+      })
+      .frontColorScheme({
+        fill: 'rgba(0,0,0,0.0)',
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
+      })
+      .scale({
+        divisions: 10,
+        size: 0.1,
+      });
+
+    loadWaterImage(waterbox1);
+
+    const waterbox2 = Waterbox.createWaterbox(canvas2)
+      .backColorScheme({
+        fill: 'rgba(80, 80, 111, 1)',
+        lighter: 'rgba(80, 80, 111, 1)',
+        darker: 'rgba(80, 80, 111, 1)',
+        stroke: 'rgba(80, 80, 111, 1)',
+      })
+      .waterColorScheme({
+        fill: 'rgba(176, 68, 188, 0.6)',
+        lighter: 'rgba(176, 68, 188, 0.6)',
+        darker: 'rgba(176, 68, 188, 0.6)',
+        stroke: 'rgba(176, 68, 188, 0.6)',
+      })
+      .waterPattern({
+        name: "grid",
+        size: 15,
+        alpha: 1.0
+      })
+      .scale({
+        size: 0.2,
+        divisions: 5,
+      })
+      .strokeWidth(3)
+      .clipEdges(true);
+
+    const waterbox3 = Waterbox.createWaterbox(canvas3)
+      .backColorScheme({
+        fill: 'rgba(80, 80, 111, 1)',
+        stroke: 'rgba(80, 80, 111, 1)',
+        contrast: 0.1,
+      })
+      .waterPattern({
+        name: "blocky",
+        size: 15,
+        alpha: 0.4,
+      })
+      .clipEdges(true);
+
+    requestAnimationFrame(loop);
+
+    function loop(currentTime) {
+      requestAnimationFrame(loop);
+
+      const delta = currentTime - lastTime;
+      if (delta >= interval) {
+        lastTime = currentTime - (delta % interval);
+
+        update();
+      }
+    }
+
+    function update() {
+      waterbox1.value(value).render();
+      waterbox2.value((value + 15) % 100).render();
+      waterbox3
+        .value((value + 70) % 100)
+        .waterColorScheme({
+          fill: `hsla(${3.6 * value}, 47%, 50%, 0.8)`,
+          stroke: `hsla(${3.6 * value}, 47%, 30%, 0.8)`,
+          contrast: 0.15,
+        })
+        .render();
+      value = (value + 1) % 100;
+    }
+
+    function loadWaterImage(waterbox) {
+      const img = new Image();
+      img.onload = function() {
+        const imgCanvas = new OffscreenCanvas(img.width, img.height);
+        imgCtx = imgCanvas.getContext("2d");
+        imgCtx.globalAlpha = 0.5;
+        imgCtx.drawImage(img, 0, 0);
+        waterbox1.waterPattern({
+          creator: function(ctx) {
+            const pattern = ctx.createPattern(imgCanvas, 'repeat');
+            const matrix = new DOMMatrix();
+            matrix.scaleSelf(0.25, 0.25);
+            pattern.setTransform(matrix);
+            return pattern;
+          }
+        });
+      };
+      img.src = "water.png";
+    }
+  </script>
+  <a href="https://github.com/vwochnik/waterbox-canvas" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</body>
+</html>
