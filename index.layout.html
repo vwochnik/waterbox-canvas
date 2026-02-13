@@ -260,9 +260,8 @@ body {
         .value((value + 70) % 100)
         .waterColorScheme({
           fill: `hsla(${3.6 * value}, 47%, 50%, 0.8)`,
-          lighter: `hsla(${3.6 * value}, 47%, 55%, 0.8)`,
-          darker: `hsla(${3.6 * value}, 47%, 45%, 0.8)`,
           stroke: `hsla(${3.6 * value}, 47%, 30%, 0.8)`,
+          contrast: 0.15,
         })
         .render();
       value = (value + 1) % 100;

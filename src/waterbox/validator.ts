@@ -1,5 +1,5 @@
 import { ColorScheme, Pattern, Scale } from './options';
-import { colord } from 'colord';
+import { parseToRgba, ColorError } from "color2k";
 
 export function validateDimension(dimension: number): number {
   if (!Number.isInteger(dimension) || dimension <= 0) {
@@ -90,8 +90,13 @@ export function validateBoolean(value: boolean): boolean {
 }
 
 function throwIfInvalidColor(color: string) {
-  if (!colord(color).isValid()) {
-    throw new Error(`Invalid color: ${color}. Color must be a valid CSS color.`);
+  try {
+    parseToRgba(color);
+  } catch (err: unknown) {
+    if (err instanceof ColorError) {
+      throw err;
+    }
+    throw new Error("Invalid color");
   }
 }
 

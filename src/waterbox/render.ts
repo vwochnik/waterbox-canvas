@@ -1,4 +1,4 @@
-import { colord } from 'colord';
+import { darken, lighten, parseToRgba } from "color2k";
 import { ColorScheme, Options } from './options';
 
 type Size = {
@@ -247,7 +247,7 @@ function paintEdges(
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
 
-  const tempStrokeColor = clipEdges ? `rgba(0,0,0,${colord(strokeColor).alpha()})` : strokeColor;
+  const tempStrokeColor = clipEdges ? `rgba(0,0,0,${getAlphaFromColor(strokeColor)})` : strokeColor;
 
   pathFunctions.forEach((pathFunction, idx) => {
     tmp.save();
@@ -343,11 +343,15 @@ function getColors(colorScheme: ColorScheme): {
 } {
   if ("contrast" in colorScheme) {
     return {
-      fill: colorScheme.fill,
-      stroke: colorScheme.stroke,
-      lighter: colord(colorScheme.fill).lighten(colorScheme.contrast).toRgbString(),
-      darker: colord(colorScheme.fill).darken(colorScheme.contrast).toRgbString(),
+      fill: darken(colorScheme.fill, 0),
+      stroke: darken(colorScheme.stroke, 0),
+      lighter: lighten(colorScheme.fill, colorScheme.contrast),
+      darker: darken(colorScheme.fill, colorScheme.contrast),
     };
   }
   return { ...colorScheme };
+}
+
+function getAlphaFromColor(color: string): number {
+  return parseToRgba(color)[3];
 }

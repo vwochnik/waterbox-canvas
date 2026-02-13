@@ -81,7 +81,7 @@ const waterbox = createWaterbox(canvas)
   .height(120)
   .divisions(5)
   .strokeWidth(1.5)
-  .waterbox.waterColor({
+  .waterColorScheme({
     fill: 'rgba(33, 150, 243, 0.8)',
     stroke: 'rgba(25, 118, 210, 0.8)',
     lighter: 'rgba(66, 165, 245, 0.8)',
@@ -125,31 +125,32 @@ Get or set the height of the canvas.
 
 Get or set the water fill level.
 
-#### `backColor`
+#### `backColorScheme`
 
-* `backColor(): Color`
-* `backColor(value: Color): Waterbox`
+* `backColorScheme(): ColorScheme`
+* `backColorScheme(value: ColorScheme): Waterbox`
 
-Get or set the color of the backside of the rendered waterbox.
+Get or set the color scheme of the backside of the rendered waterbox.
 
 ##### Example
 ```
-waterbox.backColor({
+waterbox.backColorScheme({
   fill: 'rgba(80, 80, 111, 1)',
   stroke: 'rgba(80, 80, 111, 1)',
+  contrast: 0.1
 });
 ```
 
-#### `waterColor`
+#### `waterColorScheme`
 
-* `waterColor(): Color`
-* `waterColor(value: Color): Waterbox`
+* `waterColorScheme(): ColorScheme`
+* `waterColorScheme(value: ColorScheme): Waterbox`
 
-Get or set the color of the water rendered inside the waterbox.
+Get or set the color scheme of the water rendered inside the waterbox.
 
 ##### Example
 ```
-waterbox.waterColor({
+waterbox.waterColorScheme({
   fill: 'rgba(58, 123, 213, 0.9)',
   stroke: 'rgba(42, 92, 160, 0.9)',
   lighter: 'rgba(90, 149, 224, 0.9)',
@@ -157,12 +158,12 @@ waterbox.waterColor({
 });
 ```
 
-#### `frontColor`
+#### `frontColorScheme`
 
-* `frontColor(): Color | undefined`
-* `frontColor(value?: Color): Waterbox`
+* `frontColorScheme(): ColorScheme | undefined`
+* `frontColorScheme(value?: ColorScheme): Waterbox`
 
-Get or set the color of the front of the rendered waterbox.
+Get or set the color scheme of the front of the rendered waterbox.
 
 #### `backPattern`
 
