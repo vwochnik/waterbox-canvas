@@ -21,7 +21,7 @@ export default {
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],
   watch: {
-    include: ['src/**', 'usage.md', 'index.layout.html'],
+    include: ['src/**', 'usage.md', 'template/**'],
   },
   plugins: [
     // Allow json resolution
@@ -57,7 +57,7 @@ export default {
 
     renderLayout({
       source: "usage.md",
-      layout: "index.layout.html",
+      layout: "template/index.html",
       html: true,
       output: "dist/public/index.html",
     }),

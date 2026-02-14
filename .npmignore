@@ -1,5 +1,6 @@
 src/
 test/
+template/
 build/
 dist/public/
 docs/
