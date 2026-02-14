@@ -17,7 +17,7 @@ import { render as renderWaterbox } from './render';
  * Main waterbox type
  */
 export interface Waterbox extends OptionAccessors<Options, Waterbox> {
-  render(): void;
+  render(): Waterbox;
 }
 
 export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Waterbox {
@@ -62,7 +62,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     }
   }
 
-  function render() {
+  const instance = {} as Waterbox;
+
+  instance.render = function(): Waterbox {
     renderWaterbox(
       options,
       canvasContext,
@@ -72,9 +74,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       waterPattern,
       frontPattern,
     );
-  }
 
-  const instance = { render } as Waterbox;
+    return instance;
+  }
 
   return createOptionAccessors(instance, optionsWithOptionality, defaultOptions, update, {
     width: validateDimension,
