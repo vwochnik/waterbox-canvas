@@ -27,6 +27,7 @@ export function render(
   const backColor = getColors(options.backColorScheme);
   const waterColor = getColors(options.waterColorScheme);
   const frontColor = options.frontColorScheme ? getColors(options.frontColorScheme) : undefined;
+  const scalePosition = options.scale?.position ?? 'back';
 
   const actualWidth = Math.min(width, height),
     rect: Rectangle = {
@@ -39,45 +40,22 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const bottomRhombusRect: Rectangle = {
-    x: rect.x,
-    y: rect.y + rect.h - size.h,
-    w: size.w,
-    h: size.h,
-  };
-  const leftBackWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-  const rightBackWallRect: Rectangle = {
-    x: rect.x + rect.w / 2,
-    y: rect.y,
-    w: size.w / 2,
-    h: rect.h,
-  };
-
-  const scaleRects = scale
-    ? makeSteps(scale.divisions).map(
-        (step): Rectangle => ({
-          x: rect.x,
-          y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
-          w: size.w,
-          h: size.h,
-        }),
-      )
-    : [];
-
   paint(
     bufferContext,
     [
       (ctx) => {
-        rhombusPath(ctx, bottomRhombusRect, 'bottom');
+        rhombusPath(ctx, rect, size, 0, 'bottom');
       },
       (ctx) => {
-        wallPath(ctx, leftBackWallRect, size, 0, -size.h / 2, 'back');
+        wallPath(ctx, rect, size, 100, 'left', 'back');
       },
       (ctx) => {
-        wallPath(ctx, rightBackWallRect, size, -size.h / 2, 0, 'back');
+        wallPath(ctx, rect, size, 100, 'right', 'back');
       },
     ],
-    scaleRects.map((rect) => (ctx) => separatorPath(ctx, rect, scale?.size ?? 0)),
+    ((scale && scalePosition === 'back') ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
+      separatorPath(ctx, rect, size, scale?.size ?? 0, step, 'back');
+    }),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
@@ -91,35 +69,17 @@ export function render(
   if (value > 0) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-    const leftFillWallRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w / 2,
-      h: fillHeight,
-    };
-    const rightFillWallRect: Rectangle = {
-      x: rect.x + rect.w / 2,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w / 2,
-      h: fillHeight,
-    };
-    const fillTopRhombusRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w,
-      h: size.h,
-    };
     paint(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFillWallRect, size, 0, size.h / 2, 'front');
+          wallPath(ctx, rect, size, value, 'left', 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFillWallRect, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rect, size, value, 'right', 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, fillTopRhombusRect, 'top');
+          rhombusPath(ctx, rect, size, value, 'top');
         },
       ],
       [],
@@ -139,29 +99,22 @@ export function render(
   }
 
   if (frontColor) {
-    const leftFrontWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-    const rightFrontWallRect: Rectangle = {
-      x: rect.x + rect.w / 2,
-      y: rect.y,
-      w: size.w / 2,
-      h: rect.h,
-    };
-    const topRhombusRect: Rectangle = { x: rect.x, y: rect.y, w: size.w, h: size.h };
-
     paint(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFrontWallRect, size, 0, size.h / 2, 'front');
+          wallPath(ctx, rect, size, 100, 'left', 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFrontWallRect, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rect, size, 100, 'right', 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, topRhombusRect, 'top');
+          rhombusPath(ctx, rect, size, 100, 'top');
         },
       ],
-      [],
+      ((scale && scalePosition === 'front') ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
+        separatorPath(ctx, rect, size, scale?.size ?? 0, step, 'front');
+      }),
       [
         frontColor.darker ?? frontColor.fill,
         frontColor.lighter ?? frontColor.fill,
@@ -280,13 +233,22 @@ function paintEdges(
 function rhombusPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
+  size: Size,
+  value: number,
   position: 'top' | 'bottom',
 ): void {
-  const a = 0.5 * Math.hypot(rect.w, rect.h),
+  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+
+  const x = rect.x;
+  const y = rect.y + rect.h - fillHeight;
+  const w = size.w;
+  const h = size.h;
+
+  const a = 0.5 * Math.hypot(w, h),
     b = Math.sqrt(2 * a * a);
 
-  ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
-  ctx.scale(rect.w / b, rect.h / b);
+  ctx.translate(x + w / 2, y + h / 2);
+  ctx.scale(w / b, h / b);
   ctx.rotate(Math.PI / 4);
 
   ctx.beginPath();
@@ -303,14 +265,20 @@ function wallPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
-  leftOffset: number,
-  rightOffset: number,
+  value: number,
+  position: 'left' | 'right',
   facing: 'back' | 'front',
 ): void {
-  const x = rect.x,
-    y = rect.y + size.h / 2,
-    w = rect.w,
-    h = rect.h - size.h;
+  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+
+  const offset = facing === 'front' ? size.h / 2 : -size.h / 2;
+  const leftOffset = position === 'right' ? offset : 0;
+  const rightOffset = position === 'left' ? offset : 0;
+
+  const x = rect.x + (position === 'right' ? size.w / 2 : 0);
+  const w = size.w / 2;
+  const y = rect.y + rect.h - fillHeight + size.h / 2;
+  const h = fillHeight - size.h;
 
   const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
 
@@ -329,13 +297,34 @@ function wallPath(
 function separatorPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
-  size: number,
+  size: Size,
+  separatorSize: number,
+  value: number,
+  position: 'back' | 'front',
 ): void {
-  const s = size / 2.0;
+  const fillHeight = size.h + (value / 100) * (rect.h - size.h);
+
+  const x = rect.x;
+  const y = rect.y + rect.h - fillHeight;
+
+  const w = size.w;
+  const h = size.h;
+
+  const s = separatorSize * 0.5;
+  const halfW = w * 0.5;
+  const dx = w * s;
+  const dy = h * s;
+
+  const cx = x + halfW;
+
+  const isBack = position === 'back';
+  const tipY = y + (isBack ? 0 : h);
+  const sideY = y + (isBack ? dy : h - dy);
+
   ctx.beginPath();
-  ctx.moveTo(rect.x + rect.w / 2 - rect.w * s, rect.y + rect.h * s);
-  ctx.lineTo(rect.x + rect.w / 2, rect.y);
-  ctx.lineTo(rect.x + rect.w / 2 + rect.w * s, rect.y + rect.h * s);
+  ctx.moveTo(cx - dx, sideY);
+  ctx.lineTo(cx, tipY);
+  ctx.lineTo(cx + dx, sideY);
 }
 
 function makeSteps(divisions: number): number[] {

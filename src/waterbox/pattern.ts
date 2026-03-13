@@ -4,7 +4,7 @@ export function createPattern(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pattern: Pattern,
 ): CanvasPattern {
-  if ("name" in pattern) {
+  if ('name' in pattern) {
     const canvas = createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
     const createdPattern = ctx.createPattern(canvas, 'repeat');
     if (!createdPattern) {

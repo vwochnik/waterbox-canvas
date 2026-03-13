@@ -217,13 +217,14 @@ Get or set the stroke width in pixels.
 * `scale(): Scale | undefined`
 * `scale(value?: Scale): Waterbox`
 
-Get or set the scale drawn at the backside of the waterbox.
+Get or set the scale drawn in the waterbox.
 
 ##### Example
 ```
 waterbox.scale({
   size: 0.2,
   divisions: 5,
+  position: 'back',
 });
 ```
 

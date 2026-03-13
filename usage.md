@@ -70,11 +70,12 @@ options:
 - name: scale
   type: Scale
   optional: true
-  description: Get or set the scale drawn at the backside of the waterbox.
+  description: Get or set the scale drawn in the waterbox.
   example: |
     waterbox.scale({
       size: 0.2,
       divisions: 5,
+      position: 'back',
     });
 - name: clipEdges
   type: boolean
