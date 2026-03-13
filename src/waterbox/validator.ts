@@ -51,14 +51,19 @@ export function validateBoolean(value: unknown): boolean {
   return value;
 }
 
-function assertIsNumber(value: unknown, mustBeInteger: boolean, min?: number, max?: number): asserts value is number {
+function assertIsNumber(
+  value: unknown,
+  mustBeInteger: boolean,
+  min?: number,
+  max?: number,
+): asserts value is number {
   if (mustBeInteger) {
     if (!Number.isInteger(value)) {
-      throw new Error("Not an integer");
+      throw new Error('Not an integer');
     }
   } else {
     if (!Number.isFinite(value)) {
-      throw new Error("Not a number");
+      throw new Error('Not a number');
     }
   }
 
@@ -77,48 +82,46 @@ function assertIsNumber(value: unknown, mustBeInteger: boolean, min?: number, ma
 }
 
 function assertIsObject(value: unknown): asserts value is Record<string, unknown> {
-  if (typeof value !== "object" || value === null) {
-    throw new Error("Not an object");
+  if (typeof value !== 'object' || value === null) {
+    throw new Error('Not an object');
   }
 }
 
 function assertIsBoolean(value: unknown): asserts value is boolean {
-  if (typeof value !== "boolean") {
-    throw new Error("Expected a boolean");
+  if (typeof value !== 'boolean') {
+    throw new Error('Expected a boolean');
   }
 }
 
-function assertIsFunction(
-  value: unknown
-): asserts value is (...args: unknown[]) => unknown {
-  if (typeof value !== "function") {
-    throw new Error("Expected a function");
+function assertIsFunction(value: unknown): asserts value is (...args: unknown[]) => unknown {
+  if (typeof value !== 'function') {
+    throw new Error('Expected a function');
   }
 }
 
 function assertKeys<K extends readonly string[]>(
   value: unknown,
   keys: K,
-  strict: boolean
+  strict: boolean,
 ): asserts value is Record<K[number], unknown> {
   assertIsObject(value);
 
   const valueKeys = Object.keys(value);
 
-  const missingKeys = keys.filter(key => !valueKeys.includes(key));
+  const missingKeys = keys.filter((key) => !valueKeys.includes(key));
   if (missingKeys.length > 0) {
-      throw new Error(`Missing keys: "${missingKeys.join(", ")}"`);
+    throw new Error(`Missing keys: "${missingKeys.join(', ')}"`);
   }
 
   if (strict && valueKeys.length !== keys.length) {
-    const extraKeys = valueKeys.filter(k => !keys.includes(k));
-    throw new Error(`Unexpected keys: ${extraKeys.join(", ")}`);
+    const extraKeys = valueKeys.filter((k) => !keys.includes(k));
+    throw new Error(`Unexpected keys: ${extraKeys.join(', ')}`);
   }
 }
 
 function assertIsString(value: unknown): asserts value is string {
-  if (typeof value !== "string") {
-    throw new Error("Not a string");
+  if (typeof value !== 'string') {
+    throw new Error('Not a string');
   }
 }
 
@@ -136,15 +139,15 @@ function assertIsColor(value: unknown): asserts value is string {
 
 function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
   assertIsObject(value);
-  assertKeys(value, ["fill", "stroke"], false);
+  assertKeys(value, ['fill', 'stroke'], false);
   assertIsColor(value.fill);
   assertIsColor(value.stroke);
 
-  if ("contrast" in value) {
-    assertKeys(value, ["fill", "stroke", "contrast"], true);
+  if ('contrast' in value) {
+    assertKeys(value, ['fill', 'stroke', 'contrast'], true);
     assertIsNumber(value.contrast, false, 0, 1);
   } else {
-    assertKeys(value, ["fill", "stroke", "lighter", "darker"], true);
+    assertKeys(value, ['fill', 'stroke', 'lighter', 'darker'], true);
     assertIsColor(value.lighter);
     assertIsColor(value.darker);
   }
@@ -153,20 +156,20 @@ function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
 function assertIsPattern(value: unknown): asserts value is Pattern {
   assertIsObject(value);
 
-  if ("name" in value) {
-    assertKeys(value, ["name", "size", "alpha"], true);
+  if ('name' in value) {
+    assertKeys(value, ['name', 'size', 'alpha'], true);
     assertIsString(value.name);
     assertIsNumber(value.size, false, 0);
     assertIsNumber(value.alpha, false, 0, 1);
   } else {
-    assertKeys(value, ["creator"], true);
+    assertKeys(value, ['creator'], true);
     assertIsFunction(value.creator);
   }
 }
 
 function assertIsScale(value: unknown): asserts value is Scale {
   assertIsObject(value);
-  assertKeys(value, ["divisions", "size"], true);
+  assertKeys(value, ['divisions', 'size'], true);
   assertIsNumber(value.divisions, true, 2);
   assertIsNumber(value.size, false, 0, 1);
 }
