@@ -52,7 +52,9 @@ export function render(
         wallPath(ctx, rect, size, 100, 'right', 'back');
       },
     ],
-    (scale ? makeSteps(scale.divisions) : []).map(step => (ctx) => { separatorPath(ctx, rect, size, scale?.size ?? 0, step); }),
+    (scale ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
+      separatorPath(ctx, rect, size, scale?.size ?? 0, step);
+    }),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
@@ -233,12 +235,12 @@ function rhombusPath(
   position: 'top' | 'bottom',
 ): void {
   const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
-    const calculatedRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w,
-      h: size.h,
-    };
+  const calculatedRect: Rectangle = {
+    x: rect.x,
+    y: rect.y + rect.h - fillHeight,
+    w: size.w,
+    h: size.h,
+  };
 
   const a = 0.5 * Math.hypot(calculatedRect.w, calculatedRect.h),
     b = Math.sqrt(2 * a * a);
@@ -278,10 +280,9 @@ function wallPath(
     calculatedRect.x += size.w / 2;
   }
 
-  const offset = facing === "front" ? size.h / 2 : -size.h / 2;
+  const offset = facing === 'front' ? size.h / 2 : -size.h / 2;
   const leftOffset = position === 'right' ? offset : 0;
   const rightOffset = position === 'left' ? offset : 0;
-
 
   const x = calculatedRect.x,
     y = calculatedRect.y + size.h / 2,
@@ -307,20 +308,26 @@ function separatorPath(
   rect: Rectangle,
   size: Size,
   size2: number,
-  value: number
+  value: number,
 ): void {
-    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
-    const calculatedRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w,
-      h: size.h,
-    };
+  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+  const calculatedRect: Rectangle = {
+    x: rect.x,
+    y: rect.y + rect.h - fillHeight,
+    w: size.w,
+    h: size.h,
+  };
   const s = size2 / 2.0;
   ctx.beginPath();
-  ctx.moveTo(calculatedRect.x + calculatedRect.w / 2 - calculatedRect.w * s, calculatedRect.y + calculatedRect.h * s);
+  ctx.moveTo(
+    calculatedRect.x + calculatedRect.w / 2 - calculatedRect.w * s,
+    calculatedRect.y + calculatedRect.h * s,
+  );
   ctx.lineTo(calculatedRect.x + calculatedRect.w / 2, calculatedRect.y);
-  ctx.lineTo(calculatedRect.x + calculatedRect.w / 2 + calculatedRect.w * s, calculatedRect.y + calculatedRect.h * s);
+  ctx.lineTo(
+    calculatedRect.x + calculatedRect.w / 2 + calculatedRect.w * s,
+    calculatedRect.y + calculatedRect.h * s,
+  );
 }
 
 function makeSteps(divisions: number): number[] {
