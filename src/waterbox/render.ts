@@ -39,14 +39,6 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const leftBackWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-  const rightBackWallRect: Rectangle = {
-    x: rect.x + rect.w / 2,
-    y: rect.y,
-    w: size.w / 2,
-    h: rect.h,
-  };
-
   const scaleRects = scale
     ? makeSteps(scale.divisions).map(
         (step): Rectangle => ({
@@ -65,10 +57,10 @@ export function render(
         rhombusPath(ctx, rect, size, 0, 'bottom');
       },
       (ctx) => {
-        wallPath(ctx, leftBackWallRect, size, 0, -size.h / 2, 'back');
+        wallPath(ctx, rect, size, 100, 'left', 'back');
       },
       (ctx) => {
-        wallPath(ctx, rightBackWallRect, size, -size.h / 2, 0, 'back');
+        wallPath(ctx, rect, size, 100, 'right', 'back');
       },
     ],
     scaleRects.map((rect) => (ctx) => separatorPath(ctx, rect, scale?.size ?? 0)),
@@ -85,26 +77,14 @@ export function render(
   if (value > 0) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-    const leftFillWallRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w / 2,
-      h: fillHeight,
-    };
-    const rightFillWallRect: Rectangle = {
-      x: rect.x + rect.w / 2,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w / 2,
-      h: fillHeight,
-    };
     paint(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFillWallRect, size, 0, size.h / 2, 'front');
+          wallPath(ctx, rect, size, value, 'left', 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFillWallRect, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rect, size, value, 'right', 'front');
         },
         (ctx) => {
           rhombusPath(ctx, rect, size, value, 'top');
@@ -127,22 +107,14 @@ export function render(
   }
 
   if (frontColor) {
-    const leftFrontWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
-    const rightFrontWallRect: Rectangle = {
-      x: rect.x + rect.w / 2,
-      y: rect.y,
-      w: size.w / 2,
-      h: rect.h,
-    };
-
     paint(
       bufferContext,
       [
         (ctx) => {
-          wallPath(ctx, leftFrontWallRect, size, 0, size.h / 2, 'front');
+          wallPath(ctx, rect, size, 100, 'left', 'front');
         },
         (ctx) => {
-          wallPath(ctx, rightFrontWallRect, size, size.h / 2, 0, 'front');
+          wallPath(ctx, rect, size, 100, 'right', 'front');
         },
         (ctx) => {
           rhombusPath(ctx, rect, size, 100, 'top');
@@ -300,14 +272,32 @@ function wallPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
-  leftOffset: number,
-  rightOffset: number,
+  value: number,
+  position: 'left' | 'right',
   facing: 'back' | 'front',
 ): void {
-  const x = rect.x,
-    y = rect.y + size.h / 2,
-    w = rect.w,
-    h = rect.h - size.h;
+  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+
+  const calculatedRect: Rectangle = {
+    x: rect.x,
+    y: rect.y + rect.h - fillHeight,
+    w: size.w / 2,
+    h: fillHeight,
+  };
+
+  if (position === 'right') {
+    calculatedRect.x += size.w / 2;
+  }
+
+  const offset = facing === "front" ? size.h / 2 : -size.h / 2;
+  const leftOffset = position === 'right' ? offset : 0;
+  const rightOffset = position === 'left' ? offset : 0;
+
+
+  const x = calculatedRect.x,
+    y = calculatedRect.y + size.h / 2,
+    w = calculatedRect.w,
+    h = calculatedRect.h - size.h;
 
   const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
 
