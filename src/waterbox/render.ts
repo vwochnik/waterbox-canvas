@@ -39,12 +39,6 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const bottomRhombusRect: Rectangle = {
-    x: rect.x,
-    y: rect.y + rect.h - size.h,
-    w: size.w,
-    h: size.h,
-  };
   const leftBackWallRect: Rectangle = { x: rect.x, y: rect.y, w: size.w / 2, h: rect.h };
   const rightBackWallRect: Rectangle = {
     x: rect.x + rect.w / 2,
@@ -68,7 +62,7 @@ export function render(
     bufferContext,
     [
       (ctx) => {
-        rhombusPath(ctx, bottomRhombusRect, 'bottom');
+        rhombusPath(ctx, rect, size, 0, 'bottom');
       },
       (ctx) => {
         wallPath(ctx, leftBackWallRect, size, 0, -size.h / 2, 'back');
@@ -103,12 +97,6 @@ export function render(
       w: size.w / 2,
       h: fillHeight,
     };
-    const fillTopRhombusRect: Rectangle = {
-      x: rect.x,
-      y: rect.y + rect.h - fillHeight,
-      w: size.w,
-      h: size.h,
-    };
     paint(
       bufferContext,
       [
@@ -119,7 +107,7 @@ export function render(
           wallPath(ctx, rightFillWallRect, size, size.h / 2, 0, 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, fillTopRhombusRect, 'top');
+          rhombusPath(ctx, rect, size, value, 'top');
         },
       ],
       [],
@@ -146,7 +134,6 @@ export function render(
       w: size.w / 2,
       h: rect.h,
     };
-    const topRhombusRect: Rectangle = { x: rect.x, y: rect.y, w: size.w, h: size.h };
 
     paint(
       bufferContext,
@@ -158,7 +145,7 @@ export function render(
           wallPath(ctx, rightFrontWallRect, size, size.h / 2, 0, 'front');
         },
         (ctx) => {
-          rhombusPath(ctx, topRhombusRect, 'top');
+          rhombusPath(ctx, rect, size, 100, 'top');
         },
       ],
       [],
@@ -280,13 +267,23 @@ function paintEdges(
 function rhombusPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
+  size: Size,
+  value: number,
   position: 'top' | 'bottom',
 ): void {
-  const a = 0.5 * Math.hypot(rect.w, rect.h),
+  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+    const calculatedRect: Rectangle = {
+      x: rect.x,
+      y: rect.y + rect.h - fillHeight,
+      w: size.w,
+      h: size.h,
+    };
+
+  const a = 0.5 * Math.hypot(calculatedRect.w, calculatedRect.h),
     b = Math.sqrt(2 * a * a);
 
-  ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
-  ctx.scale(rect.w / b, rect.h / b);
+  ctx.translate(calculatedRect.x + calculatedRect.w / 2, calculatedRect.y + calculatedRect.h / 2);
+  ctx.scale(calculatedRect.w / b, calculatedRect.h / b);
   ctx.rotate(Math.PI / 4);
 
   ctx.beginPath();
