@@ -235,18 +235,17 @@ function rhombusPath(
   position: 'top' | 'bottom',
 ): void {
   const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
-  const calculatedRect: Rectangle = {
-    x: rect.x,
-    y: rect.y + rect.h - fillHeight,
-    w: size.w,
-    h: size.h,
-  };
 
-  const a = 0.5 * Math.hypot(calculatedRect.w, calculatedRect.h),
+  const x = rect.x;
+  const y = rect.y + rect.h - fillHeight;
+  const w = size.w;
+  const h = size.h;
+
+  const a = 0.5 * Math.hypot(w, h),
     b = Math.sqrt(2 * a * a);
 
-  ctx.translate(calculatedRect.x + calculatedRect.w / 2, calculatedRect.y + calculatedRect.h / 2);
-  ctx.scale(calculatedRect.w / b, calculatedRect.h / b);
+  ctx.translate(x + w / 2, y + h / 2);
+  ctx.scale(w / b, h / b);
   ctx.rotate(Math.PI / 4);
 
   ctx.beginPath();
