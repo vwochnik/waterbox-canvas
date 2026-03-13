@@ -307,26 +307,29 @@ function separatorPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
-  size2: number,
+  separatorSize: number,
   value: number,
 ): void {
   const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
-  const calculatedRect: Rectangle = {
-    x: rect.x,
-    y: rect.y + rect.h - fillHeight,
-    w: size.w,
-    h: size.h,
-  };
-  const s = size2 / 2.0;
+
+  const x = rect.x;
+  const y = rect.y + rect.h - fillHeight;
+  const w = size.w;
+  const h = size.h;
+  const s = separatorSize / 2.0;
+
   ctx.beginPath();
   ctx.moveTo(
-    calculatedRect.x + calculatedRect.w / 2 - calculatedRect.w * s,
-    calculatedRect.y + calculatedRect.h * s,
+    x + w / 2 - w * s,
+    y + h * s,
   );
-  ctx.lineTo(calculatedRect.x + calculatedRect.w / 2, calculatedRect.y);
   ctx.lineTo(
-    calculatedRect.x + calculatedRect.w / 2 + calculatedRect.w * s,
-    calculatedRect.y + calculatedRect.h * s,
+    x + w / 2,
+    y,
+  );
+  ctx.lineTo(
+    x + w / 2 + w * s,
+    y + h * s,
   );
 }
 
