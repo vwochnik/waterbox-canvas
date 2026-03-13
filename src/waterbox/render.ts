@@ -307,18 +307,9 @@ function separatorPath(
   const s = separatorSize / 2.0;
 
   ctx.beginPath();
-  ctx.moveTo(
-    x + w / 2 - w * s,
-    y + h * s,
-  );
-  ctx.lineTo(
-    x + w / 2,
-    y,
-  );
-  ctx.lineTo(
-    x + w / 2 + w * s,
-    y + h * s,
-  );
+  ctx.moveTo(x + w / 2 - w * s, y + h * s);
+  ctx.lineTo(x + w / 2, y);
+  ctx.lineTo(x + w / 2 + w * s, y + h * s);
 }
 
 function makeSteps(divisions: number): number[] {
