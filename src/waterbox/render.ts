@@ -39,17 +39,6 @@ export function render(
 
   bufferContext.clearRect(0, 0, width, height);
 
-  const scaleRects = scale
-    ? makeSteps(scale.divisions).map(
-        (step): Rectangle => ({
-          x: rect.x,
-          y: rect.y + rect.h - size.h - ((rect.h - size.h) * step) / 100.0,
-          w: size.w,
-          h: size.h,
-        }),
-      )
-    : [];
-
   paint(
     bufferContext,
     [
@@ -63,7 +52,7 @@ export function render(
         wallPath(ctx, rect, size, 100, 'right', 'back');
       },
     ],
-    scaleRects.map((rect) => (ctx) => separatorPath(ctx, rect, scale?.size ?? 0)),
+    (scale ? makeSteps(scale.divisions) : []).map(step => (ctx) => { separatorPath(ctx, rect, size, scale?.size ?? 0, step); }),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
@@ -316,13 +305,22 @@ function wallPath(
 function separatorPath(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
-  size: number,
+  size: Size,
+  size2: number,
+  value: number
 ): void {
-  const s = size / 2.0;
+    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+    const calculatedRect: Rectangle = {
+      x: rect.x,
+      y: rect.y + rect.h - fillHeight,
+      w: size.w,
+      h: size.h,
+    };
+  const s = size2 / 2.0;
   ctx.beginPath();
-  ctx.moveTo(rect.x + rect.w / 2 - rect.w * s, rect.y + rect.h * s);
-  ctx.lineTo(rect.x + rect.w / 2, rect.y);
-  ctx.lineTo(rect.x + rect.w / 2 + rect.w * s, rect.y + rect.h * s);
+  ctx.moveTo(calculatedRect.x + calculatedRect.w / 2 - calculatedRect.w * s, calculatedRect.y + calculatedRect.h * s);
+  ctx.lineTo(calculatedRect.x + calculatedRect.w / 2, calculatedRect.y);
+  ctx.lineTo(calculatedRect.x + calculatedRect.w / 2 + calculatedRect.w * s, calculatedRect.y + calculatedRect.h * s);
 }
 
 function makeSteps(divisions: number): number[] {
