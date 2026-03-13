@@ -46,6 +46,16 @@ export function validateOptionalScale(scale?: unknown): Scale | undefined {
   return scale;
 }
 
+export function validateOptionalWaterSegments(waterSegments?: unknown): number | undefined {
+  if (waterSegments === undefined) {
+    return undefined;
+  }
+
+  assertIsNumber(waterSegments, true, 2);
+  return waterSegments;
+}
+
+
 export function validateBoolean(value: unknown): boolean {
   assertIsBoolean(value);
   return value;

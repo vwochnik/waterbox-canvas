@@ -7,6 +7,7 @@ import {
   validateOptionalColorScheme,
   validateOptionalPattern,
   validateOptionalScale,
+  validateOptionalWaterSegments,
   validateStrokeWidth,
   validateValue,
 } from './validator';
@@ -85,6 +86,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     backColorScheme: validateColorScheme,
     waterColorScheme: validateColorScheme,
     frontColorScheme: validateOptionalColorScheme,
+    waterSegments: validateOptionalWaterSegments,
     backPattern: validateOptionalPattern,
     waterPattern: validateOptionalPattern,
     frontPattern: validateOptionalPattern,

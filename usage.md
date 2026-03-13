@@ -38,6 +38,12 @@ options:
   type: ColorScheme
   optional: true
   description: Get or set the color scheme of the front of the rendered waterbox.
+- name: waterSegments
+  type: number
+  optional: true
+  description: Get or set the number of water segments.
+  example: |
+    waterbox.waterSegments(5)
 - name: backPattern
   type: Pattern
   optional: true

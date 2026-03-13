@@ -22,7 +22,7 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, clipEdges, scale } = options;
+  const { width, height, value, strokeWidth, clipEdges, scale, waterSegments } = options;
 
   const backColor = getColors(options.backColorScheme);
   const waterColor = getColors(options.waterColorScheme);
@@ -52,8 +52,8 @@ export function render(
         wallPath(ctx, rect, size, 100, 'right', 'back');
       },
     ],
-    (scale ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
-      separatorPath(ctx, rect, size, scale?.size ?? 0, step);
+    (scale ? makeSteps(scale.divisions, 100) : []).map((step) => (ctx) => {
+      separatorPath(ctx, rect, size, scale?.size ?? 0, step, 'back');
     }),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
@@ -81,7 +81,9 @@ export function render(
           rhombusPath(ctx, rect, size, value, 'top');
         },
       ],
-      [],
+      (waterSegments ? makeSteps(waterSegments, value) : []).map((step) => (ctx) => {
+        separatorPath(ctx, rect, size, 1, step, 'front');
+      }),
       [
         waterColor.darker ?? waterColor?.fill,
         waterColor.lighter ?? waterColor.fill,
@@ -297,6 +299,7 @@ function separatorPath(
   size: Size,
   separatorSize: number,
   value: number,
+  position: 'back' | 'front',
 ): void {
   const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
@@ -307,15 +310,21 @@ function separatorPath(
   const s = separatorSize / 2.0;
 
   ctx.beginPath();
-  ctx.moveTo(x + w / 2 - w * s, y + h * s);
-  ctx.lineTo(x + w / 2, y);
-  ctx.lineTo(x + w / 2 + w * s, y + h * s);
+  if (position === 'back') {
+    ctx.moveTo(x + w / 2 - w * s, y + h * s);
+    ctx.lineTo(x + w / 2, y);
+    ctx.lineTo(x + w / 2 + w * s, y + h * s);
+  } else {
+    ctx.moveTo(x + w / 2 - w * s, y + h - h * s);
+    ctx.lineTo(x + w / 2, y + h);
+    ctx.lineTo(x + w / 2 + w * s, y + h - h * s);
+  }
 }
 
-function makeSteps(divisions: number): number[] {
+function makeSteps(divisions: number, value: number): number[] {
   const step = 100 / divisions;
 
-  return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
+  return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1)).filter(step => step < value);
 }
 
 function getColors(colorScheme: ColorScheme): {

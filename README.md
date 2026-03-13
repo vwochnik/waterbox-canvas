@@ -165,6 +165,18 @@ waterbox.waterColorScheme({
 
 Get or set the color scheme of the front of the rendered waterbox.
 
+#### `waterSegments`
+
+* `waterSegments(): number | undefined`
+* `waterSegments(value?: number): Waterbox`
+
+Get or set the number of water segments.
+
+##### Example
+```
+waterbox.waterSegments(5)
+```
+
 #### `backPattern`
 
 * `backPattern(): Pattern | undefined`

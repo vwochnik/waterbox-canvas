@@ -7,6 +7,7 @@ export interface Options extends BaseOptions {
   backColorScheme: ColorScheme;
   waterColorScheme: ColorScheme;
   frontColorScheme?: ColorScheme;
+  waterSegments?: number;
   backPattern?: Pattern;
   waterPattern?: Pattern;
   frontPattern?: Pattern;
@@ -59,6 +60,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   backColorScheme: false,
   waterColorScheme: false,
   frontColorScheme: true,
+  waterSegments: true,
   backPattern: true,
   waterPattern: true,
   frontPattern: true,
