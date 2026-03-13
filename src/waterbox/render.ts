@@ -269,25 +269,14 @@ function wallPath(
 ): void {
   const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-  const calculatedRect: Rectangle = {
-    x: rect.x,
-    y: rect.y + rect.h - fillHeight,
-    w: size.w / 2,
-    h: fillHeight,
-  };
-
-  if (position === 'right') {
-    calculatedRect.x += size.w / 2;
-  }
-
   const offset = facing === 'front' ? size.h / 2 : -size.h / 2;
   const leftOffset = position === 'right' ? offset : 0;
   const rightOffset = position === 'left' ? offset : 0;
 
-  const x = calculatedRect.x,
-    y = calculatedRect.y + size.h / 2,
-    w = calculatedRect.w,
-    h = calculatedRect.h - size.h;
+  const x = rect.x + (position === 'right' ? size.w / 2 : 0);
+  const w = size.w / 2;
+  const y = rect.y + rect.h - fillHeight + size.h / 2;
+  const h = fillHeight - size.h;
 
   const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
 
