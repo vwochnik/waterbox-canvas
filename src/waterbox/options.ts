@@ -4,6 +4,7 @@ export interface Options extends BaseOptions {
   width: number;
   height: number;
   value: number;
+  tiltAngle?: number;
   backColorScheme: ColorScheme;
   waterColorScheme: ColorScheme;
   frontColorScheme?: ColorScheme;
@@ -57,6 +58,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   width: false,
   height: false,
   value: false,
+  tiltAngle: true,
   backColorScheme: false,
   waterColorScheme: false,
   frontColorScheme: true,

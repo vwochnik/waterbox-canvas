@@ -11,6 +11,11 @@ export function validateValue(value: unknown): number {
   return value;
 }
 
+export function validateTiltAngle(tiltAngle: unknown): number {
+  assertIsNumber(tiltAngle, true, 0, 45);
+  return tiltAngle;
+}
+
 export function validateColorScheme(colorScheme: unknown): ColorScheme {
   assertIsColorScheme(colorScheme);
   return colorScheme;

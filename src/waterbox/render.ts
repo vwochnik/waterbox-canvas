@@ -13,6 +13,8 @@ type Rectangle = {
 
 type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void;
 
+const DEFAULT_TILT_ANGLE = Math.atan(1.0 / Math.sqrt(2.0)) * 180 / Math.PI;
+
 export function render(
   options: Options,
   canvasContext: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -23,6 +25,7 @@ export function render(
   frontPattern?: CanvasPattern,
 ): void {
   const { width, height, value, strokeWidth, clipEdges, scale } = options;
+  const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
 
   const backColor = getColors(options.backColorScheme);
   const waterColor = getColors(options.waterColorScheme);
@@ -36,7 +39,7 @@ export function render(
       w: actualWidth - strokeWidth - 1,
       h: height - strokeWidth - 1,
     },
-    size: Size = { w: rect.w, h: rect.w / 2 };
+    size: Size = { w: rect.w, h: rect.w * Math.sin(tiltAngle * Math.PI / 180) };
 
   bufferContext.clearRect(0, 0, width, height);
 

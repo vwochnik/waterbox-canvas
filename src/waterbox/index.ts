@@ -8,6 +8,7 @@ import {
   validateOptionalPattern,
   validateOptionalScale,
   validateStrokeWidth,
+  validateTiltAngle,
   validateValue,
 } from './validator';
 import { createPattern } from './pattern';
@@ -82,6 +83,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     width: validateDimension,
     height: validateDimension,
     value: validateValue,
+    tiltAngle: validateTiltAngle,
     backColorScheme: validateColorScheme,
     waterColorScheme: validateColorScheme,
     frontColorScheme: validateOptionalColorScheme,
