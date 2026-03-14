@@ -50,7 +50,7 @@ export type Pattern = PredefinedPattern | CustomPattern;
 export interface Scale {
   divisions: number;
   size: number;
-  position?: "back" | "front";
+  position?: 'back' | 'front';
 }
 
 export const optionsWithOptionality: Optionality<Options> = {

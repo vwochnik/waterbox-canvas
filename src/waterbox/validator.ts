@@ -95,12 +95,10 @@ function assertIsBoolean(value: unknown): asserts value is boolean {
 
 export function assertIsOneOf<const T extends readonly unknown[]>(
   value: unknown,
-  available: T
+  available: T,
 ): asserts value is T[number] {
   if (!(available as readonly unknown[]).includes(value)) {
-    throw new Error(
-      `Expected value to be one of: ${available.map(String).join(", ")}`
-    );
+    throw new Error(`Expected value to be one of: ${available.map(String).join(', ')}`);
   }
 }
 

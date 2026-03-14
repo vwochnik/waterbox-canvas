@@ -43,19 +43,13 @@ export function render(
   paint(
     bufferContext,
     [
-      (ctx) => {
-        rhombusPath(ctx, rect, size, 0, 'bottom');
-      },
-      (ctx) => {
-        wallPath(ctx, rect, size, 100, 'left', 'back');
-      },
-      (ctx) => {
-        wallPath(ctx, rect, size, 100, 'right', 'back');
-      },
+      rhombusPath(rect, size, 0, 'bottom'),
+      wallPath(rect, size, 100, 'left', 'back'),
+      wallPath(rect, size, 100, 'right', 'back'),
     ],
-    ((scale && scalePosition === 'back') ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
-      separatorPath(ctx, rect, size, scale?.size ?? 0, step, 'back');
-    }),
+    (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
+      separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
+    ),
     [backColor.fill, backColor.lighter ?? backColor.fill, backColor.darker ?? backColor.fill],
     backColor.stroke,
     strokeWidth,
@@ -67,20 +61,12 @@ export function render(
   );
 
   if (value > 0) {
-    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
-
     paint(
       bufferContext,
       [
-        (ctx) => {
-          wallPath(ctx, rect, size, value, 'left', 'front');
-        },
-        (ctx) => {
-          wallPath(ctx, rect, size, value, 'right', 'front');
-        },
-        (ctx) => {
-          rhombusPath(ctx, rect, size, value, 'top');
-        },
+        wallPath(rect, size, value, 'left', 'front'),
+        wallPath(rect, size, value, 'right', 'front'),
+        rhombusPath(rect, size, value, 'top'),
       ],
       [],
       [
@@ -102,19 +88,13 @@ export function render(
     paint(
       bufferContext,
       [
-        (ctx) => {
-          wallPath(ctx, rect, size, 100, 'left', 'front');
-        },
-        (ctx) => {
-          wallPath(ctx, rect, size, 100, 'right', 'front');
-        },
-        (ctx) => {
-          rhombusPath(ctx, rect, size, 100, 'top');
-        },
+        wallPath(rect, size, 100, 'left', 'front'),
+        wallPath(rect, size, 100, 'right', 'front'),
+        rhombusPath(rect, size, 100, 'top'),
       ],
-      ((scale && scalePosition === 'front') ? makeSteps(scale.divisions) : []).map((step) => (ctx) => {
-        separatorPath(ctx, rect, size, scale?.size ?? 0, step, 'front');
-      }),
+      (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
+        separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
+      ),
       [
         frontColor.darker ?? frontColor.fill,
         frontColor.lighter ?? frontColor.fill,
@@ -231,100 +211,103 @@ function paintEdges(
 }
 
 function rhombusPath(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
   value: number,
   position: 'top' | 'bottom',
-): void {
-  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-  const x = rect.x;
-  const y = rect.y + rect.h - fillHeight;
-  const w = size.w;
-  const h = size.h;
+    const x = rect.x;
+    const y = rect.y + rect.h - fillHeight;
+    const w = size.w;
+    const h = size.h;
 
-  const a = 0.5 * Math.hypot(w, h),
-    b = Math.sqrt(2 * a * a);
+    const a = 0.5 * Math.hypot(w, h),
+      b = Math.sqrt(2 * a * a);
 
-  ctx.translate(x + w / 2, y + h / 2);
-  ctx.scale(w / b, h / b);
-  ctx.rotate(Math.PI / 4);
+    ctx.translate(x + w / 2, y + h / 2);
+    ctx.scale(w / b, h / b);
+    ctx.rotate(Math.PI / 4);
 
-  ctx.beginPath();
-  ctx.rect(-a / 2, -a / 2, a, a);
+    ctx.beginPath();
+    ctx.rect(-a / 2, -a / 2, a, a);
 
-  if (position === 'top') {
-    ctx.translate(-a / 2, -a / 2 + 2 * a);
-  } else {
-    ctx.translate(a / 2 - 2 * a, a / 2);
-  }
+    if (position === 'top') {
+      ctx.translate(-a / 2, -a / 2 + 2 * a);
+    } else {
+      ctx.translate(a / 2 - 2 * a, a / 2);
+    }
+  };
 }
 
 function wallPath(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
   value: number,
   position: 'left' | 'right',
   facing: 'back' | 'front',
-): void {
-  const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
 
-  const offset = facing === 'front' ? size.h / 2 : -size.h / 2;
-  const leftOffset = position === 'right' ? offset : 0;
-  const rightOffset = position === 'left' ? offset : 0;
+    const offset = facing === 'front' ? size.h / 2 : -size.h / 2;
+    const leftOffset = position === 'right' ? offset : 0;
+    const rightOffset = position === 'left' ? offset : 0;
 
-  const x = rect.x + (position === 'right' ? size.w / 2 : 0);
-  const w = size.w / 2;
-  const y = rect.y + rect.h - fillHeight + size.h / 2;
-  const h = fillHeight - size.h;
+    const x = rect.x + (position === 'right' ? size.w / 2 : 0);
+    const w = size.w / 2;
+    const y = rect.y + rect.h - fillHeight + size.h / 2;
+    const h = fillHeight - size.h;
 
-  const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
+    const skewY = w === 0 ? 0 : (rightOffset - leftOffset) / w;
 
-  ctx.translate(x, y + leftOffset);
-  ctx.transform(1, skewY, 0, 1, 0, 0);
+    ctx.translate(x, y + leftOffset);
+    ctx.transform(1, skewY, 0, 1, 0, 0);
 
-  ctx.beginPath();
-  ctx.rect(0, 0, w, h);
+    ctx.beginPath();
+    ctx.rect(0, 0, w, h);
 
-  ctx.translate(-x, facing === 'back' ? h : 0);
+    ctx.translate(-x, facing === 'back' ? h : 0);
 
-  const scale = w / Math.hypot(rightOffset - leftOffset, w);
-  ctx.scale(scale, 1);
+    const scale = w / Math.hypot(rightOffset - leftOffset, w);
+    ctx.scale(scale, 1);
+  };
 }
 
 function separatorPath(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
   size: Size,
   separatorSize: number,
   value: number,
   position: 'back' | 'front',
-): void {
-  const fillHeight = size.h + (value / 100) * (rect.h - size.h);
+): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100) * (rect.h - size.h);
 
-  const x = rect.x;
-  const y = rect.y + rect.h - fillHeight;
+    const x = rect.x;
+    const y = rect.y + rect.h - fillHeight;
 
-  const w = size.w;
-  const h = size.h;
+    const w = size.w;
+    const h = size.h;
 
-  const s = separatorSize * 0.5;
-  const halfW = w * 0.5;
-  const dx = w * s;
-  const dy = h * s;
+    const s = separatorSize * 0.5;
+    const halfW = w * 0.5;
+    const dx = w * s;
+    const dy = h * s;
 
-  const cx = x + halfW;
+    const cx = x + halfW;
 
-  const isBack = position === 'back';
-  const tipY = y + (isBack ? 0 : h);
-  const sideY = y + (isBack ? dy : h - dy);
+    const isBack = position === 'back';
+    const tipY = y + (isBack ? 0 : h);
+    const sideY = y + (isBack ? dy : h - dy);
 
-  ctx.beginPath();
-  ctx.moveTo(cx - dx, sideY);
-  ctx.lineTo(cx, tipY);
-  ctx.lineTo(cx + dx, sideY);
+    ctx.beginPath();
+    ctx.moveTo(cx - dx, sideY);
+    ctx.lineTo(cx, tipY);
+    ctx.lineTo(cx + dx, sideY);
+  };
 }
 
 function makeSteps(divisions: number): number[] {
