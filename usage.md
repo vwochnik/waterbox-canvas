@@ -9,6 +9,10 @@ options:
   type: number
   optional: false
   description: Get or set the height of the canvas.
+- name: padding
+  type: number
+  optional: false
+  description: Get or set the padding of the drawn waterbox.
 - name: value
   type: number
   optional: false

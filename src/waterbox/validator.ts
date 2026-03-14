@@ -6,6 +6,11 @@ export function validateDimension(dimension: unknown): number {
   return dimension;
 }
 
+export function validatePadding(padding: unknown): number {
+  assertIsNumber(padding, true, 0);
+  return padding;
+}
+
 export function validateValue(value: unknown): number {
   assertIsNumber(value, true, 0, 100);
   return value;

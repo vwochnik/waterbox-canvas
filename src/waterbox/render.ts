@@ -28,16 +28,16 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, value, strokeWidth, clipEdges, scale } = options;
+  const { width, height, padding, value, strokeWidth, clipEdges, scale } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
 
   const actualWidth = Math.min(width, height),
     rect: Rectangle = {
-      x: width / 2 - actualWidth / 2 + strokeWidth / 2,
-      y: strokeWidth / 2,
-      w: actualWidth - strokeWidth - 1,
-      h: height - strokeWidth - 1,
+      x: width / 2 - actualWidth / 2 + padding + strokeWidth / 2,
+      y: padding + strokeWidth / 2,
+      w: actualWidth - 2 * padding - strokeWidth,
+      h: height - 2 * padding - strokeWidth,
     },
     size: Size = { w: rect.w, h: rect.w * Math.sin(tiltAngle * Math.PI / 180) };
 

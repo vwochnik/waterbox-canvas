@@ -7,6 +7,7 @@ import {
   validateOptionalColorScheme,
   validateOptionalPattern,
   validateOptionalScale,
+  validatePadding,
   validateStrokeWidth,
   validateTiltAngle,
   validateValue,
@@ -99,6 +100,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   return createOptionAccessors(instance, optionsWithOptionality, defaultOptions, update, {
     width: validateDimension,
     height: validateDimension,
+    padding: validatePadding,
     value: validateValue,
     tiltAngle: validateTiltAngle,
     backColorScheme: validateColorScheme,

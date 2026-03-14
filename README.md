@@ -118,6 +118,13 @@ Get or set the width of the canvas.
 
 Get or set the height of the canvas.
 
+#### `padding`
+
+* `padding(): number`
+* `padding(value: number): Waterbox`
+
+Get or set the padding of the drawn waterbox.
+
 #### `value`
 
 * `value(): number`

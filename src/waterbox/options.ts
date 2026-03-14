@@ -3,6 +3,7 @@ import { BaseOptions, Optionality } from './util';
 export interface Options extends BaseOptions {
   width: number;
   height: number;
+  padding: number;
   value: number;
   tiltAngle?: number;
   backColorScheme: ColorScheme;
@@ -57,6 +58,7 @@ export interface Scale {
 export const optionsWithOptionality: Optionality<Options> = {
   width: false,
   height: false,
+  padding: false,
   value: false,
   tiltAngle: true,
   backColorScheme: false,
@@ -73,6 +75,7 @@ export const optionsWithOptionality: Optionality<Options> = {
 export const defaultOptions: Options = {
   width: 100,
   height: 200,
+  padding: 2,
   value: 0,
   backColorScheme: {
     fill: '#8d8d9f',
