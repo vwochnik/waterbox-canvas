@@ -28,18 +28,19 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, padding, value, strokeWidth, clipEdges, scale } = options;
+  const { width, height, value, strokeWidth, clipEdges, scale } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
 
-  const actualWidth = Math.min(width, height),
-    rect: Rectangle = {
-      x: width / 2 - actualWidth / 2 + padding + strokeWidth / 2,
-      y: padding + strokeWidth / 2,
-      w: actualWidth - 2 * padding - strokeWidth,
-      h: height - 2 * padding - strokeWidth,
-    },
-    size: Size = { w: rect.w, h: rect.w * Math.sin(tiltAngle * Math.PI / 180) };
+  const actualWidth = Math.min(width, height);
+  const padding = Math.min(options.padding, actualWidth / 2 - strokeWidth);
+  const rect: Rectangle = {
+    x: width / 2 - actualWidth / 2 + padding + strokeWidth / 2,
+    y: padding + strokeWidth / 2,
+    w: actualWidth - 2 * padding - strokeWidth,
+    h: height - 2 * padding - strokeWidth,
+  };
+  const size: Size = { w: rect.w, h: rect.w * Math.sin(tiltAngle * Math.PI / 180) };
 
   bufferContext.clearRect(0, 0, width, height);
 
