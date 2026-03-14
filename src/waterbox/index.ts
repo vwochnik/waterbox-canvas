@@ -13,7 +13,7 @@ import {
 } from './validator';
 import { createPattern } from './pattern';
 import { render as renderWaterbox } from './render';
-import { getRawColorScheme, RawColorScheme } from './color';
+import { getRgbaColorScheme, RgbaColorScheme } from './color';
 
 /**
  * Main waterbox type
@@ -30,9 +30,10 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   const [bufferCanvas, bufferContext] = createOffscreenCanvasWithContext();
   const [tempCanvas, tempContext] = createOffscreenCanvasWithContext();
 
-  let rawBackColorScheme!: RawColorScheme;
-  let rawWaterColorScheme!: RawColorScheme;
-  let rawFrontColorScheme!: RawColorScheme | undefined;
+  let backColorScheme: RgbaColorScheme;
+  let waterColorScheme: RgbaColorScheme;
+  let frontColorScheme: RgbaColorScheme | undefined;
+
   let backPattern: CanvasPattern | undefined;
   let waterPattern: CanvasPattern | undefined;
   let frontPattern: CanvasPattern | undefined;
@@ -51,13 +52,13 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       tempCanvas.height = options.height;
     }
     if (changes.includes('backColorScheme')) {
-      rawBackColorScheme = getRawColorScheme(options.backColorScheme);
+      backColorScheme = getRgbaColorScheme(options.backColorScheme);
     }
     if (changes.includes('waterColorScheme')) {
-      rawWaterColorScheme = getRawColorScheme(options.waterColorScheme);
+      waterColorScheme = getRgbaColorScheme(options.waterColorScheme);
     }
     if (changes.includes('frontColorScheme')) {
-      rawFrontColorScheme = options.frontColorScheme ? getRawColorScheme(options.frontColorScheme) : undefined;
+      frontColorScheme = options.frontColorScheme ? getRgbaColorScheme(options.frontColorScheme) : undefined;
     }
     if (changes.includes('backPattern')) {
       backPattern = options.backPattern
@@ -84,9 +85,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       canvasContext,
       bufferContext,
       tempContext,
-      rawBackColorScheme,
-      rawWaterColorScheme,
-      rawFrontColorScheme,
+      backColorScheme,
+      waterColorScheme,
+      frontColorScheme,
       backPattern,
       waterPattern,
       frontPattern,

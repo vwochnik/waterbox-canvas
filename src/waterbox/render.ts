@@ -1,6 +1,6 @@
 import { darken, lighten, parseToRgba } from 'color2k';
-import { ColorScheme, Options } from './options';
-import { RawColor, RawColorScheme, rawColorToString } from './color';
+import { Options } from './options';
+import { RgbaColor, RgbaColorScheme, rgbaColorToString } from './color';
 
 type Size = {
   w: number;
@@ -21,9 +21,9 @@ export function render(
   canvasContext: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   bufferContext: OffscreenCanvasRenderingContext2D,
   tempContext: OffscreenCanvasRenderingContext2D,
-  rawBackColorScheme: RawColorScheme,
-  rawWaterColorScheme: RawColorScheme,
-  rawFrontColorScheme?: RawColorScheme,
+  backColorScheme: RgbaColorScheme,
+  waterColorScheme: RgbaColorScheme,
+  frontColorScheme?: RgbaColorScheme,
   backPattern?: CanvasPattern,
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
@@ -53,8 +53,8 @@ export function render(
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
     ),
-    [rawBackColorScheme.fill, rawBackColorScheme.lighter, rawBackColorScheme.darker],
-    rawBackColorScheme.stroke,
+    [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker],
+    backColorScheme.stroke,
     strokeWidth,
     clipEdges,
     tempContext,
@@ -73,11 +73,11 @@ export function render(
       ],
       [],
       [
-        rawWaterColorScheme.darker,
-        rawWaterColorScheme.lighter,
-        rawWaterColorScheme.fill,
+        waterColorScheme.darker,
+        waterColorScheme.lighter,
+        waterColorScheme.fill,
       ],
-      rawWaterColorScheme.stroke,
+      waterColorScheme.stroke,
       strokeWidth,
       clipEdges,
       tempContext,
@@ -87,7 +87,7 @@ export function render(
     );
   }
 
-  if (rawFrontColorScheme) {
+  if (frontColorScheme) {
     paint(
       bufferContext,
       [
@@ -99,11 +99,11 @@ export function render(
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
       ),
       [
-        rawFrontColorScheme.darker,
-        rawFrontColorScheme.lighter,
-        rawFrontColorScheme.fill,
+        frontColorScheme.darker,
+        frontColorScheme.lighter,
+        frontColorScheme.fill,
       ],
-      rawFrontColorScheme.stroke,
+      frontColorScheme.stroke,
       strokeWidth,
       clipEdges,
       tempContext,
@@ -121,8 +121,8 @@ function paint(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   fillPaths: PathFunction[],
   strokePaths: PathFunction[],
-  fillColors: RawColor[],
-  strokeColor: RawColor,
+  fillColors: RgbaColor[],
+  strokeColor: RgbaColor,
   strokeWidth: number,
   clipEdges: boolean,
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -149,7 +149,7 @@ function paint(
 function paintFilling(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pathFunction: PathFunction,
-  fillColor: RawColor,
+  fillColor: RgbaColor,
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
@@ -160,7 +160,7 @@ function paintFilling(
     tmp.save();
     tmp.clearRect(0, 0, width, height);
     pathFunction(tmp);
-    tmp.fillStyle = rawColorToString(fillColor);
+    tmp.fillStyle = rgbaColorToString(fillColor);
     tmp.fill();
     tmp.globalCompositeOperation = 'overlay';
     tmp.fillStyle = pattern;
@@ -170,7 +170,7 @@ function paintFilling(
     ctx.drawImage(tmp.canvas, 0, 0);
   } else {
     pathFunction(ctx);
-    ctx.fillStyle = rawColorToString(fillColor);
+    ctx.fillStyle = rgbaColorToString(fillColor);
     ctx.fill();
   }
   ctx.restore();
@@ -179,7 +179,7 @@ function paintFilling(
 function paintEdges(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pathFunctions: PathFunction[],
-  strokeColor: RawColor,
+  strokeColor: RgbaColor,
   strokeWidth: number,
   clipEdges: boolean,
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -192,7 +192,7 @@ function paintEdges(
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
 
-  const tempStrokeColor = clipEdges ? `rgba(0,0,0,${strokeColor.a})` : rawColorToString(strokeColor);
+  const tempStrokeColor = clipEdges ? `rgba(0,0,0,${strokeColor.a})` : rgbaColorToString(strokeColor);
 
   pathFunctions.forEach((pathFunction, idx) => {
     tmp.save();
@@ -317,25 +317,4 @@ function makeSteps(divisions: number): number[] {
   const step = 100 / divisions;
 
   return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
-}
-
-function getColors(colorScheme: ColorScheme): {
-  stroke: string;
-  fill: string;
-  lighter: string;
-  darker: string;
-} {
-  if ('contrast' in colorScheme) {
-    return {
-      fill: darken(colorScheme.fill, 0),
-      stroke: darken(colorScheme.stroke, 0),
-      lighter: lighten(colorScheme.fill, colorScheme.contrast),
-      darker: darken(colorScheme.fill, colorScheme.contrast),
-    };
-  }
-  return { ...colorScheme };
-}
-
-function getAlphaFromColor(color: string): number {
-  return parseToRgba(color)[3];
 }
