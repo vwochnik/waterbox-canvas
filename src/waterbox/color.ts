@@ -17,8 +17,8 @@ export type RgbaColorScheme = {
 
 export function getRgbaColorScheme(colorScheme: ColorScheme): RgbaColorScheme {
   const { fill, stroke } = colorScheme;
-  const lighter = 'contrast' in colorScheme ? lighten(fill, colorScheme.contrast) : fill;
-  const darker = 'contrast' in colorScheme ? darken(fill, colorScheme.contrast) : fill;
+  const lighter = 'contrast' in colorScheme ? lighten(fill, colorScheme.contrast) : colorScheme.lighter;
+  const darker = 'contrast' in colorScheme ? darken(fill, colorScheme.contrast) : colorScheme.darker;
 
   return {
     stroke: stringToRgbaColor(stroke),
