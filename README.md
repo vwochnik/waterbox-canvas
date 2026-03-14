@@ -125,6 +125,13 @@ Get or set the height of the canvas.
 
 Get or set the water fill level.
 
+#### `tiltAngle`
+
+* `tiltAngle(): number | undefined`
+* `tiltAngle(value?: number): Waterbox`
+
+Get or set the isometric tilt angle
+
 #### `backColorScheme`
 
 * `backColorScheme(): ColorScheme`

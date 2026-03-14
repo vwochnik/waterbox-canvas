@@ -13,6 +13,10 @@ options:
   type: number
   optional: false
   description: Get or set the water fill level.
+- name: tiltAngle
+  type: number
+  optional: true
+  description: Get or set the isometric tilt angle
 - name: backColorScheme
   type: ColorScheme
   optional: false
