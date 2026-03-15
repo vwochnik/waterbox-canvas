@@ -17,7 +17,7 @@
 
 ## Demo
 
-Check out the demo on [StackBlitz](https://stackblitz.com/edit/waterbox-canvas)
+Check out the demo on the [project page](https://vwochnik.github.io/waterbox-canvas/) or head over to [StackBlitz](https://stackblitz.com/edit/waterbox-canvas) to fiddle around.
 
 ## Installation
 
