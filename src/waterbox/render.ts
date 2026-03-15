@@ -48,7 +48,7 @@ export function render(
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
     ),
-    outerPath(rect, size, 0),
+    outerPath(rect, size, 100),
     [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker],
     backColorScheme.stroke,
     innerStrokeWidth,
