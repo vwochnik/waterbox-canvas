@@ -71,10 +71,15 @@ options:
   type: Pattern
   optional: true
   description: Get or set the pattern drawn on top of the front of the waterbox.
-- name: strokeWidth
-  type: number
+- name: strokeWidths
+  type: StrokeWidths
   optional: false
-  description: Get or set the stroke width in pixels.
+  description: Get or set the stroke inner and outer widths in pixels.
+  example: |
+    waterbox.strokeWidths({
+      inner: 1,
+      outer: 2
+    });
 - name: scale
   type: Scale
   optional: true
@@ -159,7 +164,10 @@ const waterbox = createWaterbox(canvas)
   .width(80)
   .height(120)
   .divisions(5)
-  .strokeWidth(1.5)
+  .strokeWidths({
+    inner: 1,
+    outer: 2
+  })
   .waterColorScheme({
     fill: 'rgba(33, 150, 243, 0.8)',
     stroke: 'rgba(25, 118, 210, 0.8)',

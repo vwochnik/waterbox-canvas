@@ -57,7 +57,7 @@ export type StrokeWidths = {
 export interface Scale {
   divisions: number;
   size: number;
-  position?: 'back' | 'front';
+  position?: 'back' | 'water' | 'front';
 }
 
 export const optionsWithOptionality: Optionality<Options> = {

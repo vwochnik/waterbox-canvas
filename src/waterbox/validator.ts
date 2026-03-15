@@ -190,7 +190,7 @@ function assertIsScale(value: unknown): asserts value is Scale {
   assertIsObject(value);
   if (value.position !== undefined) {
     assertKeys(value, ['divisions', 'size', 'position'], true);
-    assertIsOneOf(value.position, ['back', 'front']);
+    assertIsOneOf(value.position, ['back', 'water', 'front']);
   } else {
     assertKeys(value, ['divisions', 'size'], true);
   }

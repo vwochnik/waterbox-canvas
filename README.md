@@ -80,7 +80,10 @@ const waterbox = createWaterbox(canvas)
   .width(80)
   .height(120)
   .divisions(5)
-  .strokeWidth(1.5)
+  .strokeWidths({
+    inner: 1,
+    outer: 2
+  })
   .waterColorScheme({
     fill: 'rgba(33, 150, 243, 0.8)',
     stroke: 'rgba(25, 118, 210, 0.8)',
@@ -219,12 +222,20 @@ waterbox.waterPattern({
 
 Get or set the pattern drawn on top of the front of the waterbox.
 
-#### `strokeWidth`
+#### `strokeWidths`
 
-* `strokeWidth(): number`
-* `strokeWidth(value: number): Waterbox`
+* `strokeWidths(): StrokeWidths`
+* `strokeWidths(value: StrokeWidths): Waterbox`
 
-Get or set the stroke width in pixels.
+Get or set the stroke inner and outer widths in pixels.
+
+##### Example
+```
+waterbox.strokeWidths({
+  inner: 1,
+  outer: 2
+});
+```
 
 #### `scale`
 

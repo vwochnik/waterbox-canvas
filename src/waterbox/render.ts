@@ -48,7 +48,7 @@ export function render(
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
     ),
-    outerPath(rect, size, 0, false),
+    outerPath(rect, size, 0),
     [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker],
     backColorScheme.stroke,
     innerStrokeWidth,
@@ -68,8 +68,10 @@ export function render(
         wallPath(rect, size, value, 'right', 'front'),
         rhombusPath(rect, size, value, 'top'),
       ],
-      [],
-      outerPath(rect, size, value, true),
+      (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
+        separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
+      ),
+      outerPath(rect, size, value),
       [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill],
       waterColorScheme.stroke,
       innerStrokeWidth,
@@ -93,7 +95,7 @@ export function render(
       (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
       ),
-      outerPath(rect, size, 100, true),
+      outerPath(rect, size, 100),
       [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill],
       frontColorScheme.stroke,
       innerStrokeWidth,
@@ -312,7 +314,7 @@ function separatorPath(
   };
 }
 
-function outerPath(rect: Rectangle, size: Size, value: number, withTop: boolean): PathFunction {
+function outerPath(rect: Rectangle, size: Size, value: number): PathFunction {
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100) * (rect.h - size.h);
 
@@ -340,12 +342,6 @@ function outerPath(rect: Rectangle, size: Size, value: number, withTop: boolean)
     ctx.lineTo(left, yBottom - halfH);
 
     ctx.closePath();
-
-    if (withTop) {
-      ctx.moveTo(left, yTop + halfH);
-      ctx.lineTo(center, yTop + h);
-      ctx.lineTo(right, yTop + halfH);
-    }
   };
 }
 
@@ -379,8 +375,11 @@ function calculateRectAndSize(
   return [rect, size];
 }
 
-function makeSteps(divisions: number): number[] {
+function makeSteps(divisions: number, value: number = 100): number[] {
   const step = 100 / divisions;
 
-  return Array.from({ length: divisions - 1 }, (_, i) => step * (i + 1));
+  const count = Math.max(0, Math.ceil(value / step) - 1);
+  const length = Math.min(count, divisions - 1);
+
+  return Array.from({ length }, (_, i) => step * (i + 1));
 }
