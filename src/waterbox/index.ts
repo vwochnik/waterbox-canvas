@@ -59,7 +59,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       waterColorScheme = getRgbaColorScheme(options.waterColorScheme);
     }
     if (changes.includes('frontColorScheme')) {
-      frontColorScheme = options.frontColorScheme ? getRgbaColorScheme(options.frontColorScheme) : undefined;
+      frontColorScheme = options.frontColorScheme
+        ? getRgbaColorScheme(options.frontColorScheme)
+        : undefined;
     }
     if (changes.includes('backPattern')) {
       backPattern = options.backPattern
