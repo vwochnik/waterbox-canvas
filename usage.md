@@ -99,6 +99,10 @@ options:
 
 `waterbox-canvas` is a TypeScript/JavaScript library for rendering a water level visualization on an HTML5 Canvas or OffscreenCanvas.
 
+## Demo
+
+Check out the demo on [StackBlitz](https://stackblitz.com/edit/waterbox-canvas)
+
 ## Installation
 
 ### NPM
@@ -163,19 +167,28 @@ const canvas = document.getElementById('waterbox') as HTMLCanvasElement;
 const waterbox = createWaterbox(canvas)
   .width(80)
   .height(120)
-  .divisions(5)
-  .strokeWidths({
-    inner: 1,
-    outer: 2
+  .padding(5)
+  .tiltAngle(30)
+  .backColorScheme({
+    fill: 'rgba(192,192,224,1.0)',
+    stroke: 'rgba(127,127,192,1.0)',
+    contrast: 0.1,
   })
   .waterColorScheme({
-    fill: 'rgba(33, 150, 243, 0.8)',
-    stroke: 'rgba(25, 118, 210, 0.8)',
-    lighter: 'rgba(66, 165, 245, 0.8)',
-    darker: 'rgba(13, 71, 161, 0.8)'
+    fill: 'rgba(64,64,224,0.6)',
+    stroke: 'rgba(64,64,224,0.6)',
+    contrast: 0.1,
   })
-  .value(20)
-  .render();
+  .scale({
+    divisions: 5,
+    size: 0.2,
+  })
+  .strokeWidths({
+    inner: 1,
+    outer: 3,
+  });
+
+waterbox.value(20).render();
 ```
 
 ## API Reference
