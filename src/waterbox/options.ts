@@ -12,7 +12,7 @@ export interface Options extends BaseOptions {
   backPattern?: Pattern;
   waterPattern?: Pattern;
   frontPattern?: Pattern;
-  strokeWidth: number;
+  strokeWidths: StrokeWidths;
   scale?: Scale;
   clipEdges: boolean;
 }
@@ -49,6 +49,11 @@ export type CustomPattern = {
 
 export type Pattern = PredefinedPattern | CustomPattern;
 
+export type StrokeWidths = {
+  outer: number;
+  inner: number;
+}
+
 export interface Scale {
   divisions: number;
   size: number;
@@ -67,7 +72,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   backPattern: true,
   waterPattern: true,
   frontPattern: true,
-  strokeWidth: false,
+  strokeWidths: false,
   scale: true,
   clipEdges: false,
 };
@@ -90,6 +95,9 @@ export const defaultOptions: Options = {
   backPattern: undefined,
   waterPattern: undefined,
   frontPattern: undefined,
-  strokeWidth: 1,
+  strokeWidths: {
+    outer: 2,
+    inner: 1,
+  },
   clipEdges: false,
 };

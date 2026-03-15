@@ -1,4 +1,4 @@
-import { ColorScheme, Pattern, Scale } from './options';
+import { ColorScheme, Pattern, Scale, StrokeWidths } from './options';
 import { parseToRgba, ColorError } from 'color2k';
 
 export function validateDimension(dimension: unknown): number {
@@ -42,9 +42,9 @@ export function validateOptionalPattern(pattern?: unknown): Pattern | undefined 
   return pattern;
 }
 
-export function validateStrokeWidth(width: unknown): number {
-  assertIsNumber(width, false, 0);
-  return width;
+export function validateStrokeWidths(strokeWidths: unknown): StrokeWidths {
+  assertIsStrokeWidths(strokeWidths);
+  return strokeWidths;
 }
 
 export function validateOptionalScale(scale?: unknown): Scale | undefined {
@@ -196,4 +196,11 @@ function assertIsScale(value: unknown): asserts value is Scale {
   }
   assertIsNumber(value.divisions, true, 2);
   assertIsNumber(value.size, false, 0, 1);
+}
+
+function assertIsStrokeWidths(value: unknown): asserts value is StrokeWidths{
+  assertIsObject(value);
+  assertKeys(value, ['outer', 'inner'], true);
+  assertIsNumber(value.outer, true, 0);
+  assertIsNumber(value.inner, true, 0);
 }

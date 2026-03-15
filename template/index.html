@@ -222,7 +222,10 @@ body {
         size: 0.2,
         divisions: 5,
       })
-      .strokeWidth(3)
+      .strokeWidths({
+        inner: 1,
+        outer: 3,
+      })
       .clipEdges(true);
 
     const waterbox3 = Waterbox.createWaterbox(canvas3)
@@ -236,7 +239,10 @@ body {
         size: 15,
         alpha: 0.4,
       })
-      .strokeWidth(2)
+      .strokeWidths({
+        inner: 2,
+        outer: 2,
+      })
       .clipEdges(true);
 
     requestAnimationFrame(loop);

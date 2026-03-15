@@ -28,11 +28,13 @@ export function render(
   waterPattern?: CanvasPattern,
   frontPattern?: CanvasPattern,
 ): void {
-  const { width, height, padding, value, strokeWidth, clipEdges, scale } = options;
+  const { width, height, padding, value, clipEdges, scale } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
+  const outerStrokeWidth = options.strokeWidths.outer;
+  const innerStrokeWidth = options.strokeWidths.inner;
 
-  const [rect, size] = calculateRectAndSize(width, height, padding, tiltAngle, strokeWidth);
+  const [rect, size] = calculateRectAndSize(width, height, padding, tiltAngle, outerStrokeWidth);
 
   bufferContext.clearRect(0, 0, width, height);
 
@@ -46,9 +48,11 @@ export function render(
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
     ),
+    outerPath(rect, size, 0, false),
     [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker],
     backColorScheme.stroke,
-    strokeWidth,
+    innerStrokeWidth,
+    outerStrokeWidth,
     clipEdges,
     tempContext,
     width,
@@ -65,25 +69,16 @@ export function render(
         rhombusPath(rect, size, value, 'top'),
       ],
       [],
+      outerPath(rect, size, value, true),
       [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill],
       waterColorScheme.stroke,
-      strokeWidth,
+      innerStrokeWidth,
+      outerStrokeWidth,
       clipEdges,
       tempContext,
       width,
       height,
       waterPattern,
-    );
-
-    paintEdges(
-      bufferContext,
-      [outerPath(rect, size, value, true)],
-      { r: 255, g: 0, b: 0, a: 1},
-      5,
-      clipEdges,
-      tempContext,
-      width,
-      height,
     );
   }
 
@@ -98,9 +93,11 @@ export function render(
       (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
       ),
+      outerPath(rect, size, 100, true),
       [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill],
       frontColorScheme.stroke,
-      strokeWidth,
+      innerStrokeWidth,
+      outerStrokeWidth,
       clipEdges,
       tempContext,
       width,
@@ -117,9 +114,11 @@ function paint(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   fillPaths: PathFunction[],
   strokePaths: PathFunction[],
+  outerPath: PathFunction,
   fillColors: RgbaColor[],
   strokeColor: RgbaColor,
-  strokeWidth: number,
+  innerStrokeWidth: number,
+  outerStrokeWidth: number,
   clipEdges: boolean,
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
@@ -133,8 +132,10 @@ function paint(
   paintEdges(
     ctx,
     [...fillPaths, ...strokePaths],
+    outerPath,
     strokeColor,
-    strokeWidth,
+    innerStrokeWidth,
+    outerStrokeWidth,
     clipEdges,
     tmp,
     width,
@@ -175,8 +176,10 @@ function paintFilling(
 function paintEdges(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pathFunctions: PathFunction[],
+  outerPathFunction: PathFunction,
   strokeColor: RgbaColor,
-  strokeWidth: number,
+  innerStrokeWidth: number,
+  outerStrokeWidth: number,
   clipEdges: boolean,
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
@@ -184,7 +187,6 @@ function paintEdges(
 ): void {
   tmp.clearRect(0, 0, width, height);
 
-  tmp.lineWidth = strokeWidth;
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
 
@@ -192,7 +194,8 @@ function paintEdges(
     ? `rgba(0,0,0,${strokeColor.a})`
     : rgbaColorToString(strokeColor);
 
-  pathFunctions.forEach((pathFunction, idx) => {
+  [...pathFunctions, outerPathFunction].forEach((pathFunction, idx) => {
+    tmp.lineWidth = (idx === pathFunctions.length) ? outerStrokeWidth : innerStrokeWidth;
     tmp.save();
     pathFunction(tmp);
     tmp.restore();
@@ -313,23 +316,35 @@ function outerPath(rect: Rectangle, size: Size, value: number, withTop: boolean)
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100) * (rect.h - size.h);
 
-    const yTop = rect.y + rect.h - fillHeight;
-    const yBottom = rect.y + rect.h;
-    const { x, y } = rect;
+    const { x, y, w: rectW, h: rectH } = rect;
     const { w, h } = size;
 
+    const halfW = w * 0.5;
+    const halfH = h * 0.5;
+
+    const yTop = y + rectH - fillHeight;
+    const yBottom = y + rectH;
+
+    const left = x;
+    const right = x + w;
+    const center = x + halfW;
+
     ctx.beginPath();
-    ctx.moveTo(x, yTop + h/2);
-    ctx.lineTo(x + w/2, yTop);
-    ctx.lineTo(x + w, yTop + h/2);
-    ctx.lineTo(x + w, yBottom - h/2);
-    ctx.lineTo(x + w/2, yBottom);
-    ctx.lineTo(x, yBottom - h/2);
+
+    // outer hex-like shape
+    ctx.moveTo(left, yTop + halfH);
+    ctx.lineTo(center, yTop);
+    ctx.lineTo(right, yTop + halfH);
+    ctx.lineTo(right, yBottom - halfH);
+    ctx.lineTo(center, yBottom);
+    ctx.lineTo(left, yBottom - halfH);
+
     ctx.closePath();
+
     if (withTop) {
-      ctx.moveTo(x, yTop + h/2);
-      ctx.lineTo(x + w/2, yTop + h);
-      ctx.lineTo(x + w, yTop + h/2);
+      ctx.moveTo(left, yTop + halfH);
+      ctx.lineTo(center, yTop + h);
+      ctx.lineTo(right, yTop + halfH);
     }
   };
 }
