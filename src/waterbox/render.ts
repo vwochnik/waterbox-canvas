@@ -74,6 +74,17 @@ export function render(
       height,
       waterPattern,
     );
+
+    paintEdges(
+      bufferContext,
+      [outerPath(rect, size, value, true)],
+      { r: 255, g: 0, b: 0, a: 1},
+      5,
+      clipEdges,
+      tempContext,
+      width,
+      height,
+    );
   }
 
   if (frontColorScheme) {
@@ -278,9 +289,7 @@ function separatorPath(
 
     const x = rect.x;
     const y = rect.y + rect.h - fillHeight;
-
-    const w = size.w;
-    const h = size.h;
+    const { w, h } = size;
 
     const s = separatorSize * 0.5;
     const halfW = w * 0.5;
@@ -297,6 +306,31 @@ function separatorPath(
     ctx.moveTo(cx - dx, sideY);
     ctx.lineTo(cx, tipY);
     ctx.lineTo(cx + dx, sideY);
+  };
+}
+
+function outerPath(rect: Rectangle, size: Size, value: number, withTop: boolean): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100) * (rect.h - size.h);
+
+    const yTop = rect.y + rect.h - fillHeight;
+    const yBottom = rect.y + rect.h;
+    const { x, y } = rect;
+    const { w, h } = size;
+
+    ctx.beginPath();
+    ctx.moveTo(x, yTop + h/2);
+    ctx.lineTo(x + w/2, yTop);
+    ctx.lineTo(x + w, yTop + h/2);
+    ctx.lineTo(x + w, yBottom - h/2);
+    ctx.lineTo(x + w/2, yBottom);
+    ctx.lineTo(x, yBottom - h/2);
+    ctx.closePath();
+    if (withTop) {
+      ctx.moveTo(x, yTop + h/2);
+      ctx.lineTo(x + w/2, yTop + h);
+      ctx.lineTo(x + w, yTop + h/2);
+    }
   };
 }
 
