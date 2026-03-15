@@ -1,4 +1,4 @@
-import { darken, lighten, parseToRgba } from 'color2k';
+import { darken, lighten, parseToRgba, rgba } from 'color2k';
 import { Options } from './options';
 import { RgbaColor, RgbaColorScheme, rgbaColorToString } from './color';
 
@@ -201,19 +201,23 @@ function paintEdges(
     tmp.save();
     pathFunction(tmp);
     tmp.restore();
-    tmp.globalCompositeOperation = 'destination-out';
-    tmp.strokeStyle = 'black';
-    tmp.stroke();
-    tmp.globalCompositeOperation = 'source-over';
-    tmp.strokeStyle = tempStrokeColor;
+    tmp.strokeStyle = "black";
     tmp.stroke();
   });
 
+  ctx.globalAlpha = strokeColor.a;
   if (clipEdges) {
     ctx.globalCompositeOperation = 'destination-out';
+    ctx.drawImage(tmp.canvas, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+  } else {
+    tmp.globalCompositeOperation = "source-in";
+    tmp.fillStyle = rgbaColorToString({ ...strokeColor, a: 1.0 });
+    tmp.fillRect(0, 0, width, height);
+    tmp.globalCompositeOperation = 'source-over';
+    ctx.drawImage(tmp.canvas, 0, 0);
   }
-  ctx.drawImage(tmp.canvas, 0, 0);
-  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1.0;
 }
 
 function rhombusPath(
