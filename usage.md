@@ -46,6 +46,13 @@ options:
   type: ColorScheme
   optional: true
   description: Get or set the color scheme of the front of the rendered waterbox.
+  example: |
+    waterbox.frontColorScheme({
+      fill: 'rgba(255, 255, 255, 0.1)',
+      innerStroke: 'rgba(255, 255, 255, 0.05)',
+      outerStroke: 'rgba(255, 255, 255, 0.5)',
+      contrast: 0.1,
+    });
 - name: backPattern
   type: Pattern
   optional: true
