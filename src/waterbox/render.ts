@@ -191,17 +191,15 @@ function paintEdges(
 
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
-
-  const tempStrokeColor = clipEdges
-    ? `rgba(0,0,0,${strokeColor.a})`
-    : rgbaColorToString(strokeColor);
+  tmp.strokeStyle = clipEdges
+    ? "black"
+    : rgbaColorToString({ ...strokeColor, a: 1.0 });
 
   [...pathFunctions, outerPathFunction].forEach((pathFunction, idx) => {
     tmp.lineWidth = (idx === pathFunctions.length) ? outerStrokeWidth : innerStrokeWidth;
     tmp.save();
     pathFunction(tmp);
     tmp.restore();
-    tmp.strokeStyle = "black";
     tmp.stroke();
   });
 
@@ -211,10 +209,6 @@ function paintEdges(
     ctx.drawImage(tmp.canvas, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
   } else {
-    tmp.globalCompositeOperation = "source-in";
-    tmp.fillStyle = rgbaColorToString({ ...strokeColor, a: 1.0 });
-    tmp.fillRect(0, 0, width, height);
-    tmp.globalCompositeOperation = 'source-over';
     ctx.drawImage(tmp.canvas, 0, 0);
   }
   ctx.globalAlpha = 1.0;
