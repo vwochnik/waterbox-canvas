@@ -120,21 +120,27 @@ function assertIsFunction(value: unknown): asserts value is (...args: unknown[])
 
 function assertKeys<K extends readonly string[]>(
   value: unknown,
-  keys: K,
-  strict: boolean,
+  requiredKeys: K,
+  optionalKeys: readonly K[number][] = [],
+  allowOtherKeys: boolean = false,
 ): asserts value is Record<K[number], unknown> {
   assertIsObject(value);
 
   const valueKeys = Object.keys(value);
 
-  const missingKeys = keys.filter((key) => !valueKeys.includes(key));
+  const allKeys = [...requiredKeys, ...optionalKeys];
+
+  // Compute required keys by excluding optional ones
+  const missingKeys = requiredKeys.filter((key) => !valueKeys.includes(key));
   if (missingKeys.length > 0) {
     throw new Error(`Missing keys: "${missingKeys.join(', ')}"`);
   }
 
-  if (strict && valueKeys.length !== keys.length) {
-    const extraKeys = valueKeys.filter((k) => !keys.includes(k));
-    throw new Error(`Unexpected keys: ${extraKeys.join(', ')}`);
+  if (!allowOtherKeys) {
+    const extraKeys = valueKeys.filter((k) => !allKeys.includes(k));
+    if (extraKeys.length > 0) {
+      throw new Error(`Unexpected keys: ${extraKeys.join(', ')}`);
+    }
   }
 }
 
@@ -157,13 +163,11 @@ function assertIsColor(value: unknown): asserts value is string {
 }
 
 function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
-  assertIsObject(value);
-  assertKeys(value, ['fill'], false);
+  assertKeys(value, ['fill'], ['stroke', 'innerStroke', 'outerStroke', 'contrast', 'lighter', 'darker'], false);
   assertIsColor(value.fill);
   if ('stroke' in value) {
     assertIsColor(value.stroke);
   } else {
-    assertKeys(value, ['innerStroke', 'outerStroke'], false);
     assertIsColor(value.innerStroke);
     assertIsColor(value.outerStroke);
   }
@@ -171,7 +175,6 @@ function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
   if ('contrast' in value) {
     assertIsNumber(value.contrast, false, 0, 1);
   } else {
-    assertKeys(value, ['lighter', 'darker'], false);
     assertIsColor(value.lighter);
     assertIsColor(value.darker);
   }
@@ -181,31 +184,27 @@ function assertIsPattern(value: unknown): asserts value is Pattern {
   assertIsObject(value);
 
   if ('name' in value) {
-    assertKeys(value, ['name', 'size', 'alpha'], true);
+    assertKeys(value, ['name', 'size', 'alpha'], [], false);
     assertIsString(value.name);
     assertIsNumber(value.size, false, 0);
     assertIsNumber(value.alpha, false, 0, 1);
   } else {
-    assertKeys(value, ['creator'], true);
+    assertKeys(value, ['creator'], [], false);
     assertIsFunction(value.creator);
   }
 }
 
 function assertIsScale(value: unknown): asserts value is Scale {
-  assertIsObject(value);
+  assertKeys(value, ['divisions', 'size'], ['position'], false);
   if (value.position !== undefined) {
-    assertKeys(value, ['divisions', 'size', 'position'], true);
     assertIsOneOf(value.position, ['back', 'water', 'front']);
-  } else {
-    assertKeys(value, ['divisions', 'size'], true);
   }
   assertIsNumber(value.divisions, true, 2);
   assertIsNumber(value.size, false, 0, 1);
 }
 
 function assertIsStrokeWidths(value: unknown): asserts value is StrokeWidths{
-  assertIsObject(value);
-  assertKeys(value, ['outer', 'inner'], true);
+  assertKeys(value, ['outer', 'inner'], [], false);
   assertIsNumber(value.outer, true, 0);
   assertIsNumber(value.inner, true, 0);
 }
