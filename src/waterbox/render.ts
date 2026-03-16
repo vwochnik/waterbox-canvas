@@ -50,7 +50,8 @@ export function render(
     ),
     outerPath(rect, size, 100),
     [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker],
-    backColorScheme.stroke,
+    backColorScheme.innerStroke,
+    backColorScheme.outerStroke,
     innerStrokeWidth,
     outerStrokeWidth,
     clipEdges,
@@ -73,7 +74,8 @@ export function render(
       ),
       outerPath(rect, size, value),
       [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill],
-      waterColorScheme.stroke,
+      waterColorScheme.innerStroke,
+      waterColorScheme.outerStroke,
       innerStrokeWidth,
       outerStrokeWidth,
       clipEdges,
@@ -97,7 +99,8 @@ export function render(
       ),
       outerPath(rect, size, 100),
       [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill],
-      frontColorScheme.stroke,
+      frontColorScheme.innerStroke,
+      frontColorScheme.outerStroke,
       innerStrokeWidth,
       outerStrokeWidth,
       clipEdges,
@@ -118,7 +121,8 @@ function paint(
   strokePaths: PathFunction[],
   outerPath: PathFunction,
   fillColors: RgbaColor[],
-  strokeColor: RgbaColor,
+  innerStrokeColor: RgbaColor,
+  outerStrokeColor: RgbaColor,
   innerStrokeWidth: number,
   outerStrokeWidth: number,
   clipEdges: boolean,
@@ -135,7 +139,8 @@ function paint(
     ctx,
     [...fillPaths, ...strokePaths],
     outerPath,
-    strokeColor,
+    innerStrokeColor,
+    outerStrokeColor,
     innerStrokeWidth,
     outerStrokeWidth,
     clipEdges,
@@ -179,7 +184,8 @@ function paintEdges(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pathFunctions: PathFunction[],
   outerPathFunction: PathFunction,
-  strokeColor: RgbaColor,
+  innerStrokeColor: RgbaColor,
+  outerStrokeColor: RgbaColor,
   innerStrokeWidth: number,
   outerStrokeWidth: number,
   clipEdges: boolean,
@@ -187,16 +193,14 @@ function paintEdges(
   width: number,
   height: number,
 ): void {
-  const tmpStrokeStyle = clipEdges
-    ? "black"
-    : rgbaColorToString({ ...strokeColor, a: 1.0 });
-
   tmp.clearRect(0, 0, width, height);
 
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
   tmp.lineWidth = innerStrokeWidth;
-  tmp.strokeStyle = tmpStrokeStyle;
+  tmp.strokeStyle = clipEdges
+    ? "black"
+    : rgbaColorToString({ ...innerStrokeColor, a: 1.0 });
 
   pathFunctions.forEach(strokePath(tmp));
 
@@ -206,15 +210,17 @@ function paintEdges(
   strokePath(tmp)(outerPathFunction);
   tmp.globalCompositeOperation = 'source-over';
 
-  copyEdges(ctx, tmp, strokeColor, clipEdges);
+  copyEdges(ctx, tmp, innerStrokeColor, clipEdges);
 
   tmp.clearRect(0, 0, width, height);
 
-  tmp.strokeStyle = tmpStrokeStyle;
+  tmp.strokeStyle = clipEdges
+    ? "black"
+    : rgbaColorToString({ ...outerStrokeColor, a: 1.0 });
   tmp.lineWidth = outerStrokeWidth;
   strokePath(tmp)(outerPathFunction);
 
-  copyEdges(ctx, tmp, strokeColor, clipEdges);
+  copyEdges(ctx, tmp, outerStrokeColor, clipEdges);
 }
 
 function copyEdges(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, strokeColor: RgbaColor, clipEdges: boolean) {

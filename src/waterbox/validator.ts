@@ -158,15 +158,20 @@ function assertIsColor(value: unknown): asserts value is string {
 
 function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
   assertIsObject(value);
-  assertKeys(value, ['fill', 'stroke'], false);
+  assertKeys(value, ['fill'], false);
   assertIsColor(value.fill);
-  assertIsColor(value.stroke);
+  if ('stroke' in value) {
+    assertIsColor(value.stroke);
+  } else {
+    assertKeys(value, ['innerStroke', 'outerStroke'], false);
+    assertIsColor(value.innerStroke);
+    assertIsColor(value.outerStroke);
+  }
 
   if ('contrast' in value) {
-    assertKeys(value, ['fill', 'stroke', 'contrast'], true);
     assertIsNumber(value.contrast, false, 0, 1);
   } else {
-    assertKeys(value, ['fill', 'stroke', 'lighter', 'darker'], true);
+    assertKeys(value, ['lighter', 'darker'], false);
     assertIsColor(value.lighter);
     assertIsColor(value.darker);
   }

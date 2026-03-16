@@ -9,21 +9,26 @@ export type RgbaColor = {
 };
 
 export type RgbaColorScheme = {
-  stroke: RgbaColor;
+  innerStroke: RgbaColor;
+  outerStroke: RgbaColor;
   fill: RgbaColor;
   lighter: RgbaColor;
   darker: RgbaColor;
 };
 
 export function getRgbaColorScheme(colorScheme: ColorScheme): RgbaColorScheme {
-  const { fill, stroke } = colorScheme;
+  const { fill } = colorScheme;
   const lighter =
     'contrast' in colorScheme ? lighten(fill, colorScheme.contrast) : colorScheme.lighter;
   const darker =
     'contrast' in colorScheme ? darken(fill, colorScheme.contrast) : colorScheme.darker;
 
+  const innerStroke = 'innerStroke' in colorScheme ? colorScheme.innerStroke : colorScheme.stroke;
+  const outerStroke = 'outerStroke' in colorScheme ? colorScheme.outerStroke : colorScheme.stroke;
+
   return {
-    stroke: stringToRgbaColor(stroke),
+    innerStroke: stringToRgbaColor(innerStroke),
+    outerStroke: stringToRgbaColor(outerStroke),
     fill: stringToRgbaColor(fill),
     lighter: stringToRgbaColor(lighter),
     darker: stringToRgbaColor(darker),

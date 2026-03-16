@@ -17,10 +17,13 @@ export interface Options extends BaseOptions {
   clipEdges: boolean;
 }
 
+type StrokeColorScheme =
+  | { stroke: string }
+  | { innerStroke: string; outerStroke: string };
+
 export type BaseColorScheme = {
   fill: string;
-  stroke: string;
-};
+} & StrokeColorScheme;
 
 export type StaticColorScheme = BaseColorScheme & {
   lighter: string;
