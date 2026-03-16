@@ -187,22 +187,37 @@ function paintEdges(
   width: number,
   height: number,
 ): void {
+  const tmpStrokeStyle = clipEdges
+    ? "black"
+    : rgbaColorToString({ ...strokeColor, a: 1.0 });
+
   tmp.clearRect(0, 0, width, height);
 
   tmp.lineCap = 'round';
   tmp.lineJoin = 'round';
-  tmp.strokeStyle = clipEdges
-    ? "black"
-    : rgbaColorToString({ ...strokeColor, a: 1.0 });
+  tmp.lineWidth = innerStrokeWidth;
+  tmp.strokeStyle = tmpStrokeStyle;
 
-  [...pathFunctions, outerPathFunction].forEach((pathFunction, idx) => {
-    tmp.lineWidth = (idx === pathFunctions.length) ? outerStrokeWidth : innerStrokeWidth;
-    tmp.save();
-    pathFunction(tmp);
-    tmp.restore();
-    tmp.stroke();
-  });
+  pathFunctions.forEach(strokePath(tmp));
 
+  tmp.globalCompositeOperation = 'destination-out';
+  tmp.lineWidth = outerStrokeWidth;
+  tmp.strokeStyle = "black";
+  strokePath(tmp)(outerPathFunction);
+  tmp.globalCompositeOperation = 'source-over';
+
+  copyEdges(ctx, tmp, strokeColor, clipEdges);
+
+  tmp.clearRect(0, 0, width, height);
+
+  tmp.strokeStyle = tmpStrokeStyle;
+  tmp.lineWidth = outerStrokeWidth;
+  strokePath(tmp)(outerPathFunction);
+
+  copyEdges(ctx, tmp, strokeColor, clipEdges);
+}
+
+function copyEdges(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, strokeColor: RgbaColor, clipEdges: boolean) {
   ctx.globalAlpha = strokeColor.a;
   if (clipEdges) {
     ctx.globalCompositeOperation = 'destination-out';
@@ -212,6 +227,15 @@ function paintEdges(
     ctx.drawImage(tmp.canvas, 0, 0);
   }
   ctx.globalAlpha = 1.0;
+}
+
+function strokePath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+  return function (pathFunction: PathFunction) {
+    ctx.save();
+    pathFunction(ctx);
+    ctx.restore();
+    ctx.stroke();
+  };
 }
 
 function rhombusPath(
