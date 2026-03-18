@@ -17,9 +17,7 @@ export interface Options extends BaseOptions {
   clipEdges: boolean;
 }
 
-type StrokeColorScheme =
-  | { stroke: string }
-  | { innerStroke: string; outerStroke: string };
+type StrokeColorScheme = { stroke: string } | { innerStroke: string; outerStroke: string };
 
 export type BaseColorScheme = {
   fill: string;
@@ -55,7 +53,7 @@ export type Pattern = PredefinedPattern | CustomPattern;
 export type StrokeWidths = {
   outer: number;
   inner: number;
-}
+};
 
 export interface Scale {
   divisions: number;

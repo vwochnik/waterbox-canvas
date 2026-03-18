@@ -163,7 +163,12 @@ function assertIsColor(value: unknown): asserts value is string {
 }
 
 function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
-  assertKeys(value, ['fill'], ['stroke', 'innerStroke', 'outerStroke', 'contrast', 'lighter', 'darker'], false);
+  assertKeys(
+    value,
+    ['fill'],
+    ['stroke', 'innerStroke', 'outerStroke', 'contrast', 'lighter', 'darker'],
+    false,
+  );
   assertIsColor(value.fill);
   if ('stroke' in value) {
     assertIsColor(value.stroke);
@@ -203,7 +208,7 @@ function assertIsScale(value: unknown): asserts value is Scale {
   assertIsNumber(value.size, false, 0, 1);
 }
 
-function assertIsStrokeWidths(value: unknown): asserts value is StrokeWidths{
+function assertIsStrokeWidths(value: unknown): asserts value is StrokeWidths {
   assertKeys(value, ['outer', 'inner'], [], false);
   assertIsNumber(value.outer, true, 0);
   assertIsNumber(value.inner, true, 0);
