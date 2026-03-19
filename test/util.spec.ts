@@ -119,5 +119,14 @@ describe('util', () => {
       }
       expect(updated).toHaveBeenCalledTimes(3);
     });
+
+    it('Can not set invalid options', () => {
+      try {
+        inst.options({ invalid: -1 } as unknown as Partial<Options>);
+        throw new Error('should have thrown');
+      } catch (e: unknown) {
+        expect((e as Error).message).toEqual('Invalid keys: invalid');
+      }
+    });
   });
 });

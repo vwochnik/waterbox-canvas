@@ -77,6 +77,11 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
   let options!: T;
 
   function update(updatedKeys: (keyof T)[], diff: Partial<T>) {
+    const invalidKeys = updatedKeys.filter((key) => !(key in keysWithOptionality));
+    if (invalidKeys.length > 0) {
+      throw new Error(`Invalid keys: ${invalidKeys.join(', ')}`);
+    }
+
     const newOptions = updatedKeys.reduce(
       (newOptions, key) => {
         const value = diff[key];
