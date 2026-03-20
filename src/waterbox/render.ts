@@ -131,9 +131,7 @@ function paint(
   height: number,
   pattern?: CanvasPattern,
 ) {
-  fillPaths.forEach((path, index) => {
-    paintFilling(ctx, path, fillColors[index], tmp, width, height, pattern);
-  });
+  paintFilling(ctx, fillPaths, fillColors, tmp, width, height, pattern);
 
   paintEdges(
     ctx,
@@ -152,32 +150,29 @@ function paint(
 
 function paintFilling(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  pathFunction: PathFunction,
-  fillColor: RgbaColor,
+  paths: PathFunction[],
+  fillColors: RgbaColor[],
   tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
   pattern?: CanvasPattern,
 ): void {
-  ctx.save();
-  if (pattern) {
+  tmp.clearRect(0, 0, width, height);
+  paths.forEach((path, index) => {
     tmp.save();
-    tmp.clearRect(0, 0, width, height);
-    pathFunction(tmp);
-    tmp.fillStyle = rgbaColorToString(fillColor);
+    path(tmp);
+    tmp.fillStyle = rgbaColorToString(fillColors[index]);
     tmp.fill();
-    tmp.globalCompositeOperation = 'overlay';
-    tmp.fillStyle = pattern;
-    tmp.fill();
-    tmp.globalCompositeOperation = 'source-over';
+
+    if (pattern) {
+      tmp.globalCompositeOperation = 'overlay';
+      tmp.fillStyle = pattern;
+      tmp.fill();
+      tmp.globalCompositeOperation = 'source-over';
+    }
     tmp.restore();
-    ctx.drawImage(tmp.canvas, 0, 0);
-  } else {
-    pathFunction(ctx);
-    ctx.fillStyle = rgbaColorToString(fillColor);
-    ctx.fill();
-  }
-  ctx.restore();
+  });
+  ctx.drawImage(tmp.canvas, 0, 0);
 }
 
 function paintEdges(
