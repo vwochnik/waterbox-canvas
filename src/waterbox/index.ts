@@ -1,4 +1,4 @@
-import { createOptionAccessors, OptionAccessors } from './util';
+import { createOptionAccessors, OptionAccessors, readonlyProperty } from './util';
 import { Options, defaultOptions, optionsWithOptionality } from './options';
 import {
   validateBoolean,
@@ -82,7 +82,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
 
   const instance = {} as Waterbox;
 
-  instance.render = function (): Waterbox {
+  readonlyProperty(instance, 'render', function (): Waterbox {
     renderWaterbox(
       options,
       canvasContext,
@@ -97,7 +97,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     );
 
     return instance;
-  };
+  });
 
   return createOptionAccessors(instance, optionsWithOptionality, defaultOptions, update, {
     width: validateDimension,

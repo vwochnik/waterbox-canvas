@@ -110,22 +110,31 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
 
   // Per-option getter/setters
   (Object.keys(keysWithOptionality) as (keyof T)[]).forEach((key) => {
-    instance[key] = function (value?: T[typeof key]) {
+    readonlyProperty(instance, key, function (value?: T[typeof key]) {
       if (arguments.length === 0) return options[key];
       update([key], { [key]: value } as Partial<T>);
       return instance;
-    } as I[typeof key];
+    } as I[typeof key]);
   });
 
   // .options getter/setter
-  instance.options = function (value?: Partial<T>) {
+  readonlyProperty(instance, 'options', function (value?: Partial<T>) {
     if (arguments.length === 0) return { ...options };
     update(Object.keys(value!) as (keyof T)[], value!);
     return instance;
-  } as I['options'];
+  } as I['options']);
 
   // initial update
   update(Object.keys(keysWithOptionality) as (keyof T)[], defaults);
 
   return instance;
+}
+
+export function readonlyProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): void {
+  Object.defineProperty(obj, key, {
+    value,
+    writable: false,
+    configurable: false,
+    enumerable: true,
+  });
 }
