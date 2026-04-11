@@ -36,7 +36,7 @@ export function render(
 
   const [rect, size] = calculateRectAndSize(width, height, padding, tiltAngle, outerStrokeWidth);
 
-  bufferContext.clearRect(0, 0, width, height);
+  bufferContext.reset();
 
   paint(
     bufferContext,
