@@ -20,7 +20,7 @@ import { getRgbaColorScheme, RgbaColorScheme } from './color';
  * Main waterbox type
  */
 export interface Waterbox extends OptionAccessors<Options, Waterbox> {
-  render(): Waterbox;
+  readonly render: () => Waterbox;
 }
 
 export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Waterbox {

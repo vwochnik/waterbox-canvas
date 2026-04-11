@@ -28,13 +28,15 @@ export interface BaseOptions {}
  * @template T - The options object type
  */
 export type OptionAccessors<T extends BaseOptions, I extends OptionAccessors<T, I>> = {
-  [K in keyof T]-?: {
+  readonly [K in keyof T]-?: {
     (value: T[K]): I; // setter
     (): T[K]; // getter
   };
 } & {
-  options(): T;
-  options(value: Partial<T>): I;
+  readonly options: {
+    (): T;
+    (value: Partial<T>): I;
+  };
 };
 
 /**
@@ -130,7 +132,11 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
   return instance;
 }
 
-export function readonlyProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): void {
+export function readonlyProperty<T, K extends keyof T>(
+  obj: T,
+  key: K,
+  value: T[K],
+): asserts obj is T & { readonly [P in K]: T[P] } {
   Object.defineProperty(obj, key, {
     value,
     writable: false,
