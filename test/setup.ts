@@ -13,6 +13,7 @@ class MockOffscreenCanvas {
       // Return a mock 2D context with essential methods
       return {
         canvas: this,
+        reset: jest.fn(),
         fillRect: jest.fn(),
         clearRect: jest.fn(),
         drawImage: jest.fn(),
