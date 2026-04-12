@@ -1,4 +1,4 @@
-import { createOptionAccessors, OptionAccessors, readonlyProperty } from './util';
+import { createOptionAccessors, OptionAccessors, defineReadonlyProperty } from './util';
 import { Options, defaultOptions, optionsWithOptionality } from './options';
 import {
   validateBoolean,
@@ -82,7 +82,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
 
   const instance = {} as Waterbox;
 
-  readonlyProperty(instance, 'render', function (): Waterbox {
+  defineReadonlyProperty(instance, 'render', function (): Waterbox {
     renderWaterbox(
       options,
       canvasContext,
