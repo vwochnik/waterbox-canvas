@@ -299,8 +299,8 @@ function wallPath(
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
 
-    //TODO introduce an option
-    //ctx.translate(position === 'right' ? -w : 0, facing === 'back' ? h : 0);
+    // TODO: introduce an option
+    // ctx.translate(position === 'right' ? -w : 0, facing === 'back' ? h : 0);
     ctx.translate(position === 'right' ? -w : 0, h);
 
     const scale = w / Math.hypot(rightOffset - leftOffset, w);
