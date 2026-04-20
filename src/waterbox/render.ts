@@ -265,9 +265,9 @@ function rhombusPath(
     ctx.rect(-a / 2, -a / 2, a, a);
 
     if (position === 'top') {
-      ctx.translate(-a / 2, -a / 2 + 2 * a);
+      ctx.translate(a / 2, a / 2);
     } else {
-      ctx.translate(a / 2 - 2 * a, a / 2);
+      ctx.translate(-a / 2, -a / 2);
     }
   };
 }
@@ -300,8 +300,7 @@ function wallPath(
     ctx.rect(0, 0, w, h);
 
     // TODO: introduce an option
-    // ctx.translate(position === 'right' ? -w : 0, facing === 'back' ? h : 0);
-    ctx.translate(position === 'right' ? -w : 0, h);
+    ctx.translate(position === 'right' ? 0 : w, h/* or 0 */);
 
     const scale = w / Math.hypot(rightOffset - leftOffset, w);
     ctx.scale(scale, 1);
