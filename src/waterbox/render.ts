@@ -1,4 +1,3 @@
-import { darken, lighten, parseToRgba, rgba } from 'color2k';
 import { Options } from './options';
 import { RgbaColor, RgbaColorScheme, rgbaColorToString } from './color';
 
@@ -41,9 +40,9 @@ export function render(
   paint(
     bufferContext,
     [
-      rhombusPath(rect, size, 0, 'bottom'),
-      wallPath(rect, size, 100, 'left', 'back'),
-      wallPath(rect, size, 100, 'right', 'back'),
+      rhombusPath(rect, size, 0, 'bottom', options.backPattern?.alignToEdges ?? false),
+      wallPath(rect, size, 100, 'left', 'back', options.backPattern?.alignToEdges ?? false),
+      wallPath(rect, size, 100, 'right', 'back', options.backPattern?.alignToEdges ?? false),
     ],
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
@@ -65,9 +64,9 @@ export function render(
     paint(
       bufferContext,
       [
-        wallPath(rect, size, value, 'left', 'front'),
-        wallPath(rect, size, value, 'right', 'front'),
-        rhombusPath(rect, size, value, 'top'),
+        wallPath(rect, size, value, 'left', 'front', options.waterPattern?.alignToEdges ?? false),
+        wallPath(rect, size, value, 'right', 'front', options.waterPattern?.alignToEdges ?? false),
+        rhombusPath(rect, size, value, 'top', options.waterPattern?.alignToEdges ?? false),
       ],
       (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
@@ -90,9 +89,9 @@ export function render(
     paint(
       bufferContext,
       [
-        wallPath(rect, size, 100, 'left', 'front'),
-        wallPath(rect, size, 100, 'right', 'front'),
-        rhombusPath(rect, size, 100, 'top'),
+        wallPath(rect, size, 100, 'left', 'front', options.frontPattern?.alignToEdges ?? false),
+        wallPath(rect, size, 100, 'right', 'front', options.frontPattern?.alignToEdges ?? false),
+        rhombusPath(rect, size, 100, 'top', options.frontPattern?.alignToEdges ?? false),
       ],
       (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
@@ -245,6 +244,7 @@ function rhombusPath(
   size: Size,
   value: number,
   position: 'top' | 'bottom',
+  alignToEdges: boolean,
 ): PathFunction {
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
@@ -264,10 +264,18 @@ function rhombusPath(
     ctx.beginPath();
     ctx.rect(-a / 2, -a / 2, a, a);
 
-    if (position === 'top') {
-      ctx.translate(a / 2, a / 2);
+    if (alignToEdges) {
+      if (position === 'top') {
+        ctx.translate(a / 2, a / 2);
+      } else {
+        ctx.translate(-a / 2, -a / 2);
+      }
     } else {
-      ctx.translate(-a / 2, -a / 2);
+      if (position === 'top') {
+        ctx.translate(-a / 2, -a / 2 + 2 * a);
+      } else {
+        ctx.translate(a / 2 - 2 * a, a / 2);
+      }
     }
   };
 }
@@ -278,6 +286,7 @@ function wallPath(
   value: number,
   position: 'left' | 'right',
   facing: 'back' | 'front',
+  alignToEdges: boolean,
 ): PathFunction {
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
@@ -300,7 +309,11 @@ function wallPath(
     ctx.rect(0, 0, w, h);
 
     // TODO: introduce an option
-    ctx.translate(position === 'right' ? 0 : w, h/* or 0 */);
+    if (alignToEdges) {
+      ctx.translate(position === 'right' ? 0 : w, h /* or 0 */);
+    } else {
+      ctx.translate(position === 'right' ? -w : 0, h /* or 0 */);
+    }
 
     const scale = w / Math.hypot(rightOffset - leftOffset, w);
     ctx.scale(scale, 1);

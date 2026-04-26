@@ -34,7 +34,11 @@ export type DynamicColorScheme = BaseColorScheme & {
 
 export type ColorScheme = StaticColorScheme | DynamicColorScheme;
 
-export type PredefinedPattern = {
+export type BasePattern = {
+  alignToEdges?: boolean;
+};
+
+export type PredefinedPattern = BasePattern & {
   name: string;
   size: number;
   alpha: number;
@@ -44,7 +48,7 @@ export type PatternCreator = (ctx: {
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
 }) => CanvasPattern;
 
-export type CustomPattern = {
+export type CustomPattern = BasePattern & {
   creator: PatternCreator;
 };
 
