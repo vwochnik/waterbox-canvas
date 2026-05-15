@@ -35,6 +35,13 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
     if (!ctx) {
       throw new Error('Failed to get 2D context from canvas.');
     }
+
+    render(
+      this._options,
+      ctx,
+      this.bufferContext,
+      this.tempContext
+    );
   }
 
   private initializeContexts() {

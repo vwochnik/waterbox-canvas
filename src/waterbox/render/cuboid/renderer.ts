@@ -21,14 +21,16 @@ export function render(
   canvasContext: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   bufferContext: OffscreenCanvasRenderingContext2D,
   tempContext: OffscreenCanvasRenderingContext2D,
-  backColorScheme: RgbaColorScheme,
-  waterColorScheme: RgbaColorScheme,
-  frontColorScheme?: RgbaColorScheme,
-  backPatternSource?: CanvasImageSource,
-  waterPatternSource?: CanvasImageSource,
-  frontPatternSource?: CanvasImageSource,
 ): void {
-  const { width, height, padding, value, clipEdges, scale } = options;
+  const {
+    width, height, padding, value, clipEdges, scale,
+    backColorScheme,
+    waterColorScheme,
+    frontColorScheme,
+    backPatternSource,
+    waterPatternSource,
+    frontPatternSource
+  } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
   const outerStrokeWidth = options.strokeWidths.outer;
