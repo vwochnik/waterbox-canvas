@@ -23,15 +23,19 @@ export function render(
   backColorScheme: RgbaColorScheme,
   waterColorScheme: RgbaColorScheme,
   frontColorScheme?: RgbaColorScheme,
-  backPattern?: CanvasPattern,
-  waterPattern?: CanvasPattern,
-  frontPattern?: CanvasPattern,
+  backPatternSource?: CanvasImageSource,
+  waterPatternSource?: CanvasImageSource,
+  frontPatternSource?: CanvasImageSource,
 ): void {
   const { width, height, padding, value, clipEdges, scale } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
   const outerStrokeWidth = options.strokeWidths.outer;
   const innerStrokeWidth = options.strokeWidths.inner;
+
+  const backPattern = makePatteern(bufferContext, backPatternSource);
+  const waterPattern = makePatteern(bufferContext, waterPatternSource);
+  const frontPattern = makePatteern(bufferContext, frontPatternSource);
 
   const [rect, size] = calculateRectAndSize(width, height, padding, tiltAngle, outerStrokeWidth);
 
@@ -420,4 +424,15 @@ function makeSteps(divisions: number, value: number = 100): number[] {
   const length = Math.min(count, divisions - 1);
 
   return Array.from({ length }, (_, i) => step * (i + 1));
+}
+
+function makePatteern(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, source?: CanvasImageSource): CanvasPattern | undefined {
+  if (!source) {
+    return undefined;
+  }
+  const pattern = ctx.createPattern(source, 'repeat');
+  if (pattern === null) {
+    throw new Error('Failed to create pattern');
+  }
+  return pattern;
 }

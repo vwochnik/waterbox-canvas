@@ -286,13 +286,7 @@ body {
         imgCtx.globalAlpha = 0.5;
         imgCtx.drawImage(img, 0, 0);
         waterbox1.waterPattern({
-          creator: function(ctx) {
-            const pattern = ctx.createPattern(imgCanvas, 'repeat');
-            const matrix = new DOMMatrix();
-            matrix.scaleSelf(0.25, 0.25);
-            pattern.setTransform(matrix);
-            return pattern;
-          }
+          image: imgCanvas,
         });
       };
       img.src = "water.png";

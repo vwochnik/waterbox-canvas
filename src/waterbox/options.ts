@@ -44,12 +44,8 @@ export type PredefinedPattern = BasePattern & {
   alpha: number;
 };
 
-export type PatternCreator = (ctx: {
-  createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
-}) => CanvasPattern;
-
 export type CustomPattern = BasePattern & {
-  creator: PatternCreator;
+  image: CanvasImageSource;
 };
 
 export type Pattern = PredefinedPattern | CustomPattern;

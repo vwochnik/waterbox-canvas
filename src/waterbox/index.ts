@@ -35,9 +35,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   let waterColorScheme: RgbaColorScheme;
   let frontColorScheme: RgbaColorScheme | undefined;
 
-  let backPattern: CanvasPattern | undefined;
-  let waterPattern: CanvasPattern | undefined;
-  let frontPattern: CanvasPattern | undefined;
+  let backPatternSource: CanvasImageSource | undefined;
+  let waterPatternSource: CanvasImageSource | undefined;
+  let frontPatternSource: CanvasImageSource | undefined;
 
   // will be called when createOptionAccessors initializes
   function update(changes: (keyof Options)[], newOptions: Options) {
@@ -64,18 +64,18 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         : undefined;
     }
     if (changes.includes('backPattern')) {
-      backPattern = options.backPattern
-        ? createPattern(bufferContext, options.backPattern)
+      backPatternSource = options.backPattern
+        ? createPattern(options.backPattern)
         : undefined;
     }
     if (changes.includes('waterPattern')) {
-      waterPattern = options.waterPattern
-        ? createPattern(bufferContext, options.waterPattern)
+      waterPatternSource = options.waterPattern
+        ? createPattern(options.waterPattern)
         : undefined;
     }
     if (changes.includes('frontPattern')) {
-      frontPattern = options.frontPattern
-        ? createPattern(bufferContext, options.frontPattern)
+      frontPatternSource = options.frontPattern
+        ? createPattern(options.frontPattern)
         : undefined;
     }
   }
@@ -91,9 +91,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       backColorScheme,
       waterColorScheme,
       frontColorScheme,
-      backPattern,
-      waterPattern,
-      frontPattern,
+      backPatternSource,
+      waterPatternSource,
+      frontPatternSource,
     );
 
     return instance;

@@ -112,12 +112,6 @@ export function assertIsOneOf<const T extends readonly unknown[]>(
   }
 }
 
-function assertIsFunction(value: unknown): asserts value is (...args: unknown[]) => unknown {
-  if (typeof value !== 'function') {
-    throw new Error('Expected a function');
-  }
-}
-
 function assertKeys<K extends readonly string[]>(
   value: unknown,
   requiredKeys: K,
@@ -198,8 +192,25 @@ function assertIsPattern(value: unknown): asserts value is Pattern {
     assertIsNumber(value.size, false, 0);
     assertIsNumber(value.alpha, false, 0, 1);
   } else {
-    assertKeys(value, ['creator'], ['alignToEdges'], false);
-    assertIsFunction(value.creator);
+    assertKeys(value, ['image'], ['alignToEdges'], false);
+    assertIsCanvasImageSource(value.image);
+  }
+}
+
+function assertIsCanvasImageSource(
+  value: unknown
+): asserts value is CanvasImageSource {
+  const isCanvasImageSource =
+    value instanceof HTMLImageElement ||
+    value instanceof SVGImageElement ||
+    value instanceof HTMLVideoElement ||
+    value instanceof HTMLCanvasElement ||
+    value instanceof ImageBitmap ||
+    value instanceof OffscreenCanvas ||
+    value instanceof VideoFrame;
+
+  if (!isCanvasImageSource) {
+    throw new TypeError("Invalid CanvasImageSource");
   }
 }
 

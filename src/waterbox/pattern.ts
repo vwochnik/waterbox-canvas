@@ -1,18 +1,12 @@
 import { Pattern } from './options';
 
 export function createPattern(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   pattern: Pattern,
-): CanvasPattern {
+): CanvasImageSource {
   if ('name' in pattern) {
-    const canvas = createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
-    const createdPattern = ctx.createPattern(canvas, 'repeat');
-    if (!createdPattern) {
-      throw new Error('Failed to create pattern');
-    }
-    return createdPattern ?? undefined;
+    return createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
   } else {
-    return pattern.creator(ctx);
+    return pattern.image;
   }
 }
 
