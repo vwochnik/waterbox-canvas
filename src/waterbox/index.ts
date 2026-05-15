@@ -104,7 +104,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       };
       switch (options.renderer.type) {
         case 'cuboid':
-          renderer = createRenderer(options.renderer.type, {
+          renderer = createRenderer(options.renderer.type, canvas, {
             ...fullRenderingOptions,
             ...pick(options.renderer, ['alignPatternToEdges', 'clipEdges']),
           });
@@ -120,8 +120,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   const instance = {} as Waterbox;
 
   defineReadonlyProperty(instance, 'render', function (): Waterbox {
-    renderer.render(canvas);
-
+    renderer.render();
     return instance;
   });
 

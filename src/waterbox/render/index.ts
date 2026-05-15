@@ -28,7 +28,7 @@ export interface Renderer<
 
   update(options: Partial<RenderingOptions>): void;
 
-  render(canvas: HTMLCanvasElement | OffscreenCanvas): void;
+  render(): void;
 }
 
 interface RendererMap {
@@ -37,11 +37,12 @@ interface RendererMap {
 
 export const createRenderer = <K extends keyof RendererMap>(
   type: K,
+  canvas: HTMLCanvasElement | OffscreenCanvas,
   options: RendererMap[K]['options'],
 ): RendererMap[K]['renderer'] => {
   switch (type) {
     case 'cuboid' as K:
-      return new CuboidRenderer(options);
+      return new CuboidRenderer(canvas, options);
     default:
       assertExhaustive(type);
   }
