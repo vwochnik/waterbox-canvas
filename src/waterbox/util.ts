@@ -144,3 +144,11 @@ export function defineReadonlyProperty<T, K extends keyof T>(
     enumerable: true,
   });
 }
+
+/**
+ * Asserts that a code path should be unreachable.
+ * If this function is called, it means a union type was not fully handled.
+ */
+export function assertExhaustive(value: never): never {
+  throw new Error(`Unhandled case: ${JSON.stringify(value)}`);
+}

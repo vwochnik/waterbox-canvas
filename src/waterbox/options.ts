@@ -40,17 +40,13 @@ export type DynamicColorScheme = BaseColorScheme & {
 
 export type ColorScheme = StaticColorScheme | DynamicColorScheme;
 
-export type BasePattern = {
-  alignToEdges?: boolean;
-};
-
-export type PredefinedPattern = BasePattern & {
+export type PredefinedPattern = {
   name: string;
   size: number;
   alpha: number;
 };
 
-export type CustomPattern = BasePattern & {
+export type CustomPattern = {
   image: CanvasImageSource;
 };
 

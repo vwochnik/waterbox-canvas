@@ -1,5 +1,6 @@
 import { RgbaColorScheme } from '../color';
 import { Scale, StrokeWidths } from '../options';
+import { assertExhaustive } from '../util';
 import { CuboidRenderingOptions, CuboidRenderer } from './cuboid';
 
 export interface BaseRenderingOptions {
@@ -39,10 +40,9 @@ export const createRenderer = <K extends keyof RendererMap>(
   options: RendererMap[K]['options'],
 ): RendererMap[K]['renderer'] => {
   switch (type) {
-    case 'cuboid':
-      //return new CuboidRenderer(options as CuboidOptions) as RendererMap[K]['renderer'];
+    case 'cuboid' as K:
       return new CuboidRenderer(options);
     default:
-      throw new Error(`Unsupported renderer type: ${type}`);
+      assertExhaustive(type);
   }
 };

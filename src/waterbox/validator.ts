@@ -202,17 +202,13 @@ function assertIsColorScheme(value: unknown): asserts value is ColorScheme {
 function assertIsPattern(value: unknown): asserts value is Pattern {
   assertIsObject(value);
 
-  if (value.alignToEdges !== undefined) {
-    assertIsBoolean(value.alignToEdges);
-  }
-
   if ('name' in value) {
-    assertKeys(value, ['name', 'size', 'alpha'], ['alignToEdges'], false);
+    assertKeys(value, ['name', 'size', 'alpha'], [], false);
     assertIsString(value.name);
     assertIsNumber(value.size, false, 0);
     assertIsNumber(value.alpha, false, 0, 1);
   } else {
-    assertKeys(value, ['image'], ['alignToEdges'], false);
+    assertKeys(value, ['image'], [], false);
     assertIsCanvasImageSource(value.image);
   }
 }

@@ -1,5 +1,5 @@
 import pick from 'lodash.pick';
-import { createOptionAccessors, OptionAccessors, defineReadonlyProperty } from './util';
+import { createOptionAccessors, OptionAccessors, defineReadonlyProperty, assertExhaustive } from './util';
 import { Options, defaultOptions, optionsWithOptionality } from './options';
 import {
   validateBoolean,
@@ -109,6 +109,8 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
             ...pick(options.renderer, ['alignPatternToEdges', 'clipEdges']),
           });
           break;
+        default:
+          assertExhaustive(options.renderer.type);
       }
     } else {
       renderer.update(renderingOptions);
