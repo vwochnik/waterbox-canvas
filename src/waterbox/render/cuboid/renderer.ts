@@ -1,5 +1,6 @@
 import { Options } from './options';
 import { RgbaColor, RgbaColorScheme, rgbaColorToString } from './color';
+import { CuboidRenderingOptions } from '.';
 
 type Size = {
   w: number;
@@ -16,7 +17,7 @@ type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
 
 export function render(
-  options: Options,
+  options: CuboidRenderingOptions,
   canvasContext: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   bufferContext: OffscreenCanvasRenderingContext2D,
   tempContext: OffscreenCanvasRenderingContext2D,
@@ -44,9 +45,9 @@ export function render(
   paint(
     bufferContext,
     [
-      rhombusPath(rect, size, 0, 'bottom', options.backPattern?.alignToEdges ?? false),
-      wallPath(rect, size, 100, 'left', 'back', options.backPattern?.alignToEdges ?? false),
-      wallPath(rect, size, 100, 'right', 'back', options.backPattern?.alignToEdges ?? false),
+      rhombusPath(rect, size, 0, 'bottom', options.alignPatternToEdges ?? false),
+      wallPath(rect, size, 100, 'left', 'back', options.alignPatternToEdges?? false),
+      wallPath(rect, size, 100, 'right', 'back', options.alignPatternToEdges ?? false),
     ],
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
       separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
@@ -68,9 +69,9 @@ export function render(
     paint(
       bufferContext,
       [
-        wallPath(rect, size, value, 'left', 'front', options.waterPattern?.alignToEdges ?? false),
-        wallPath(rect, size, value, 'right', 'front', options.waterPattern?.alignToEdges ?? false),
-        rhombusPath(rect, size, value, 'top', options.waterPattern?.alignToEdges ?? false),
+        wallPath(rect, size, value, 'left', 'front', options.alignPatternToEdges ?? false),
+        wallPath(rect, size, value, 'right', 'front', options.alignPatternToEdges ?? false),
+        rhombusPath(rect, size, value, 'top', options.alignPatternToEdges ?? false),
       ],
       (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
@@ -93,9 +94,9 @@ export function render(
     paint(
       bufferContext,
       [
-        wallPath(rect, size, 100, 'left', 'front', options.frontPattern?.alignToEdges ?? false),
-        wallPath(rect, size, 100, 'right', 'front', options.frontPattern?.alignToEdges ?? false),
-        rhombusPath(rect, size, 100, 'top', options.frontPattern?.alignToEdges ?? false),
+        wallPath(rect, size, 100, 'left', 'front', options.alignPatternToEdges ?? false),
+        wallPath(rect, size, 100, 'right', 'front', options.alignPatternToEdges ?? false),
+        rhombusPath(rect, size, 100, 'top', options.alignPatternToEdges ?? false),
       ],
       (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
