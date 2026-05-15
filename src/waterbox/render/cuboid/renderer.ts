@@ -1,5 +1,4 @@
-import { Options } from './options';
-import { RgbaColor, RgbaColorScheme, rgbaColorToString } from './color';
+import { RgbaColor, rgbaColorToString } from '../../color';
 import { CuboidRenderingOptions } from '.';
 
 type Size = {

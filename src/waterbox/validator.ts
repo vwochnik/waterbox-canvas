@@ -1,5 +1,11 @@
-import { ColorScheme, Pattern, Scale, StrokeWidths } from './options';
+import { assert } from 'node:console';
+import { ColorScheme, Pattern, Renderer, Scale, StrokeWidths } from './options';
 import { parseToRgba, ColorError } from 'color2k';
+
+export function validateRenderer(renderer: unknown): Renderer {
+  assertIsRenderer(renderer);
+  return renderer;
+}
 
 export function validateDimension(dimension: unknown): number {
   assertIsNumber(dimension, true, 1);
@@ -57,8 +63,23 @@ export function validateOptionalScale(scale?: unknown): Scale | undefined {
 }
 
 export function validateBoolean(value: unknown): boolean {
+  assertKeys(value, [], [], true);
   assertIsBoolean(value);
   return value;
+}
+
+function assertIsRenderer(value: unknown): asserts value is Renderer {
+  assertKeys(value, ['type'], [], true);
+  assertIsString(value.type);
+  switch (value.type) {
+    case 'cuboid':
+      assertKeys(value, ['type', 'alignPatternToEdges', 'clipEdges'], [], false);
+      assertIsBoolean(value.alignPatternToEdges);
+      assertIsBoolean(value.clipEdges);
+      break;
+    default:
+      throw new Error(`Unsupported renderer type: ${value.type}`);
+  }
 }
 
 function assertIsNumber(

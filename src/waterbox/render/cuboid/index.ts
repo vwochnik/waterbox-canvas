@@ -15,7 +15,7 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
   private tempContext!: OffscreenCanvasRenderingContext2D;
 
   constructor(options: CuboidRenderingOptions) {
-    this._options = { ...options, scale: options.scale ?? 1 };
+    this._options = { ...options };
     this.initializeContexts();
   }
 
@@ -31,10 +31,7 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
   }
 
   render(canvas: HTMLCanvasElement | OffscreenCanvas): void {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new Error('Failed to get 2D context from canvas.');
-    }
+    const ctx = getContext(canvas);
 
     render(
       this._options,
@@ -48,4 +45,17 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
     this.bufferContext = createOffscreenRenderingContext(this._options.width, this._options.height);
     this.tempContext = createOffscreenRenderingContext(this._options.width, this._options.height);
   }
+}
+
+function getContext(canvas: HTMLCanvasElement | OffscreenCanvas): CanvasRenderingContext2D |OffscreenCanvasRenderingContext2D {
+  let context: CanvasRenderingContext2D |OffscreenCanvasRenderingContext2D | null;
+  if (canvas instanceof HTMLCanvasElement) {
+    context = canvas.getContext('2d');
+  } else {
+    context = canvas.getContext('2d');
+  }
+  if (!context) {
+    throw new Error("can't get context");
+  }
+  return context;
 }

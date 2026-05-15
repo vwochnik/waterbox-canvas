@@ -1,3 +1,4 @@
+import pick from 'lodash.pick';
 import { createOptionAccessors, OptionAccessors, defineReadonlyProperty } from './util';
 import { Options, defaultOptions, optionsWithOptionality } from './options';
 import {
@@ -8,13 +9,15 @@ import {
   validateOptionalPattern,
   validateOptionalScale,
   validatePadding,
+  validateRenderer,
   validateStrokeWidths,
   validateTiltAngle,
   validateValue,
 } from './validator';
 import { createPattern } from './pattern';
-import { render as renderWaterbox } from './render';
+import { BaseRenderingOptions, createRenderer, Renderer } from './render';
 import { getRgbaColorScheme, RgbaColorScheme } from './color';
+import { CuboidRenderingOptions } from './render/cuboid';
 
 /**
  * Main waterbox type
@@ -28,8 +31,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
 
   const canvasContext = getContext(canvas);
 
-  const [bufferCanvas, bufferContext] = createOffscreenCanvasWithContext();
-  const [tempCanvas, tempContext] = createOffscreenCanvasWithContext();
+  let renderer: Renderer
 
   let backColorScheme: RgbaColorScheme;
   let waterColorScheme: RgbaColorScheme;
@@ -42,64 +44,88 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   // will be called when createOptionAccessors initializes
   function update(changes: (keyof Options)[], newOptions: Options) {
     options = newOptions;
+
+    const renderingOptions: Partial<BaseRenderingOptions> = {};
+
     if (changes.includes('width')) {
       canvas.width = options.width;
-      bufferCanvas.width = options.width;
-      tempCanvas.width = options.width;
+      renderingOptions.width = options.width;
     }
     if (changes.includes('height')) {
       canvas.height = options.height;
-      bufferCanvas.height = options.height;
-      tempCanvas.height = options.height;
+      renderingOptions.height = options.height;
     }
     if (changes.includes('backColorScheme')) {
       backColorScheme = getRgbaColorScheme(options.backColorScheme);
+      renderingOptions.backColorScheme = backColorScheme;
     }
     if (changes.includes('waterColorScheme')) {
       waterColorScheme = getRgbaColorScheme(options.waterColorScheme);
+      renderingOptions.waterColorScheme = waterColorScheme;
     }
     if (changes.includes('frontColorScheme')) {
       frontColorScheme = options.frontColorScheme
         ? getRgbaColorScheme(options.frontColorScheme)
         : undefined;
+      renderingOptions.frontColorScheme = frontColorScheme;
     }
     if (changes.includes('backPattern')) {
       backPatternSource = options.backPattern
         ? createPattern(options.backPattern)
         : undefined;
+      renderingOptions.backPatternSource = backPatternSource;
     }
     if (changes.includes('waterPattern')) {
       waterPatternSource = options.waterPattern
         ? createPattern(options.waterPattern)
         : undefined;
+      renderingOptions.waterPatternSource = waterPatternSource;
     }
     if (changes.includes('frontPattern')) {
       frontPatternSource = options.frontPattern
         ? createPattern(options.frontPattern)
         : undefined;
+      renderingOptions.frontPatternSource = frontPatternSource;
+    }
+
+    Object.assign(renderingOptions, {
+      ...pick(options, ["padding", "value", "tiltAngle", "strokeWidths", "scale"]),
+    });
+
+    if (changes.includes('renderer')) {
+      const fullRenderingOptions: BaseRenderingOptions = {
+        ...pick(options, ["width", "height", "padding", "value", "tiltAngle", "strokeWidths", "scale"]),
+        backColorScheme,
+        waterColorScheme,
+        frontColorScheme,
+        backPatternSource,
+        waterPatternSource,
+        frontPatternSource,
+        ...renderingOptions,
+      };
+      switch (options.renderer.type) {
+        case 'cuboid':
+          renderer = createRenderer(options.renderer.type, {
+            ...fullRenderingOptions,
+            ...pick(options.renderer, ["alignPatternToEdges", "clipEdges"]),
+          });
+          break;
+      }
+    } else {
+      renderer.update(renderingOptions);
     }
   }
 
   const instance = {} as Waterbox;
 
   defineReadonlyProperty(instance, 'render', function (): Waterbox {
-    renderWaterbox(
-      options,
-      canvasContext,
-      bufferContext,
-      tempContext,
-      backColorScheme,
-      waterColorScheme,
-      frontColorScheme,
-      backPatternSource,
-      waterPatternSource,
-      frontPatternSource,
-    );
+    renderer.render(canvas);
 
     return instance;
   });
 
   return createOptionAccessors(instance, optionsWithOptionality, defaultOptions, update, {
+    renderer: validateRenderer,
     width: validateDimension,
     height: validateDimension,
     padding: validatePadding,

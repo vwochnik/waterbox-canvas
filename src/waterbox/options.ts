@@ -1,6 +1,9 @@
 import { BaseOptions, Optionality } from './util';
+import { BaseRenderingOptions } from './render';
+import { CuboidRenderingOptions } from './render/cuboid';
 
 export interface Options extends BaseOptions {
+  renderer: Renderer;
   width: number;
   height: number;
   padding: number;
@@ -16,6 +19,9 @@ export interface Options extends BaseOptions {
   scale?: Scale;
   clipEdges: boolean;
 }
+
+export type Renderer =
+  | (Pick<CuboidRenderingOptions, "alignPatternToEdges" | "clipEdges"> & { type: 'cuboid' });
 
 type StrokeColorScheme = { stroke: string } | { innerStroke: string; outerStroke: string };
 
@@ -62,6 +68,7 @@ export interface Scale {
 }
 
 export const optionsWithOptionality: Optionality<Options> = {
+  renderer: false,
   width: false,
   height: false,
   padding: false,
@@ -79,6 +86,7 @@ export const optionsWithOptionality: Optionality<Options> = {
 };
 
 export const defaultOptions: Options = {
+  renderer: { type: 'cuboid', alignPatternToEdges: false, clipEdges: false },
   width: 100,
   height: 200,
   padding: 2,
