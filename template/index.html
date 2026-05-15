@@ -152,6 +152,7 @@ body {
     <canvas id="canvas1"></canvas>
     <canvas id="canvas2"></canvas>
     <canvas id="canvas3"></canvas>
+    <canvas id="canvas4"></canvas>
     <a href="#" class="demo-mode-switch">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M12,20.5 L12,3.5 C16.6944204,3.5 20.5,7.30557963 20.5,12 C20.5,16.6944204 16.6944204,20.5 12,20.5 Z" />
@@ -173,6 +174,7 @@ body {
     const canvas1 = document.getElementById('canvas1');
     const canvas2 = document.getElementById('canvas2');
     const canvas3 = document.getElementById('canvas3');
+    const canvas4 = document.getElementById('canvas4');
     let value = 0;
     const interval = 1000 / 15;
     let lastTime = 0;
@@ -259,6 +261,31 @@ body {
         clipEdges: true,
        });
 
+    canvas4.style.background =  "rgba(225,225,255,0.8)";
+    const waterbox4 = Waterbox.createWaterbox(canvas4)
+      .renderer({
+        type: 'cylinder',
+       })
+      .backColorScheme({
+        fill: "rgba(127,127,127,0.3)",
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
+      })
+      .waterColorScheme({
+        fill: 'rgba(92, 198, 238, 0.7)',
+        stroke: 'rgba(0,0,0,0.2)',
+        contrast: 0.15,
+      })
+      .frontColorScheme({
+        fill: 'rgba(0,0,0,0.0)',
+        stroke: 'rgba(255, 255, 255, 0.8)',
+        contrast: 0.1,
+      })
+      .scale({
+        divisions: 10,
+        size: 0.1,
+      });
+
     requestAnimationFrame(loop);
 
     function loop(currentTime) {
@@ -283,6 +310,7 @@ body {
           contrast: 0.15,
         })
         .render();
+      waterbox4.value((value + 25) % 100).render();
       value = (value + 1) % 100;
     }
 

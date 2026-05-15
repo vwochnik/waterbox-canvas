@@ -2,31 +2,29 @@ import { BaseRenderingOptions, Renderer } from '../index';
 import { createOffscreenRenderingContext, getContext } from '../util';
 import { render } from './renderer';
 
-export interface CuboidRenderingOptions extends BaseRenderingOptions {
-  clipEdges: boolean;
-  alignPatternToEdges: boolean;
+export interface CylinderRenderingOptions extends BaseRenderingOptions {
 }
 
-export class CuboidRenderer implements Renderer<CuboidRenderingOptions, 'cuboid'> {
-  readonly type = 'cuboid' as const;
-  private _options: CuboidRenderingOptions;
+export class CylinderRenderer implements Renderer<CylinderRenderingOptions, 'cylinder'> {
+  readonly type = 'cylinder' as const;
+  private _options: CylinderRenderingOptions;
 
   private ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
   private bufferContext!: OffscreenCanvasRenderingContext2D;
   private tempContext!: OffscreenCanvasRenderingContext2D;
 
-  constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CuboidRenderingOptions) {
+  constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CylinderRenderingOptions) {
     this._options = { ...options };
     this.ctx = getContext(canvas);
     this.initializeContexts();
   }
 
-  get options(): CuboidRenderingOptions {
+  get options(): CylinderRenderingOptions {
     return this._options;
   }
 
-  update(options: Partial<CuboidRenderingOptions>): void {
+  update(options: Partial<CylinderRenderingOptions>): void {
     this._options = { ...this._options, ...options };
     if (options.width !== undefined || options.height !== undefined) {
       this.initializeContexts();

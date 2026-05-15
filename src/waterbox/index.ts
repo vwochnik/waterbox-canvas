@@ -102,15 +102,21 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         frontPatternSource,
         ...renderingOptions,
       };
-      switch (options.renderer.type) {
+      const rendererType = options.renderer.type;
+      switch (rendererType) {
         case 'cuboid':
-          renderer = createRenderer(options.renderer.type, canvas, {
+          renderer = createRenderer('cuboid', canvas, {
             ...fullRenderingOptions,
             ...pick(options.renderer, ['alignPatternToEdges', 'clipEdges']),
           });
           break;
+        case 'cylinder':
+          renderer = createRenderer('cylinder', canvas, {
+            ...fullRenderingOptions,
+          });
+          break;
         default:
-          assertExhaustive(options.renderer.type);
+          assertExhaustive(rendererType);
       }
     } else {
       renderer.update(renderingOptions);

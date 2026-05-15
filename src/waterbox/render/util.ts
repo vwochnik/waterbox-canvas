@@ -12,6 +12,16 @@ export type Rectangle = {
   y: number;
 } & Size;
 
+export function getContext(
+  canvas: HTMLCanvasElement | OffscreenCanvas,
+): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new Error("can't get context");
+  }
+  return context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+}
+
 export function createOffscreenRenderingContext(
   width: number,
   height: number,
