@@ -29,9 +29,19 @@ export function render(
 
   bufferContext.strokeStyle = 'black';
   bufferContext.save();
-  wallPath(rect, size, value, 'front')(bufferContext);
+  wallPath(rect, size, value, 'back')(bufferContext);
   bufferContext.restore();
   bufferContext.stroke();
+  for (let i = 10; i < 100; i += 10) {
+    bufferContext.save();
+    separatorPath(rect, size, 0.25, i, 'back')(bufferContext);
+    bufferContext.restore();
+    bufferContext.stroke();
+    bufferContext.save();
+    separatorPath(rect, size, 0.25, i, 'front')(bufferContext);
+    bufferContext.restore();
+    bufferContext.stroke();
+  }
 
   canvasContext.clearRect(0, 0, width, height);
   canvasContext.drawImage(bufferContext.canvas, 0, 0);
@@ -79,5 +89,28 @@ function wallPath(
     ctx.lineTo(x + w, y + h);
     ctx.ellipse(x + w / 2, y + h, w/2, size.h/2, Math.PI, Math.PI, 0, facing === "back");
     ctx.lineTo(x, y);
+  };
+}
+
+function separatorPath(
+  rect: Rectangle,
+  size: Size,
+  separatorSize: number,
+  value: number,
+  position: 'back' | 'front',
+): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100) * (rect.h - size.h);
+
+    const x = rect.x;
+    const y = rect.y + rect.h - fillHeight;
+    const { w, h } = size;
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const angle = position === 'back' ? 1.5 * Math.PI : Math.PI / 2;
+    const angleDiff = separatorSize * Math.PI / 2;
+
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, w/2, h/2, 0, angle - angleDiff, angle + angleDiff);
   };
 }
