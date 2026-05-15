@@ -28,10 +28,7 @@ export interface Waterbox extends OptionAccessors<Options, Waterbox> {
 
 export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Waterbox {
   let options!: Options;
-
-  const canvasContext = getContext(canvas);
-
-  let renderer: Renderer
+  let renderer: Renderer;
 
   let backColorScheme: RgbaColorScheme;
   let waterColorScheme: RgbaColorScheme;
@@ -70,31 +67,33 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       renderingOptions.frontColorScheme = frontColorScheme;
     }
     if (changes.includes('backPattern')) {
-      backPatternSource = options.backPattern
-        ? createPattern(options.backPattern)
-        : undefined;
+      backPatternSource = options.backPattern ? createPattern(options.backPattern) : undefined;
       renderingOptions.backPatternSource = backPatternSource;
     }
     if (changes.includes('waterPattern')) {
-      waterPatternSource = options.waterPattern
-        ? createPattern(options.waterPattern)
-        : undefined;
+      waterPatternSource = options.waterPattern ? createPattern(options.waterPattern) : undefined;
       renderingOptions.waterPatternSource = waterPatternSource;
     }
     if (changes.includes('frontPattern')) {
-      frontPatternSource = options.frontPattern
-        ? createPattern(options.frontPattern)
-        : undefined;
+      frontPatternSource = options.frontPattern ? createPattern(options.frontPattern) : undefined;
       renderingOptions.frontPatternSource = frontPatternSource;
     }
 
     Object.assign(renderingOptions, {
-      ...pick(options, ["padding", "value", "tiltAngle", "strokeWidths", "scale"]),
+      ...pick(options, ['padding', 'value', 'tiltAngle', 'strokeWidths', 'scale']),
     });
 
     if (changes.includes('renderer')) {
       const fullRenderingOptions: BaseRenderingOptions = {
-        ...pick(options, ["width", "height", "padding", "value", "tiltAngle", "strokeWidths", "scale"]),
+        ...pick(options, [
+          'width',
+          'height',
+          'padding',
+          'value',
+          'tiltAngle',
+          'strokeWidths',
+          'scale',
+        ]),
         backColorScheme,
         waterColorScheme,
         frontColorScheme,
@@ -107,7 +106,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         case 'cuboid':
           renderer = createRenderer(options.renderer.type, {
             ...fullRenderingOptions,
-            ...pick(options.renderer, ["alignPatternToEdges", "clipEdges"]),
+            ...pick(options.renderer, ['alignPatternToEdges', 'clipEdges']),
           });
           break;
       }
@@ -139,25 +138,5 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     frontPattern: validateOptionalPattern,
     scale: validateOptionalScale,
     strokeWidths: validateStrokeWidths,
-    clipEdges: validateBoolean,
   });
-}
-
-function getContext(
-  canvas: HTMLCanvasElement | OffscreenCanvas,
-): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
-  const context = canvas.getContext('2d');
-  if (!context) {
-    throw new Error("can't get context");
-  }
-  return context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-}
-
-function createOffscreenCanvasWithContext(): [OffscreenCanvas, OffscreenCanvasRenderingContext2D] {
-  const offscreenCanvas = new OffscreenCanvas(0, 0);
-  const context = offscreenCanvas.getContext('2d');
-  if (!context) {
-    throw new Error("can't get context");
-  }
-  return [offscreenCanvas, context];
 }

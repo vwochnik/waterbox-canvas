@@ -22,13 +22,18 @@ export function render(
   tempContext: OffscreenCanvasRenderingContext2D,
 ): void {
   const {
-    width, height, padding, value, clipEdges, scale,
+    width,
+    height,
+    padding,
+    value,
+    clipEdges,
+    scale,
     backColorScheme,
     waterColorScheme,
     frontColorScheme,
     backPatternSource,
     waterPatternSource,
-    frontPatternSource
+    frontPatternSource,
   } = options;
   const tiltAngle = options.tiltAngle ?? DEFAULT_TILT_ANGLE;
   const scalePosition = options.scale?.position ?? 'back';
@@ -47,7 +52,7 @@ export function render(
     bufferContext,
     [
       rhombusPath(rect, size, 0, 'bottom', options.alignPatternToEdges ?? false),
-      wallPath(rect, size, 100, 'left', 'back', options.alignPatternToEdges?? false),
+      wallPath(rect, size, 100, 'left', 'back', options.alignPatternToEdges ?? false),
       wallPath(rect, size, 100, 'right', 'back', options.alignPatternToEdges ?? false),
     ],
     (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
@@ -428,7 +433,10 @@ function makeSteps(divisions: number, value: number = 100): number[] {
   return Array.from({ length }, (_, i) => step * (i + 1));
 }
 
-function makePatteern(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, source?: CanvasImageSource): CanvasPattern | undefined {
+function makePatteern(
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+  source?: CanvasImageSource,
+): CanvasPattern | undefined {
   if (!source) {
     return undefined;
   }

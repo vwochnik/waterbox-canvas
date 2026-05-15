@@ -17,11 +17,11 @@ export interface Options extends BaseOptions {
   frontPattern?: Pattern;
   strokeWidths: StrokeWidths;
   scale?: Scale;
-  clipEdges: boolean;
 }
 
-export type Renderer =
-  | (Pick<CuboidRenderingOptions, "alignPatternToEdges" | "clipEdges"> & { type: 'cuboid' });
+export type Renderer = Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
+  type: 'cuboid';
+};
 
 type StrokeColorScheme = { stroke: string } | { innerStroke: string; outerStroke: string };
 
@@ -82,7 +82,6 @@ export const optionsWithOptionality: Optionality<Options> = {
   frontPattern: true,
   strokeWidths: false,
   scale: true,
-  clipEdges: false,
 };
 
 export const defaultOptions: Options = {
@@ -108,5 +107,4 @@ export const defaultOptions: Options = {
     outer: 2,
     inner: 1,
   },
-  clipEdges: false,
 };

@@ -1,13 +1,13 @@
-import { BaseRenderingOptions, Renderer } from "../index";
-import { createOffscreenRenderingContext } from "../util";
-import { render } from "./renderer";
+import { BaseRenderingOptions, Renderer } from '../index';
+import { createOffscreenRenderingContext } from '../util';
+import { render } from './renderer';
 
 export interface CuboidRenderingOptions extends BaseRenderingOptions {
   clipEdges: boolean;
   alignPatternToEdges: boolean;
 }
 
-export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"> {
+export class CuboidRenderer implements Renderer<CuboidRenderingOptions, 'cuboid'> {
   readonly type = 'cuboid' as const;
   private _options: CuboidRenderingOptions;
 
@@ -33,12 +33,7 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
   render(canvas: HTMLCanvasElement | OffscreenCanvas): void {
     const ctx = getContext(canvas);
 
-    render(
-      this._options,
-      ctx,
-      this.bufferContext,
-      this.tempContext
-    );
+    render(this._options, ctx, this.bufferContext, this.tempContext);
   }
 
   private initializeContexts() {
@@ -47,15 +42,12 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, "cuboid"
   }
 }
 
-function getContext(canvas: HTMLCanvasElement | OffscreenCanvas): CanvasRenderingContext2D |OffscreenCanvasRenderingContext2D {
-  let context: CanvasRenderingContext2D |OffscreenCanvasRenderingContext2D | null;
-  if (canvas instanceof HTMLCanvasElement) {
-    context = canvas.getContext('2d');
-  } else {
-    context = canvas.getContext('2d');
-  }
+function getContext(
+  canvas: HTMLCanvasElement | OffscreenCanvas,
+): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
+  const context = canvas.getContext('2d');
   if (!context) {
     throw new Error("can't get context");
   }
-  return context;
+  return context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 }

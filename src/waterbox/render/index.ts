@@ -1,6 +1,6 @@
-import { RgbaColorScheme } from "../color";
-import { Scale, StrokeWidths } from "../options";
-import { CuboidRenderingOptions, CuboidRenderer } from "./cuboid";
+import { RgbaColorScheme } from '../color';
+import { Scale, StrokeWidths } from '../options';
+import { CuboidRenderingOptions, CuboidRenderer } from './cuboid';
 
 export interface BaseRenderingOptions {
   width: number;
@@ -10,15 +10,18 @@ export interface BaseRenderingOptions {
   tiltAngle?: number;
   strokeWidths: StrokeWidths;
   scale?: Scale;
-  backColorScheme: RgbaColorScheme,
-  waterColorScheme: RgbaColorScheme,
-  frontColorScheme?: RgbaColorScheme,
-  backPatternSource?: CanvasImageSource,
-  waterPatternSource?: CanvasImageSource,
-  frontPatternSource?: CanvasImageSource,
+  backColorScheme: RgbaColorScheme;
+  waterColorScheme: RgbaColorScheme;
+  frontColorScheme?: RgbaColorScheme;
+  backPatternSource?: CanvasImageSource;
+  waterPatternSource?: CanvasImageSource;
+  frontPatternSource?: CanvasImageSource;
 }
 
-export interface Renderer<RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions, Type extends string = string> {
+export interface Renderer<
+  RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions,
+  Type extends string = string,
+> {
   readonly type: Type;
   readonly options: RenderingOptions;
 
@@ -28,12 +31,12 @@ export interface Renderer<RenderingOptions extends BaseRenderingOptions = BaseRe
 }
 
 interface RendererMap {
-  'cuboid': { renderer: CuboidRenderer, options: CuboidRenderingOptions };
+  cuboid: { renderer: CuboidRenderer; options: CuboidRenderingOptions };
 }
 
 export const createRenderer = <K extends keyof RendererMap>(
   type: K,
-  options: RendererMap[K]['options']
+  options: RendererMap[K]['options'],
 ): RendererMap[K]['renderer'] => {
   switch (type) {
     case 'cuboid':

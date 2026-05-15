@@ -1,4 +1,3 @@
-import { assert } from 'node:console';
 import { ColorScheme, Pattern, Renderer, Scale, StrokeWidths } from './options';
 import { parseToRgba, ColorError } from 'color2k';
 
@@ -218,9 +217,7 @@ function assertIsPattern(value: unknown): asserts value is Pattern {
   }
 }
 
-function assertIsCanvasImageSource(
-  value: unknown
-): asserts value is CanvasImageSource {
+function assertIsCanvasImageSource(value: unknown): asserts value is CanvasImageSource {
   const isCanvasImageSource =
     value instanceof HTMLImageElement ||
     value instanceof SVGImageElement ||
@@ -231,7 +228,7 @@ function assertIsCanvasImageSource(
     value instanceof VideoFrame;
 
   if (!isCanvasImageSource) {
-    throw new TypeError("Invalid CanvasImageSource");
+    throw new TypeError('Invalid CanvasImageSource');
   }
 }
 

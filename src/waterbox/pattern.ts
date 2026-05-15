@@ -1,8 +1,6 @@
 import { Pattern } from './options';
 
-export function createPattern(
-  pattern: Pattern,
-): CanvasImageSource {
+export function createPattern(pattern: Pattern): CanvasImageSource {
   if ('name' in pattern) {
     return createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
   } else {

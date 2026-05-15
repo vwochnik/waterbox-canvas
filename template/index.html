@@ -227,7 +227,11 @@ body {
         inner: 3,
         outer: 3,
       })
-      .clipEdges(true);
+      .renderer({
+        type: 'cuboid',
+        alignPatternToEdges: true,
+        clipEdges: true,
+       });
 
     const waterbox3 = Waterbox.createWaterbox(canvas3)
       .backColorScheme({
@@ -249,7 +253,11 @@ body {
         divisions: 5,
         position: "water",
       })
-      .clipEdges(true);
+      .renderer({
+        type: 'cuboid',
+        alignPatternToEdges: true,
+        clipEdges: true,
+       });
 
     requestAnimationFrame(loop);
 
