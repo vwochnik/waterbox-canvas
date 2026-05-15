@@ -29,7 +29,7 @@ export function render(
 
   bufferContext.strokeStyle = 'black';
   bufferContext.save();
-  basePath(rect, size, value, 'top', true)(bufferContext);
+  wallPath(rect, size, value, 'front')(bufferContext);
   bufferContext.restore();
   bufferContext.stroke();
 
@@ -42,7 +42,6 @@ function basePath(
   size: Size,
   value: number,
   position: 'top' | 'bottom',
-  alignToEdges: boolean,
 ): PathFunction {
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
@@ -57,5 +56,28 @@ function basePath(
 
     ctx.beginPath();
     ctx.ellipse(0, 0, w/2, w/2, 0, 0, 2 * Math.PI);
+  };
+}
+
+function wallPath(
+  rect: Rectangle,
+  size: Size,
+  value: number,
+  facing: 'back' | 'front' | 'outer'
+): PathFunction {
+  return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+    const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
+
+    const x = rect.x;
+    const y = rect.y + rect.h - fillHeight + size.h / 2;
+    const w = size.w;
+    const h = fillHeight - size.h;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.ellipse(x + w / 2, y, w/2, size.h/2, 0, Math.PI, 0, facing === "front");
+    ctx.lineTo(x + w, y + h);
+    ctx.ellipse(x + w / 2, y + h, w/2, size.h/2, Math.PI, Math.PI, 0, facing === "back");
+    ctx.lineTo(x, y);
   };
 }
