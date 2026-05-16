@@ -24,7 +24,7 @@ export type Renderer =
   | (Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
       type: 'cuboid';
     })
-  | (Pick<CylinderRenderingOptions, 'clipEdges'> & {
+  | (Pick<CylinderRenderingOptions, 'clipEdges' | 'applyPatternToBases'> & {
       type: 'cylinder';
     });
 

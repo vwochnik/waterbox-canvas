@@ -13,6 +13,7 @@ import { hasAnyKey } from '../../util';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   clipEdges: boolean;
+  applyPatternToBases: boolean;
 }
 
 export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOptions, 'cylinder'> {
@@ -58,6 +59,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       backPatternSource,
       waterPatternSource,
       frontPatternSource,
+      applyPatternToBases,
     } = this.options;
 
     const scalePosition = this.options.scale?.position ?? 'back';
@@ -87,7 +89,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       backColorScheme.innerStroke,
       backColorScheme.outerStroke,
       clipEdges,
-      [backPattern, backWallPattern],
+      [(applyPatternToBases ? backPattern : undefined), backWallPattern],
     );
 
     if (value > 0) {
@@ -104,7 +106,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         waterColorScheme.innerStroke,
         waterColorScheme.outerStroke,
         clipEdges,
-        [waterWallPattern, waterPattern],
+        [waterWallPattern, (applyPatternToBases ? waterPattern : undefined)],
       );
     }
 
@@ -122,7 +124,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         frontColorScheme.innerStroke,
         frontColorScheme.outerStroke,
         clipEdges,
-        [frontWallPattern, frontPattern],
+        [frontWallPattern, (applyPatternToBases ? frontPattern : undefined)],
       );
     }
 
@@ -183,7 +185,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
           patternSource,
           u,
           sourceY,
-          1,
+          2,
           displayHeight,
           x,
           drawY - displayHeight,
