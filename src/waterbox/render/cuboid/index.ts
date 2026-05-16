@@ -13,8 +13,8 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, 'cuboid'
 
   private ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-  private bufferContext!: OffscreenCanvasRenderingContext2D;
-  private tempContext!: OffscreenCanvasRenderingContext2D;
+  private bufCtx!: OffscreenCanvasRenderingContext2D;
+  private tmpCtx!: OffscreenCanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CuboidRenderingOptions) {
     this._options = { ...options };
@@ -34,11 +34,11 @@ export class CuboidRenderer implements Renderer<CuboidRenderingOptions, 'cuboid'
   }
 
   render(): void {
-    render(this._options, this.ctx, this.bufferContext, this.tempContext);
+    render(this._options, this.ctx, this.bufCtx, this.tmpCtx);
   }
 
   private initializeContexts() {
-    this.bufferContext = createOffscreenRenderingContext(this._options.width, this._options.height);
-    this.tempContext = createOffscreenRenderingContext(this._options.width, this._options.height);
+    this.bufCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
+    this.tmpCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
   }
 }

@@ -12,6 +12,8 @@ export type Rectangle = {
   y: number;
 } & Size;
 
+export type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void;
+
 export function getContext(
   canvas: HTMLCanvasElement | OffscreenCanvas,
 ): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
