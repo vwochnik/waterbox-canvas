@@ -1,5 +1,6 @@
 import { BaseRenderingOptions } from ".";
 import { RgbaColor, rgbaColorToString } from "../color";
+import { hasAnyKey } from "../util";
 import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from "./util";
 
 export abstract class CanvasBaseRenderer<
@@ -26,7 +27,7 @@ export abstract class CanvasBaseRenderer<
 
   update(options: Partial<RenderingOptions>): void {
     this._options = { ...this._options, ...options };
-    if (options.width !== undefined || options.height !== undefined) {
+    if (hasAnyKey(options, ['width', 'height'])) {
       this.initializeContexts();
     }
   }

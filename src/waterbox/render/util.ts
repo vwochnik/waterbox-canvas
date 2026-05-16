@@ -1,4 +1,5 @@
 import { BaseRenderingOptions } from ".";
+import { assertExhaustive } from "../util";
 
 const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
 
@@ -79,7 +80,7 @@ export function makeSteps(divisions: number, value: number = 100): number[] {
   return Array.from({ length }, (_, i) => step * (i + 1));
 }
 
-export function makePatteern(
+export function makePattern(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   source?: CanvasImageSource,
 ): CanvasPattern | undefined {
@@ -91,4 +92,46 @@ export function makePatteern(
     throw new Error('Failed to create pattern');
   }
   return pattern;
+}
+
+export function getCanvasImageSourceSize(source: CanvasImageSource): Size {
+  if (source instanceof HTMLImageElement) {
+    return {
+      w: source.naturalWidth,
+      h: source.naturalHeight,
+    };
+  }
+
+  if (source instanceof HTMLVideoElement) {
+    return {
+      w: source.videoWidth,
+      h: source.videoHeight,
+    };
+  }
+
+  if (
+    source instanceof HTMLCanvasElement ||
+    source instanceof OffscreenCanvas ||
+    source instanceof ImageBitmap
+  ) {
+    return {
+      w: source.width,
+      h: source.height,
+    };
+  }
+
+  if (source instanceof SVGImageElement) {
+    const { width, height } = source.getBoundingClientRect();
+    return { w: width, h: height };
+
+  }
+
+  if (source instanceof VideoFrame) {
+    return {
+      w: source.displayWidth,
+      h: source.displayHeight,
+    };
+  }
+
+  assertExhaustive(source);
 }

@@ -1,5 +1,5 @@
 import { BaseRenderingOptions } from '../index';
-import { calculateRectAndSize, makePatteern, makeSteps } from '../util';
+import { calculateRectAndSize, makePattern, makeSteps } from '../util';
 import { rgbaColorToString } from '../../color';
 import { rhombusPath, wallPath, separatorPath, outerPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
@@ -34,9 +34,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
 
     const scalePosition = this.options.scale?.position ?? 'back';
 
-    const backPattern = makePatteern(this.bufCtx, backPatternSource);
-    const waterPattern = makePatteern(this.bufCtx, waterPatternSource);
-    const frontPattern = makePatteern(this.bufCtx, frontPatternSource);
+    const backPattern = makePattern(this.bufCtx, backPatternSource);
+    const waterPattern = makePattern(this.bufCtx, waterPatternSource);
+    const frontPattern = makePattern(this.bufCtx, frontPatternSource);
 
     const [rect, size] = calculateRectAndSize(this.options);
 

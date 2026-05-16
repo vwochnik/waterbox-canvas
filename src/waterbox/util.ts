@@ -152,3 +152,12 @@ export function defineReadonlyProperty<T, K extends keyof T>(
 export function assertExhaustive(value: never): never {
   throw new Error(`Unhandled case: ${JSON.stringify(value)}`);
 }
+
+export function hasAnyKey<T extends object>(
+  obj: T,
+  keys: (keyof T)[]
+): boolean {
+  return keys.some((key) =>
+    Object.prototype.hasOwnProperty.call(obj, key)
+  );
+}

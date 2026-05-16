@@ -261,15 +261,14 @@ body {
         clipEdges: true,
        });
 
-    canvas4.style.background =  "rgba(225,225,255,0.8)";
     const waterbox4 = Waterbox.createWaterbox(canvas4)
       .renderer({
         type: 'cylinder',
         clipEdges: false,
        })
       .backColorScheme({
-        fill: "rgba(127,127,127,0.3)",
-        stroke: 'rgba(0, 0, 96, 0.8)',
+        fill: "rgba(128,128,192,0.6)",
+        stroke: 'rgba(192, 192, 225, 0.6)',
         contrast: 0.1,
       })
       .waterColorScheme({
@@ -277,18 +276,23 @@ body {
         stroke: 'rgba(0, 127, 192, 0.9)',
         contrast: 0.15,
       })
+      .backPattern({
+        name: "grid",
+        size: 15,
+        alpha: 1.0,
+      })
       .waterPattern({
         name: "blocky",
         size: 15,
-        alpha: 0.4,
+        alpha: 1.0,
       })
       .scale({
         divisions: 10,
         size: 0.1,
       })
       .strokeWidths({
-        inner: 2,
-        outer: 4,
+        inner: 1,
+        outer: 1,
       });
 
     requestAnimationFrame(loop);
