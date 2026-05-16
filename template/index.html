@@ -265,25 +265,30 @@ body {
     const waterbox4 = Waterbox.createWaterbox(canvas4)
       .renderer({
         type: 'cylinder',
+        clipEdges: false,
        })
       .backColorScheme({
         fill: "rgba(127,127,127,0.3)",
-        stroke: 'rgba(255, 255, 255, 0.8)',
+        stroke: 'rgba(0, 0, 96, 0.8)',
         contrast: 0.1,
       })
       .waterColorScheme({
         fill: 'rgba(92, 198, 238, 0.7)',
-        stroke: 'rgba(0,0,0,0.2)',
+        stroke: 'rgba(0, 127, 192, 0.9)',
         contrast: 0.15,
       })
-      .frontColorScheme({
-        fill: 'rgba(0,0,0,0.0)',
-        stroke: 'rgba(255, 255, 255, 0.8)',
-        contrast: 0.1,
+      .waterPattern({
+        name: "blocky",
+        size: 15,
+        alpha: 0.4,
       })
       .scale({
         divisions: 10,
         size: 0.1,
+      })
+      .strokeWidths({
+        inner: 2,
+        outer: 4,
       });
 
     requestAnimationFrame(loop);

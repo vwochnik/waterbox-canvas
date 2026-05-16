@@ -77,7 +77,8 @@ function assertIsRenderer(value: unknown): asserts value is Renderer {
       assertIsBoolean(value.clipEdges);
       break;
     case 'cylinder':
-      assertKeys(value, ['type'], [], false);
+      assertKeys(value, ['type', 'clipEdges'], [], false);
+      assertIsBoolean(value.clipEdges);
       break;
     default:
       throw new Error(`Unsupported renderer type: ${value.type}`);

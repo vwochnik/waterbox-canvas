@@ -113,6 +113,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         case 'cylinder':
           renderer = createRenderer('cylinder', canvas, {
             ...fullRenderingOptions,
+            ...pick(options.renderer, ['clipEdges']),
           });
           break;
         default:

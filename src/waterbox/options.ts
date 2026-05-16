@@ -1,6 +1,7 @@
 import { BaseOptions, Optionality } from './util';
 import { BaseRenderingOptions } from './render';
 import { CuboidRenderingOptions } from './render/cuboid';
+import { CylinderRenderingOptions } from './render/cylinder';
 
 export interface Options extends BaseOptions {
   renderer: Renderer;
@@ -23,9 +24,9 @@ export type Renderer =
 | (Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
   type: 'cuboid';
 })
-| {
+| (Pick<CylinderRenderingOptions, 'clipEdges'> & {
   type: 'cylinder';
-};
+});
 
 type StrokeColorScheme = { stroke: string } | { innerStroke: string; outerStroke: string };
 

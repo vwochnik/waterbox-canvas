@@ -14,6 +14,8 @@ export type Rectangle = {
 
 export type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void;
 
+export type FillStyle = string | CanvasGradient | CanvasPattern;
+
 export function getContext(
   canvas: HTMLCanvasElement | OffscreenCanvas,
 ): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {

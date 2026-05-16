@@ -1,44 +1,103 @@
-import { BaseRenderingOptions, Renderer } from '../index';
-import { createOffscreenRenderingContext, getContext } from '../util';
-import { render } from './renderer';
+import { BaseRenderingOptions } from '../index';
+import { calculateRectAndSize, makePatteern, makeSteps } from '../util';
+import { rgbaColorToString } from '../../color';
+import { rhombusPath, wallPath, separatorPath, outerPath } from './paths';
+import { CanvasBaseRenderer } from '../canvas-base';
 
 export interface CuboidRenderingOptions extends BaseRenderingOptions {
   clipEdges: boolean;
   alignPatternToEdges: boolean;
 }
 
-export class CuboidRenderer implements Renderer<CuboidRenderingOptions, 'cuboid'> {
+export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, 'cuboid'> {
   readonly type = 'cuboid' as const;
-  private _options: CuboidRenderingOptions;
-
-  private ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-
-  private bufCtx!: OffscreenCanvasRenderingContext2D;
-  private tmpCtx!: OffscreenCanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CuboidRenderingOptions) {
-    this._options = { ...options };
-    this.ctx = getContext(canvas);
-    this.initializeContexts();
-  }
-
-  get options(): CuboidRenderingOptions {
-    return this._options;
-  }
-
-  update(options: Partial<CuboidRenderingOptions>): void {
-    this._options = { ...this._options, ...options };
-    if (options.width !== undefined || options.height !== undefined) {
-      this.initializeContexts();
-    }
+    super(canvas, options);
   }
 
   render(): void {
-    render(this._options, this.ctx, this.bufCtx, this.tmpCtx);
-  }
+    const {
+      width,
+      height,
+      value,
+      clipEdges,
+      scale,
+      backColorScheme,
+      waterColorScheme,
+      frontColorScheme,
+      backPatternSource,
+      waterPatternSource,
+      frontPatternSource,
+      alignPatternToEdges,
+    } = this.options;
 
-  private initializeContexts() {
-    this.bufCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
-    this.tmpCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
+    const scalePosition = this.options.scale?.position ?? 'back';
+
+    const backPattern = makePatteern(this.bufCtx, backPatternSource);
+    const waterPattern = makePatteern(this.bufCtx, waterPatternSource);
+    const frontPattern = makePatteern(this.bufCtx, frontPatternSource);
+
+    const [rect, size] = calculateRectAndSize(this.options);
+
+    this.bufCtx.reset();
+
+    this.paint(
+      [
+        rhombusPath(rect, size, 0, 'bottom', alignPatternToEdges ?? false),
+        wallPath(rect, size, 100, 'left', 'back', alignPatternToEdges ?? false),
+        wallPath(rect, size, 100, 'right', 'back', alignPatternToEdges ?? false),
+      ],
+      (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
+        separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
+      ),
+      outerPath(rect, size, 100),
+      [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker].map(rgbaColorToString),
+      backColorScheme.innerStroke,
+      backColorScheme.outerStroke,
+      clipEdges,
+      [backPattern, backPattern, backPattern],
+    );
+
+    if (value > 0) {
+      this.paint(
+        [
+          wallPath(rect, size, value, 'left', 'front', alignPatternToEdges ?? false),
+          wallPath(rect, size, value, 'right', 'front', alignPatternToEdges ?? false),
+          rhombusPath(rect, size, value, 'top', alignPatternToEdges ?? false),
+        ],
+        (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
+          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
+        ),
+        outerPath(rect, size, value),
+        [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill].map(rgbaColorToString),
+        waterColorScheme.innerStroke,
+        waterColorScheme.outerStroke,
+        clipEdges,
+        [waterPattern, waterPattern, waterPattern],
+      );
+    }
+
+    if (frontColorScheme) {
+      this.paint(
+        [
+          wallPath(rect, size, 100, 'left', 'front', alignPatternToEdges ?? false),
+          wallPath(rect, size, 100, 'right', 'front', alignPatternToEdges ?? false),
+          rhombusPath(rect, size, 100, 'top', alignPatternToEdges ?? false),
+        ],
+        (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
+          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
+        ),
+        outerPath(rect, size, 100),
+        [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill].map(rgbaColorToString),
+        frontColorScheme.innerStroke,
+        frontColorScheme.outerStroke,
+        clipEdges,
+        [frontPattern, frontPattern, frontPattern],
+      );
+    }
+
+    this.ctx.clearRect(0, 0, width, height);
+    this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
   }
 }
