@@ -1,5 +1,10 @@
 import pick from 'lodash.pick';
-import { createOptionAccessors, OptionAccessors, defineReadonlyProperty, assertExhaustive } from './util';
+import {
+  createOptionAccessors,
+  OptionAccessors,
+  defineReadonlyProperty,
+  assertExhaustive,
+} from './util';
 import { Options, defaultOptions, optionsWithOptionality } from './options';
 import {
   validateBoolean,

@@ -52,7 +52,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
         separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
       ),
       outerPath(rect, size, 100),
-      [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker].map(rgbaColorToString),
+      [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker].map(
+        rgbaColorToString,
+      ),
       backColorScheme.innerStroke,
       backColorScheme.outerStroke,
       clipEdges,
@@ -70,7 +72,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
         ),
         outerPath(rect, size, value),
-        [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill].map(rgbaColorToString),
+        [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill].map(
+          rgbaColorToString,
+        ),
         waterColorScheme.innerStroke,
         waterColorScheme.outerStroke,
         clipEdges,
@@ -89,7 +93,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
         ),
         outerPath(rect, size, 100),
-        [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill].map(rgbaColorToString),
+        [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill].map(
+          rgbaColorToString,
+        ),
         frontColorScheme.innerStroke,
         frontColorScheme.outerStroke,
         clipEdges,

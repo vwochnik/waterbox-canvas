@@ -21,12 +21,12 @@ export interface Options extends BaseOptions {
 }
 
 export type Renderer =
-| (Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
-  type: 'cuboid';
-})
-| (Pick<CylinderRenderingOptions, 'clipEdges'> & {
-  type: 'cylinder';
-});
+  | (Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
+      type: 'cuboid';
+    })
+  | (Pick<CylinderRenderingOptions, 'clipEdges'> & {
+      type: 'cylinder';
+    });
 
 type StrokeColorScheme = { stroke: string } | { innerStroke: string; outerStroke: string };
 

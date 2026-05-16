@@ -1,4 +1,4 @@
-import { Rectangle, Size, PathFunction } from "../util";
+import { Rectangle, Size, PathFunction } from '../util';
 
 export function basePath(
   rect: Rectangle,
@@ -18,7 +18,7 @@ export function basePath(
     ctx.scale(1, h / w);
 
     ctx.beginPath();
-    ctx.ellipse(0, 0, w/2, w/2, 0, 0, 2 * Math.PI);
+    ctx.ellipse(0, 0, w / 2, w / 2, 0, 0, 2 * Math.PI);
   };
 }
 
@@ -26,7 +26,7 @@ export function wallPath(
   rect: Rectangle,
   size: Size,
   value: number,
-  facing: 'back' | 'front' | 'outer'
+  facing: 'back' | 'front' | 'outer',
 ): PathFunction {
   return function (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     const fillHeight = size.h + (value / 100.0) * (rect.h - size.h);
@@ -38,9 +38,9 @@ export function wallPath(
 
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.ellipse(x + w / 2, y, w/2, size.h/2, 0, Math.PI, 0, facing === "front");
+    ctx.ellipse(x + w / 2, y, w / 2, size.h / 2, 0, Math.PI, 0, facing === 'front');
     ctx.lineTo(x + w, y + h);
-    ctx.ellipse(x + w / 2, y + h, w/2, size.h/2, Math.PI, Math.PI, 0, facing === "back");
+    ctx.ellipse(x + w / 2, y + h, w / 2, size.h / 2, Math.PI, Math.PI, 0, facing === 'back');
     ctx.lineTo(x, y);
   };
 }
@@ -61,9 +61,9 @@ export function separatorPath(
     const cx = x + w / 2;
     const cy = y + h / 2;
     const angle = position === 'back' ? 1.5 * Math.PI : Math.PI / 2;
-    const angleDiff = separatorSize * Math.PI / 2;
+    const angleDiff = (separatorSize * Math.PI) / 2;
 
     ctx.beginPath();
-    ctx.ellipse(cx, cy, w/2, h/2, 0, angle - angleDiff, angle + angleDiff);
+    ctx.ellipse(cx, cy, w / 2, h / 2, 0, angle - angleDiff, angle + angleDiff);
   };
 }

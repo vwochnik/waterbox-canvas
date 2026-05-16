@@ -1,7 +1,7 @@
-import { BaseRenderingOptions } from ".";
-import { RgbaColor, rgbaColorToString } from "../color";
-import { hasAnyKey } from "../util";
-import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from "./util";
+import { BaseRenderingOptions } from '.';
+import { RgbaColor, rgbaColorToString } from '../color';
+import { hasAnyKey } from '../util';
+import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from './util';
 
 export abstract class CanvasBaseRenderer<
   RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions,
@@ -90,10 +90,7 @@ export abstract class CanvasBaseRenderer<
     const {
       width,
       height,
-      strokeWidths: {
-        outer: outerStrokeWidth,
-        inner: innerStrokeWidth,
-      },
+      strokeWidths: { outer: outerStrokeWidth, inner: innerStrokeWidth },
     } = this._options;
 
     this.tmpCtx.clearRect(0, 0, width, height);
@@ -101,7 +98,9 @@ export abstract class CanvasBaseRenderer<
     this.tmpCtx.lineCap = 'round';
     this.tmpCtx.lineJoin = 'round';
     this.tmpCtx.lineWidth = innerStrokeWidth;
-    this.tmpCtx.strokeStyle = clipEdges ? 'black' : rgbaColorToString({ ...innerStrokeColor, a: 1.0 });
+    this.tmpCtx.strokeStyle = clipEdges
+      ? 'black'
+      : rgbaColorToString({ ...innerStrokeColor, a: 1.0 });
 
     pathFunctions.forEach(strokePath(this.tmpCtx));
 
@@ -115,7 +114,9 @@ export abstract class CanvasBaseRenderer<
 
     this.tmpCtx.clearRect(0, 0, width, height);
 
-    this.tmpCtx.strokeStyle = clipEdges ? 'black' : rgbaColorToString({ ...outerStrokeColor, a: 1.0 });
+    this.tmpCtx.strokeStyle = clipEdges
+      ? 'black'
+      : rgbaColorToString({ ...outerStrokeColor, a: 1.0 });
     this.tmpCtx.lineWidth = outerStrokeWidth;
     strokePath(this.tmpCtx)(outerPathFunction);
 

@@ -1,5 +1,11 @@
 import { BaseRenderingOptions } from '../index';
-import { calculateRectAndSize, getCanvasImageSourceSize, makePattern, makeSteps, Rectangle } from '../util';
+import {
+  calculateRectAndSize,
+  getCanvasImageSourceSize,
+  makePattern,
+  makeSteps,
+  Rectangle,
+} from '../util';
 import { RgbaColorScheme, rgbaColorToString } from '../../color';
 import { basePath, wallPath, separatorPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
@@ -23,7 +29,18 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
   update(options: Partial<CylinderRenderingOptions>): void {
     super.update(options);
-    if (hasAnyKey(options, ['width', 'height', 'padding', 'tiltAngle', 'strokeWidths', 'backPatternSource', 'waterPatternSource', 'frontPatternSource'])) {
+    if (
+      hasAnyKey(options, [
+        'width',
+        'height',
+        'padding',
+        'tiltAngle',
+        'strokeWidths',
+        'backPatternSource',
+        'waterPatternSource',
+        'frontPatternSource',
+      ])
+    ) {
       this.initializeWallPatternSources();
     }
   }
@@ -58,10 +75,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     this.bufCtx.reset();
 
     this.paint(
-      [
-        basePath(rect, size, 0, 'bottom'),
-        wallPath(rect, size, 100, 'back'),
-      ],
+      [basePath(rect, size, 0, 'bottom'), wallPath(rect, size, 100, 'back')],
       (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
       ),
@@ -78,10 +92,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     if (value > 0) {
       this.paint(
-        [
-          wallPath(rect, size, value, 'front'),
-          basePath(rect, size, value, 'top'),
-        ],
+        [wallPath(rect, size, value, 'front'), basePath(rect, size, value, 'top')],
         (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
         ),
@@ -99,10 +110,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     if (frontColorScheme) {
       this.paint(
-        [
-          wallPath(rect, size, 100, 'front'),
-          basePath(rect, size, 100, 'top'),
-        ],
+        [wallPath(rect, size, 100, 'front'), basePath(rect, size, 100, 'top')],
         (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
         ),
@@ -123,12 +131,24 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
   }
 
   private initializeWallPatternSources(): void {
-    this.backWallPatternSource = this.generateWallPatternSource(this.options.backPatternSource, 'back');
-    this.waterWallPatternSource = this.generateWallPatternSource(this.options.waterPatternSource, 'front');
-    this.frontWallPatternSource = this.generateWallPatternSource(this.options.frontPatternSource, 'front');
+    this.backWallPatternSource = this.generateWallPatternSource(
+      this.options.backPatternSource,
+      'back',
+    );
+    this.waterWallPatternSource = this.generateWallPatternSource(
+      this.options.waterPatternSource,
+      'front',
+    );
+    this.frontWallPatternSource = this.generateWallPatternSource(
+      this.options.frontPatternSource,
+      'front',
+    );
   }
 
-  private generateWallPatternSource(patternSource: CanvasImageSource | undefined, facing: 'back' | 'front'): ImageBitmap | undefined {
+  private generateWallPatternSource(
+    patternSource: CanvasImageSource | undefined,
+    facing: 'back' | 'front',
+  ): ImageBitmap | undefined {
     if (!patternSource) {
       return undefined;
     }
@@ -136,7 +156,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const sourceSize = getCanvasImageSourceSize(patternSource);
     const [rect, size] = calculateRectAndSize(this.options);
 
-    const radiusX = size.w / 2;;
+    const radiusX = size.w / 2;
     const radiusY = size.h / 2;
     const centerX = rect.x + radiusX;
     const centerY = rect.y + radiusY;
@@ -144,27 +164,33 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     this.tmpCtx.reset();
 
-    const slices = 2 * radiusX * Math.PI/2.0;
+    const slices = (2 * radiusX * Math.PI) / 2.0;
     for (let i = 0; i < slices; i++) {
-        const angle = -Math.PI / 2 + (Math.PI * i / slices);
+      const angle = -Math.PI / 2 + (Math.PI * i) / slices;
+      const x = centerX + Math.floor(Math.sin(angle) * radiusX);
 
-        const x = centerX + Math.floor(Math.sin(angle) * radiusX);
-        const yTop = centerY + (facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
-        const yBottom = yTop + height;
+      const yTop = centerY + (facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
+      const yBottom = yTop + height;
 
-        const u = Math.floor((i / slices) * radiusX * 2 * Math.PI/2.0) % sourceSize.w;
+      const u = (((i / slices) * radiusX * 2 * Math.PI) / 2.0) % sourceSize.w;
 
-        this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
-        for (let drawY = yBottom; drawY > yTop; drawY -= sourceSize.h) {
-            let displayHeight = Math.min(sourceSize.h, drawY - yTop);
-            let sourceY = sourceSize.h - displayHeight;
+      this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
+      for (let drawY = yBottom; drawY > yTop; drawY -= sourceSize.h) {
+        let displayHeight = Math.min(sourceSize.h, drawY - yTop);
+        let sourceY = sourceSize.h - displayHeight;
 
-            this.tmpCtx.drawImage(
-                patternSource,
-                u, sourceY, 1, displayHeight,
-                x, drawY - displayHeight, 1, displayHeight
-            );
-        }
+        this.tmpCtx.drawImage(
+          patternSource,
+          u,
+          sourceY,
+          1,
+          displayHeight,
+          x,
+          drawY - displayHeight,
+          1,
+          displayHeight,
+        );
+      }
     }
 
     return this.tmpCtx.canvas.transferToImageBitmap();
@@ -174,7 +200,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 function makeWallGradient(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   rect: Rectangle,
-  colorScheme: RgbaColorScheme
+  colorScheme: RgbaColorScheme,
 ): CanvasGradient {
   const gradient = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.w, rect.y);
   gradient.addColorStop(0, rgbaColorToString(colorScheme.darker));

@@ -1,5 +1,5 @@
-import { BaseRenderingOptions } from ".";
-import { assertExhaustive } from "../util";
+import { BaseRenderingOptions } from '.';
+import { assertExhaustive } from '../util';
 
 const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
 
@@ -13,7 +13,9 @@ export type Rectangle = {
   y: number;
 } & Size;
 
-export type PathFunction = (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void;
+export type PathFunction = (
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+) => void;
 
 export type FillStyle = string | CanvasGradient | CanvasPattern;
 
@@ -36,18 +38,18 @@ export function createOffscreenRenderingContext(
   if (!context) {
     throw new Error("can't get context");
   }
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
   return context;
 }
 
-export function calculateRectAndSize(
-  {
-    width,
-    height,
-    padding,
-    tiltAngle = DEFAULT_TILT_ANGLE,
-    strokeWidths: { outer: strokeWidth }
-  }: BaseRenderingOptions
-): [Rectangle, Size] {
+export function calculateRectAndSize({
+  width,
+  height,
+  padding,
+  tiltAngle = DEFAULT_TILT_ANGLE,
+  strokeWidths: { outer: strokeWidth },
+}: BaseRenderingOptions): [Rectangle, Size] {
   const angleRad = (tiltAngle * Math.PI) / 180;
   const ratio = Math.sin(angleRad);
 
@@ -123,7 +125,6 @@ export function getCanvasImageSourceSize(source: CanvasImageSource): Size {
   if (source instanceof SVGImageElement) {
     const { width, height } = source.getBoundingClientRect();
     return { w: width, h: height };
-
   }
 
   if (source instanceof VideoFrame) {

@@ -1,4 +1,4 @@
-import { Rectangle, Size, PathFunction } from "../util";
+import { Rectangle, Size, PathFunction } from '../util';
 
 export function rhombusPath(
   rect: Rectangle,
