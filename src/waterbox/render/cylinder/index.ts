@@ -171,14 +171,15 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     for (let x = startX; x <= endX; x++) {
       const normalizedX = Math.max(-1, Math.min(1, (x - centerX) / radiusX));
-      
+
       const angle = Math.asin(normalizedX);
 
       const yTop = centerY + (facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
       const yBottom = yTop + height;
 
-      const progress = (angle + Math.PI / 2) / Math.PI; 
+      const progress = (angle + Math.PI / 2) / Math.PI;
       const u = (progress * radiusX * Math.PI) % sourceSize.w;
+      const w = 1 + (1 - Math.cos(angle));
 
       this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
 
@@ -190,7 +191,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
           patternSource,
           u,
           sourceY,
-          1,
+          w,
           displayHeight,
           x,
           drawY - displayHeight,
