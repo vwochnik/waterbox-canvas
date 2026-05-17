@@ -166,17 +166,22 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     this.tmpCtx.reset();
 
-    const slices = (2 * radiusX * Math.PI) / 2.0;
-    for (let i = 0; i < slices; i++) {
-      const angle = -Math.PI / 2 + (Math.PI * i) / slices;
-      const x = centerX + Math.floor(Math.sin(angle) * radiusX);
+    const startX = centerX - radiusX;
+    const endX = centerX + radiusX;
+
+    for (let x = startX; x <= endX; x++) {
+      const normalizedX = Math.max(-1, Math.min(1, (x - centerX) / radiusX));
+      
+      const angle = Math.asin(normalizedX);
 
       const yTop = centerY + (facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
       const yBottom = yTop + height;
 
-      const u = (((i / slices) * radiusX * 2 * Math.PI) / 2.0) % sourceSize.w;
+      const progress = (angle + Math.PI / 2) / Math.PI; 
+      const u = (progress * radiusX * Math.PI) % sourceSize.w;
 
       this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
+
       for (let drawY = yBottom; drawY > yTop; drawY -= sourceSize.h) {
         let displayHeight = Math.min(sourceSize.h, drawY - yTop);
         let sourceY = sourceSize.h - displayHeight;
@@ -185,7 +190,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
           patternSource,
           u,
           sourceY,
-          2,
+          1,
           displayHeight,
           x,
           drawY - displayHeight,
