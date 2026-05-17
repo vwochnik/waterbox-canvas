@@ -120,7 +120,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         case 'cylinder':
           renderer = createRenderer('cylinder', canvas, {
             ...fullRenderingOptions,
-            ...pick(options.renderer, ['clipEdges', 'applyPatternToBases']),
+            ...pick(options.renderer, ['clipEdges', 'applyPatternToBases', 'centerPatternHorizontally']),
           });
           break;
         default:

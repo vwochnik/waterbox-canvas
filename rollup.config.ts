@@ -50,6 +50,7 @@ export default {
       targets: [
         { src: pkg.browser, dest: "dist/public", rename: "waterbox-canvas.js", },
         { src: "water.png", dest: "dist/public", },
+        { src: "nuclear.png", dest: "dist/public", },
       ],
       hook: "writeBundle",
       copySync: true,

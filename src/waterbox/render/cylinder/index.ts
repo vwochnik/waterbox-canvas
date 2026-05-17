@@ -14,6 +14,7 @@ import { hasAnyKey } from '../../util';
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   clipEdges: boolean;
   applyPatternToBases: boolean;
+  centerPatternHorizontally: boolean;
 }
 
 export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOptions, 'cylinder'> {
@@ -164,6 +165,9 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const centerY = rect.y + radiusY;
     const height = rect.h - size.h;
 
+    const mappedWidth = radiusX * Math.PI;
+    const uOffset = (this.options.centerPatternHorizontally) ? (sourceSize.w - mappedWidth) / 2 : 0;
+
     this.tmpCtx.reset();
 
     const startX = centerX - radiusX;
@@ -178,8 +182,12 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       const yBottom = yTop + height;
 
       const progress = (angle + Math.PI / 2) / Math.PI;
-      const u = (progress * radiusX * Math.PI) % sourceSize.w;
       const w = 1 + (1 - Math.cos(angle)) * 4;
+
+      let u = (uOffset + progress * mappedWidth) % sourceSize.w;
+      while (u < 0) {
+        u += sourceSize.w;
+      }
 
       this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
 
