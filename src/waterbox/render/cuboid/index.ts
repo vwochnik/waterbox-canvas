@@ -5,7 +5,6 @@ import { rhombusPath, wallPath, separatorPath, outerPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
 
 export interface CuboidRenderingOptions extends BaseRenderingOptions {
-  clipEdges: boolean;
   alignPatternToEdges: boolean;
 }
 
@@ -21,7 +20,6 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
       width,
       height,
       value,
-      clipEdges,
       scale,
       backColorScheme,
       waterColorScheme,
@@ -57,7 +55,6 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
       ),
       backColorScheme.innerStroke,
       backColorScheme.outerStroke,
-      clipEdges,
       [backPattern, backPattern, backPattern],
     );
 
@@ -77,7 +74,6 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
         ),
         waterColorScheme.innerStroke,
         waterColorScheme.outerStroke,
-        clipEdges,
         [waterPattern, waterPattern, waterPattern],
       );
     }
@@ -98,7 +94,6 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
         ),
         frontColorScheme.innerStroke,
         frontColorScheme.outerStroke,
-        clipEdges,
         [frontPattern, frontPattern, frontPattern],
       );
     }

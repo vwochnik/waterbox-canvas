@@ -84,7 +84,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       renderingOptions.frontPatternSource = frontPatternSource;
     }
 
-    ['padding', 'value', 'tiltAngle', 'strokeWidths', 'scale'].forEach((key) => {
+    ['padding', 'value', 'tiltAngle', 'strokeWidths', 'scale', 'clipEdges'].forEach((key) => {
       if (changes.includes(key as keyof Options)) {
         renderingOptions[key as keyof BaseRenderingOptions] = options[key as keyof Options] as any;
       }
@@ -100,6 +100,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
           'tiltAngle',
           'strokeWidths',
           'scale',
+          'clipEdges',
         ]),
         backColorScheme,
         waterColorScheme,
@@ -114,13 +115,13 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
         case 'cuboid':
           renderer = createRenderer('cuboid', canvas, {
             ...fullRenderingOptions,
-            ...pick(options.renderer, ['alignPatternToEdges', 'clipEdges']),
+            ...pick(options.renderer, ['alignPatternToEdges']),
           });
           break;
         case 'cylinder':
           renderer = createRenderer('cylinder', canvas, {
             ...fullRenderingOptions,
-            ...pick(options.renderer, ['clipEdges', 'applyPatternToBases', 'centerPatternHorizontally']),
+            ...pick(options.renderer, ['applyPatternToBases', 'centerPatternHorizontally']),
           });
           break;
         default:
@@ -153,5 +154,6 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
     frontPattern: validateOptionalPattern,
     scale: validateOptionalScale,
     strokeWidths: validateStrokeWidths,
+    clipEdges: validateBoolean,
   });
 }

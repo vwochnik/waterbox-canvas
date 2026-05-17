@@ -41,7 +41,6 @@ export abstract class CanvasBaseRenderer<
     fillStyles: FillStyle[],
     innerStrokeColor: RgbaColor,
     outerStrokeColor: RgbaColor,
-    clipEdges: boolean,
     patterns: (CanvasPattern | undefined)[],
   ) {
     this.paintFilling(fillPaths, fillStyles, patterns);
@@ -51,16 +50,15 @@ export abstract class CanvasBaseRenderer<
       outerPath,
       innerStrokeColor,
       outerStrokeColor,
-      clipEdges,
     );
   }
 
-  protected paintFilling(
+  private paintFilling(
     paths: PathFunction[],
     fillStyles: FillStyle[],
     patterns: (CanvasPattern | undefined)[],
   ): void {
-    const { width, height } = this._options;
+    const { width, height } = this.options;
 
     this.tmpCtx.clearRect(0, 0, width, height);
     paths.forEach((path, index) => {
@@ -80,18 +78,18 @@ export abstract class CanvasBaseRenderer<
     this.bufCtx.drawImage(this.tmpCtx.canvas, 0, 0);
   }
 
-  protected paintEdges(
+  private paintEdges(
     pathFunctions: PathFunction[],
     outerPathFunction: PathFunction,
     innerStrokeColor: RgbaColor,
     outerStrokeColor: RgbaColor,
-    clipEdges: boolean,
   ): void {
     const {
       width,
       height,
       strokeWidths: { outer: outerStrokeWidth, inner: innerStrokeWidth },
-    } = this._options;
+    } = this.options;
+    const clipEdges = this.options.clipEdges;
 
     this.tmpCtx.clearRect(0, 0, width, height);
 
@@ -124,8 +122,8 @@ export abstract class CanvasBaseRenderer<
   }
 
   private initializeContexts() {
-    this.bufCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
-    this.tmpCtx = createOffscreenRenderingContext(this._options.width, this._options.height);
+    this.bufCtx = createOffscreenRenderingContext(this.options.width, this.options.height);
+    this.tmpCtx = createOffscreenRenderingContext(this.options.width, this.options.height);
   }
 }
 

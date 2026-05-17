@@ -18,13 +18,14 @@ export interface Options extends BaseOptions {
   frontPattern?: Pattern;
   strokeWidths: StrokeWidths;
   scale?: Scale;
+  clipEdges: boolean;
 }
 
 export type Renderer =
-  | (Pick<CuboidRenderingOptions, 'alignPatternToEdges' | 'clipEdges'> & {
+  | (Pick<CuboidRenderingOptions, 'alignPatternToEdges'> & {
       type: 'cuboid';
     })
-  | (Pick<CylinderRenderingOptions, 'clipEdges' | 'applyPatternToBases' | "centerPatternHorizontally"> & {
+  | (Pick<CylinderRenderingOptions, 'applyPatternToBases' | "centerPatternHorizontally"> & {
       type: 'cylinder';
     });
 
@@ -83,10 +84,11 @@ export const optionsWithOptionality: Optionality<Options> = {
   frontPattern: true,
   strokeWidths: false,
   scale: true,
+  clipEdges: false,
 };
 
 export const defaultOptions: Options = {
-  renderer: { type: 'cuboid', alignPatternToEdges: false, clipEdges: false },
+  renderer: { type: 'cuboid', alignPatternToEdges: false },
   width: 100,
   height: 200,
   padding: 2,
@@ -108,4 +110,5 @@ export const defaultOptions: Options = {
     outer: 2,
     inner: 1,
   },
+  clipEdges: false,
 };

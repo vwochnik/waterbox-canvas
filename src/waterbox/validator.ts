@@ -62,7 +62,6 @@ export function validateOptionalScale(scale?: unknown): Scale | undefined {
 }
 
 export function validateBoolean(value: unknown): boolean {
-  assertKeys(value, [], [], true);
   assertIsBoolean(value);
   return value;
 }
@@ -72,13 +71,11 @@ function assertIsRenderer(value: unknown): asserts value is Renderer {
   assertIsString(value.type);
   switch (value.type) {
     case 'cuboid':
-      assertKeys(value, ['type', 'alignPatternToEdges', 'clipEdges'], [], false);
+      assertKeys(value, ['type', 'alignPatternToEdges'], [], false);
       assertIsBoolean(value.alignPatternToEdges);
-      assertIsBoolean(value.clipEdges);
       break;
     case 'cylinder':
-      assertKeys(value, ['type', 'clipEdges', 'applyPatternToBases', 'centerPatternHorizontally'], [], false);
-      assertIsBoolean(value.clipEdges);
+      assertKeys(value, ['type', 'applyPatternToBases', 'centerPatternHorizontally'], [], false);
       assertIsBoolean(value.applyPatternToBases);
       assertIsBoolean(value.centerPatternHorizontally);
       break;

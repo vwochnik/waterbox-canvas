@@ -232,8 +232,8 @@ body {
       .renderer({
         type: 'cuboid',
         alignPatternToEdges: true,
-        clipEdges: true,
-       });
+       })
+       .clipEdges(true);
 
     const waterbox3 = Waterbox.createWaterbox(canvas3)
       .backColorScheme({
@@ -258,13 +258,12 @@ body {
       .renderer({
         type: 'cuboid',
         alignPatternToEdges: true,
-        clipEdges: true,
-       });
+       })
+       .clipEdges(true);
 
     const waterbox4 = Waterbox.createWaterbox(canvas4)
       .renderer({
         type: 'cylinder',
-        clipEdges: false,
         applyPatternToBases: false,
         centerPatternHorizontally: true,
        })

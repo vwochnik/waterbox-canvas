@@ -18,6 +18,7 @@ export interface BaseRenderingOptions {
   backPatternSource?: CanvasImageSource;
   waterPatternSource?: CanvasImageSource;
   frontPatternSource?: CanvasImageSource;
+  clipEdges: boolean;
 }
 
 export interface Renderer<

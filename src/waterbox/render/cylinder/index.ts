@@ -12,7 +12,6 @@ import { CanvasBaseRenderer } from '../canvas-base';
 import { hasAnyKey } from '../../util';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
-  clipEdges: boolean;
   applyPatternToBases: boolean;
   centerPatternHorizontally: boolean;
 }
@@ -52,7 +51,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       width,
       height,
       value,
-      clipEdges,
       scale,
       backColorScheme,
       waterColorScheme,
@@ -89,7 +87,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       ],
       backColorScheme.innerStroke,
       backColorScheme.outerStroke,
-      clipEdges,
       [(applyPatternToBases ? backPattern : undefined), backWallPattern],
     );
 
@@ -106,7 +103,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         ],
         waterColorScheme.innerStroke,
         waterColorScheme.outerStroke,
-        clipEdges,
         [waterWallPattern, (applyPatternToBases ? waterPattern : undefined)],
       );
     }
@@ -124,7 +120,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         ],
         frontColorScheme.innerStroke,
         frontColorScheme.outerStroke,
-        clipEdges,
         [frontWallPattern, (applyPatternToBases ? frontPattern : undefined)],
       );
     }
