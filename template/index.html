@@ -269,14 +269,14 @@ body {
         centerPatternHorizontally: true,
        })
       .backColorScheme({
-        fill: "rgba(128,128,192,0.6)",
-        stroke: 'rgba(192, 192, 225, 0.6)',
-        contrast: 0.1,
+        fill: "rgba(150, 150, 150, 1)",
+        stroke: 'rgba(100, 100, 100, 1)',
+        contrast: 0.15,
       })
       .waterColorScheme({
-        fill: 'rgba(92, 198, 238, 0.7)',
-        stroke: 'rgba(0, 127, 192, 0.9)',
-        contrast: 0.15,
+        fill: 'rgba(255, 235, 0, 0.9)',
+        stroke: 'rgba(180, 140, 0, 1)',
+        contrast: 0.2,
       })
       .scale({
         divisions: 10,
@@ -334,10 +334,9 @@ body {
     function loadNuclearImage(waterbox) {
       const img = new Image();
       img.onload = function() {
-        const imgCanvas = new OffscreenCanvas(80, 80);
+        const imgCanvas = new OffscreenCanvas(100, 120);
         imgCtx = imgCanvas.getContext("2d");
-        imgCtx.globalAlpha = 0.5;
-        imgCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 80, 80);
+        imgCtx.drawImage(img, 0, 0, img.width, img.height, 30, 40, 40, 40);
         waterbox.waterPattern({
           image: imgCanvas,
         });
