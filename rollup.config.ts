@@ -65,9 +65,10 @@ export default {
     // Serve and live reload only in watch mode
     ...(process.env.ROLLUP_WATCH ? [
       serve({
-        open: true,
+        open: false,
         contentBase: 'dist/public',
         openPage: '/',
+        host: '0.0.0.0',
         port: 3000,
       }),
       livereload(),
