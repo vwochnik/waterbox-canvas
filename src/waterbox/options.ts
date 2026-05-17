@@ -1,5 +1,4 @@
 import { BaseOptions, Optionality } from './util';
-import { BaseRenderingOptions } from './render';
 import { CuboidRenderingOptions } from './render/cuboid';
 import { CylinderRenderingOptions } from './render/cylinder';
 

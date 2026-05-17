@@ -120,6 +120,28 @@ Creates a new waterbox instance for the given canvas.
 
 ### `Waterbox` properties
 
+#### `renderer`
+
+* `renderer(): Renderer`
+* `renderer(value: Renderer): Waterbox`
+
+Get or set the renderer.
+
+##### Example
+```
+// default renderer
+waterbox.renderer({
+  type: 'cuboid',
+  alignPatternToEdges: true,
+});
+// cylinder renderer
+.renderer({
+  type: 'cylinder',
+  applyPatternToBases: false,
+  centerPatternHorizontally: true,
+})
+```
+
 #### `width`
 
 * `width(): number`

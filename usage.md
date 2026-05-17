@@ -1,6 +1,22 @@
 ---
 title: waterbox-canvas
 options:
+- name: renderer
+  type: Renderer
+  optional: false
+  description: Get or set the renderer.
+  example: |
+    // default renderer
+    waterbox.renderer({
+      type: 'cuboid',
+      alignPatternToEdges: true,
+    });
+    // cylinder renderer
+    .renderer({
+      type: 'cylinder',
+      applyPatternToBases: false,
+      centerPatternHorizontally: true,
+    })
 - name: width
   type: number
   optional: false
