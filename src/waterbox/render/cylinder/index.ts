@@ -179,7 +179,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
       const progress = (angle + Math.PI / 2) / Math.PI;
       const u = (progress * radiusX * Math.PI) % sourceSize.w;
-      const w = 1 + (1 - Math.cos(angle));
+      const w = 1 + (1 - Math.cos(angle)) * 4;
 
       this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
 

@@ -282,11 +282,11 @@ body {
         size: 20,
         alpha: 1.0,
       })
-      .waterPattern({
+      /*.waterPattern({
         name: "blocky",
         size: 15,
         alpha: 1.0,
-      })
+      })*/
       .scale({
         divisions: 10,
         size: 0.1,
@@ -320,7 +320,7 @@ body {
           contrast: 0.15,
         })
         .render();
-      waterbox4.value((value + 25) % 100).render();
+      waterbox4.value((value + 30) % 100).render();
       value = (value + 1) % 100;
     }
 
