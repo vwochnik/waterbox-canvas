@@ -26,6 +26,8 @@ export function getContext(
   if (!context) {
     throw new Error("can't get context");
   }
+
+  // tslint:disable-next-line:no-unnecessary-type-assertion
   return context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 }
 

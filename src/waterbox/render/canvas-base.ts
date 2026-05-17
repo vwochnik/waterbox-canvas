@@ -69,7 +69,7 @@ export abstract class CanvasBaseRenderer<
 
       if (patterns[index]) {
         this.tmpCtx.globalCompositeOperation = 'overlay';
-        this.tmpCtx.fillStyle = patterns[index]!;
+        this.tmpCtx.fillStyle = patterns[index];
         this.tmpCtx.fill();
         this.tmpCtx.globalCompositeOperation = 'source-over';
       }
