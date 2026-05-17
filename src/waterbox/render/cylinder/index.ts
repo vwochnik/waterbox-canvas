@@ -12,8 +12,8 @@ import { CanvasBaseRenderer } from '../canvas-base';
 import { hasAnyKey } from '../../util';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
-  applyPatternToBases: boolean;
-  centerPatternHorizontally: boolean;
+  applyPatternToBases?: boolean;
+  centerPatternHorizontally?: boolean;
 }
 
 export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOptions, 'cylinder'> {
@@ -58,8 +58,8 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       backPatternSource,
       waterPatternSource,
       frontPatternSource,
-      applyPatternToBases,
     } = this.options;
+    const applyPatternToBases = this.options.applyPatternToBases ?? false;
 
     const scalePosition = this.options.scale?.position ?? 'back';
 
@@ -161,7 +161,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const height = rect.h - size.h;
 
     const mappedWidth = radiusX * Math.PI;
-    const uOffset = (this.options.centerPatternHorizontally) ? (sourceSize.w - mappedWidth) / 2 : 0;
+    const uOffset = (this.options.centerPatternHorizontally ?? false) ? (sourceSize.w - mappedWidth) / 2 : 0;
 
     this.tmpCtx.reset();
 

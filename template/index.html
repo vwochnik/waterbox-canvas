@@ -335,7 +335,7 @@ body {
       img.onload = function() {
         const imgCanvas = new OffscreenCanvas(100, 120);
         imgCtx = imgCanvas.getContext("2d");
-        imgCtx.drawImage(img, 0, 0, img.width, img.height, 30, 40, 40, 40);
+        imgCtx.drawImage(img, 0, 0, img.width, img.height, 25, 20, 50, 50);
         waterbox.waterPattern({
           image: imgCanvas,
         });

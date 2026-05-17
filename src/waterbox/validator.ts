@@ -71,13 +71,19 @@ function assertIsRenderer(value: unknown): asserts value is Renderer {
   assertIsString(value.type);
   switch (value.type) {
     case 'cuboid':
-      assertKeys(value, ['type', 'alignPatternToEdges'], [], false);
-      assertIsBoolean(value.alignPatternToEdges);
+      assertKeys(value, ['type'], ['alignPatternToEdges'], false);
+      if (value.alignPatternToEdges !== undefined) {
+        assertIsBoolean(value.alignPatternToEdges);
+      }
       break;
     case 'cylinder':
-      assertKeys(value, ['type', 'applyPatternToBases', 'centerPatternHorizontally'], [], false);
-      assertIsBoolean(value.applyPatternToBases);
-      assertIsBoolean(value.centerPatternHorizontally);
+      assertKeys(value, ['type'], ['applyPatternToBases', 'centerPatternHorizontally'], false);
+      if (value.applyPatternToBases !== undefined) {
+        assertIsBoolean(value.applyPatternToBases);
+      }
+      if (value.centerPatternHorizontally !== undefined) {
+        assertIsBoolean(value.centerPatternHorizontally);
+      }
       break;
     default:
       throw new Error(`Unsupported renderer type: ${value.type}`);

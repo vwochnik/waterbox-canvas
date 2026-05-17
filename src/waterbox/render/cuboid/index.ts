@@ -5,7 +5,7 @@ import { rhombusPath, wallPath, separatorPath, outerPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
 
 export interface CuboidRenderingOptions extends BaseRenderingOptions {
-  alignPatternToEdges: boolean;
+  alignPatternToEdges?: boolean;
 }
 
 export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, 'cuboid'> {
@@ -27,8 +27,8 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
       backPatternSource,
       waterPatternSource,
       frontPatternSource,
-      alignPatternToEdges,
     } = this.options;
+    const alignPatternToEdges = this.options.alignPatternToEdges ?? false;
 
     const scalePosition = this.options.scale?.position ?? 'back';
 
