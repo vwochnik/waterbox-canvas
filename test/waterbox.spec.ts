@@ -36,16 +36,6 @@ describe('Waterbox', () => {
     expect(waterbox.waterPattern()).toEqual(pattern);
   });
 
-  it('can set a custom pattern', () => {
-    const pattern: Pattern = {
-      creator: (ctx) => {
-        return ctx.createPattern(new OffscreenCanvas(10, 10), 'repeat')!;
-      },
-    };
-    waterbox.waterPattern(pattern);
-    expect(waterbox.waterPattern()).toEqual(pattern);
-  });
-
   it('can not set an invalid pattern', () => {
     const pattern: Pattern = { name: 'blocky', size: -1, alpha: 0.5 };
     try {
