@@ -189,11 +189,16 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         u += sourceSize.w;
       }
 
-      this.tmpCtx.clearRect(x, yTop, 1, yBottom - yTop);
-
       for (let drawY = yBottom; drawY > yTop; drawY -= sourceSize.h) {
         let displayHeight = Math.min(sourceSize.h, drawY - yTop);
         let sourceY = sourceSize.h - displayHeight;
+
+        this.tmpCtx.clearRect(
+          x,
+          drawY - displayHeight,
+          1,
+          displayHeight,
+        );
 
         this.tmpCtx.drawImage(
           patternSource,
