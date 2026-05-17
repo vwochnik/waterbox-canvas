@@ -277,9 +277,19 @@ body {
         stroke: 'rgba(180, 140, 0, 1)',
         contrast: 0.1,
       })
+      .frontColorScheme({
+        stroke: "rgba(255,255,255,0.2)",
+        fill: "rgba(255,255,255,0.1)",
+        contrast: 0
+      })
+      .frontPattern({
+        name: "dotted",
+        size: 5,
+        alpha: 1,
+      })
       .scale({
-        divisions: 10,
-        size: 0.1,
+        divisions: 5,
+        size: 0.05,
       })
       .strokeWidths({
         inner: 2,
