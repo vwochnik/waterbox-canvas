@@ -24,7 +24,7 @@ export type Renderer =
   | (Pick<CuboidRenderingOptions, 'alignPatternToEdges'> & {
       type: 'cuboid';
     })
-  | (Pick<CylinderRenderingOptions, 'applyPatternToBases' | "centerPatternHorizontally"> & {
+  | (Pick<CylinderRenderingOptions, 'applyPatternToBases' | 'centerPatternHorizontally'> & {
       type: 'cylinder';
     });
 

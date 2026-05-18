@@ -45,12 +45,7 @@ export abstract class CanvasBaseRenderer<
   ) {
     this.paintFilling(fillPaths, fillStyles, patterns);
 
-    this.paintEdges(
-      [...fillPaths, ...strokePaths],
-      outerPath,
-      innerStrokeColor,
-      outerStrokeColor,
-    );
+    this.paintEdges([...fillPaths, ...strokePaths], outerPath, innerStrokeColor, outerStrokeColor);
   }
 
   private paintFilling(

@@ -9,7 +9,7 @@ import {
 import { RgbaColorScheme, rgbaColorToString } from '../../color';
 import { basePath, wallPath, separatorPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
-import { hasAnyKey } from '../../util';
+import { assertExhaustive, hasAnyKey } from '../../util';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   applyPatternToBases?: boolean;
@@ -25,24 +25,29 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CylinderRenderingOptions) {
     super(canvas, options);
-    this.initializeWallPatternSources();
+    this.initializeWallPatternSource('back');
+    this.initializeWallPatternSource('water');
+    this.initializeWallPatternSource('front');
   }
 
   update(options: Partial<CylinderRenderingOptions>): void {
     super.update(options);
-    if (
-      hasAnyKey(options, [
-        'width',
-        'height',
-        'padding',
-        'tiltAngle',
-        'strokeWidths',
-        'backPatternSource',
-        'waterPatternSource',
-        'frontPatternSource',
-      ])
-    ) {
-      this.initializeWallPatternSources();
+    const needsPatternUpdate = hasAnyKey(options, [
+      'width',
+      'height',
+      'padding',
+      'tiltAngle',
+      'strokeWidths',
+    ]);
+
+    if (needsPatternUpdate || 'backPatternSource' in options) {
+      this.initializeWallPatternSource('back');
+    }
+    if (needsPatternUpdate || 'waterPatternSource' in options) {
+      this.initializeWallPatternSource('water');
+    }
+    if (needsPatternUpdate || 'frontPatternSource' in options) {
+      this.initializeWallPatternSource('front');
     }
   }
 
@@ -87,7 +92,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       ],
       backColorScheme.innerStroke,
       backColorScheme.outerStroke,
-      [(applyPatternToBases ? backPattern : undefined), backWallPattern],
+      [applyPatternToBases ? backPattern : undefined, backWallPattern],
     );
 
     if (value > 0) {
@@ -103,7 +108,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         ],
         waterColorScheme.innerStroke,
         waterColorScheme.outerStroke,
-        [waterWallPattern, (applyPatternToBases ? waterPattern : undefined)],
+        [waterWallPattern, applyPatternToBases ? waterPattern : undefined],
       );
     }
 
@@ -120,27 +125,12 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         ],
         frontColorScheme.innerStroke,
         frontColorScheme.outerStroke,
-        [frontWallPattern, (applyPatternToBases ? frontPattern : undefined)],
+        [frontWallPattern, applyPatternToBases ? frontPattern : undefined],
       );
     }
 
     this.ctx.clearRect(0, 0, width, height);
     this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
-  }
-
-  private initializeWallPatternSources(): void {
-    this.backWallPatternSource = this.generateWallPatternSource(
-      this.options.backPatternSource,
-      'back',
-    );
-    this.waterWallPatternSource = this.generateWallPatternSource(
-      this.options.waterPatternSource,
-      'front',
-    );
-    this.frontWallPatternSource = this.generateWallPatternSource(
-      this.options.frontPatternSource,
-      'front',
-    );
   }
 
   private generateWallPatternSource(
@@ -161,7 +151,8 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const height = rect.h - size.h;
 
     const mappedWidth = radiusX * Math.PI;
-    const uOffset = (this.options.centerPatternHorizontally ?? false) ? (sourceSize.w - mappedWidth) / 2 : 0;
+    const uOffset =
+      (this.options.centerPatternHorizontally ?? false) ? (sourceSize.w - mappedWidth) / 2 : 0;
 
     this.tmpCtx.reset();
 
@@ -188,12 +179,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         let displayHeight = Math.min(sourceSize.h, drawY - yTop);
         let sourceY = sourceSize.h - displayHeight;
 
-        this.tmpCtx.clearRect(
-          x,
-          drawY - displayHeight,
-          1,
-          displayHeight,
-        );
+        this.tmpCtx.clearRect(x, drawY - displayHeight, 1, displayHeight);
 
         this.tmpCtx.drawImage(
           patternSource,
@@ -210,6 +196,31 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     }
 
     return this.tmpCtx.canvas.transferToImageBitmap();
+  }
+
+  private initializeWallPatternSource(facing: 'back' | 'water' | 'front'): void {
+    switch (facing) {
+      case 'back':
+        this.backWallPatternSource = this.generateWallPatternSource(
+          this.options.backPatternSource,
+          'back',
+        );
+        break;
+      case 'water':
+        this.waterWallPatternSource = this.generateWallPatternSource(
+          this.options.waterPatternSource,
+          'front',
+        );
+        break;
+      case 'front':
+        this.frontWallPatternSource = this.generateWallPatternSource(
+          this.options.frontPatternSource,
+          'front',
+        );
+        break;
+      default:
+        assertExhaustive(facing);
+    }
   }
 }
 
