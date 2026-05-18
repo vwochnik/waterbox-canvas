@@ -79,7 +79,7 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
   let options!: T;
 
   function update(updatedKeys: (keyof T)[], diff: Partial<T>) {
-    const invalidKeys = updatedKeys.filter((key) => !(key in keysWithOptionality));
+    const invalidKeys = updatedKeys.filter((key) => !Object.hasOwn(keysWithOptionality, key));
     if (invalidKeys.length > 0) {
       throw new Error(`Invalid keys: ${invalidKeys.join(', ')}`);
     }
@@ -154,5 +154,5 @@ export function assertExhaustive(value: never): never {
 }
 
 export function hasAnyKey<T extends object>(obj: T, keys: (keyof T)[]): boolean {
-  return keys.some((key) => Object.prototype.hasOwnProperty.call(obj, key));
+  return keys.some((key) => Object.hasOwn(obj, key));
 }

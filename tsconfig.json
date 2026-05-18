@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2020",
-    "module":"es2020",
-    "lib": ["es2020", "dom"],
+    "target": "es2022",
+    "module":"es2022",
+    "lib": ["es2022", "dom"],
     "declaration": true,
     "declarationDir": "dist/types",
     "strict": true,

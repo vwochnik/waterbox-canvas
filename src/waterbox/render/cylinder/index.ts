@@ -40,13 +40,13 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       'strokeWidths',
     ]);
 
-    if (needsPatternUpdate || 'backPatternSource' in options) {
+    if (needsPatternUpdate || Object.hasOwn(options, 'backPatternSource')) {
       this.initializeWallPatternSource('back');
     }
-    if (needsPatternUpdate || 'waterPatternSource' in options) {
+    if (needsPatternUpdate || Object.hasOwn(options, 'waterPatternSource')) {
       this.initializeWallPatternSource('water');
     }
-    if (needsPatternUpdate || 'frontPatternSource' in options) {
+    if (needsPatternUpdate || Object.hasOwn(options, 'frontPatternSource')) {
       this.initializeWallPatternSource('front');
     }
   }
