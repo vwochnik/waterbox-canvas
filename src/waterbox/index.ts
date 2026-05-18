@@ -84,11 +84,12 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
       renderingOptions.frontPatternSource = frontPatternSource;
     }
 
-    ['padding', 'value', 'tiltAngle', 'strokeWidths', 'scale', 'clipEdges'].forEach((key) => {
-      if (changes.includes(key as keyof Options)) {
-        renderingOptions[key as keyof BaseRenderingOptions] = options[key as keyof Options] as any;
-      }
-    });
+    if (changes.includes('padding')) renderingOptions.padding = options.padding;
+    if (changes.includes('value')) renderingOptions.value = options.value;
+    if (changes.includes('tiltAngle')) renderingOptions.tiltAngle = options.tiltAngle;
+    if (changes.includes('strokeWidths')) renderingOptions.strokeWidths = options.strokeWidths;
+    if (changes.includes('scale')) renderingOptions.scale = options.scale;
+    if (changes.includes('clipEdges')) renderingOptions.clipEdges = options.clipEdges;
 
     if (changes.includes('renderer')) {
       const fullRenderingOptions: BaseRenderingOptions = {
