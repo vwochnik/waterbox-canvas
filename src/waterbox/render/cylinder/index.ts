@@ -11,6 +11,15 @@ import { basePath, wallPath, separatorPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
 import { assertExhaustive, hasAnyKey } from '../../util';
 
+type PatternSourceOptionProperty =
+  | 'backPatternSource'
+  | 'waterPatternSource'
+  | 'frontPatternSource';
+type WallPatternSourceProperty =
+  | 'backWallPatternSource'
+  | 'waterWallPatternSource'
+  | 'frontWallPatternSource';
+
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   applyPatternToBases?: boolean;
   centerPatternHorizontally?: boolean;
@@ -25,9 +34,9 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CylinderRenderingOptions) {
     super(canvas, options);
-    this.initializeWallPatternSource('back');
-    this.initializeWallPatternSource('water');
-    this.initializeWallPatternSource('front');
+    this.initializeWallPatternSource('backPatternSource', 'backWallPatternSource', 'back');
+    this.initializeWallPatternSource('waterPatternSource', 'waterWallPatternSource', 'front');
+    this.initializeWallPatternSource('frontPatternSource', 'frontWallPatternSource', 'front');
   }
 
   update(options: Partial<CylinderRenderingOptions>): void {
@@ -41,13 +50,13 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     ]);
 
     if (needsPatternUpdate || Object.hasOwn(options, 'backPatternSource')) {
-      this.initializeWallPatternSource('back');
+      this.initializeWallPatternSource('backPatternSource', 'backWallPatternSource', 'back');
     }
     if (needsPatternUpdate || Object.hasOwn(options, 'waterPatternSource')) {
-      this.initializeWallPatternSource('water');
+      this.initializeWallPatternSource('waterPatternSource', 'waterWallPatternSource', 'front');
     }
     if (needsPatternUpdate || Object.hasOwn(options, 'frontPatternSource')) {
-      this.initializeWallPatternSource('front');
+      this.initializeWallPatternSource('frontPatternSource', 'frontWallPatternSource', 'front');
     }
   }
 
@@ -198,29 +207,15 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     return this.tmpCtx.canvas.transferToImageBitmap();
   }
 
-  private initializeWallPatternSource(facing: 'back' | 'water' | 'front'): void {
-    switch (facing) {
-      case 'back':
-        this.backWallPatternSource = this.generateWallPatternSource(
-          this.options.backPatternSource,
-          'back',
-        );
-        break;
-      case 'water':
-        this.waterWallPatternSource = this.generateWallPatternSource(
-          this.options.waterPatternSource,
-          'front',
-        );
-        break;
-      case 'front':
-        this.frontWallPatternSource = this.generateWallPatternSource(
-          this.options.frontPatternSource,
-          'front',
-        );
-        break;
-      default:
-        assertExhaustive(facing);
-    }
+  private initializeWallPatternSource(
+    patternSourceOptionProperty: PatternSourceOptionProperty,
+    wallPatternSourceProperty: WallPatternSourceProperty,
+    facing: 'back' | 'front',
+  ): void {
+    this[wallPatternSourceProperty] = this.generateWallPatternSource(
+      this.options[patternSourceOptionProperty],
+      facing,
+    );
   }
 }
 
