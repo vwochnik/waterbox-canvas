@@ -86,7 +86,8 @@ export function makeSteps(divisions: number, value: number = 100): number[] {
 
 export function makePattern(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  source?: CanvasImageSource,
+  source: CanvasImageSource | undefined,
+  scale: number = 1,
 ): CanvasPattern | undefined {
   if (!source) {
     return undefined;
@@ -94,6 +95,11 @@ export function makePattern(
   const pattern = ctx.createPattern(source, 'repeat');
   if (pattern === null) {
     throw new Error('Failed to create pattern');
+  }
+  if (scale !== 1) {
+    const transform = new DOMMatrix().scale(scale);
+    pattern.setTransform(transform);
+    console.info("transformed");
   }
   return pattern;
 }

@@ -60,9 +60,9 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const waterPattern = makePattern(this.bufCtx, waterPatternSource);
     const frontPattern = makePattern(this.bufCtx, frontPatternSource);
 
-    const backWallPattern = makePattern(this.bufCtx, this.backWallImageGenerator?.getSource());
-    const waterWallPattern = makePattern(this.bufCtx, this.waterWallImageGenerator?.getSource());
-    const frontWallPattern = makePattern(this.bufCtx, this.frontWallImageGenerator?.getSource());
+    const backWallPattern = makePattern(this.bufCtx, this.backWallImageGenerator?.getSource(), this.backWallImageGenerator?.getScale() ?? 1);
+    const waterWallPattern = makePattern(this.bufCtx, this.waterWallImageGenerator?.getSource(), this.waterWallImageGenerator?.getScale() ?? 1);
+    const frontWallPattern = makePattern(this.bufCtx, this.frontWallImageGenerator?.getSource(), this.frontWallImageGenerator?.getScale() ?? 1);
 
     const [rect, size] = calculateRectAndSize(this.options);
 
