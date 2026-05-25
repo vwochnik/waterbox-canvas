@@ -121,16 +121,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
   }
 
-  private generateWallPatternSource(
-    patternSource: CanvasImageSource | undefined,
-    facing: 'back' | 'front',
-  ): ImageBitmap | undefined {
-    if (!patternSource) {
-      return undefined;
-    }
-
-  }
-
   private initializeOrUpdateWallPatternImageGenerators(    partialOptions: Partial<CylinderRenderingOptions>) {
     this.initializeOrUpdateWallPatternImageGenerator('backPatternSource', 'backWallImageGenerator', partialOptions, 'back');
     this.initializeOrUpdateWallPatternImageGenerator('waterPatternSource', 'waterWallImageGenerator', partialOptions, 'front');
@@ -143,16 +133,16 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     partialOptions: Partial<CylinderRenderingOptions>,
     facing: 'back' | 'front',
   ): void {
-  const patternSource = this.options[patternSourceOptionProperty];
-  if (patternSource !== undefined) {
-    if (this[wallImageGeneratorProperty]) {
-      this[wallImageGeneratorProperty].update(partialOptions);
+    const patternSource = this.options[patternSourceOptionProperty];
+    if (patternSource !== undefined) {
+      if (this[wallImageGeneratorProperty]) {
+        this[wallImageGeneratorProperty].update(partialOptions);
+      } else {
+        this[wallImageGeneratorProperty] = new WallImageGenerator({ ...this.options, ...partialOptions }, patternSourceOptionProperty, facing);
+      }
     } else {
-      this[wallImageGeneratorProperty] = new WallImageGenerator({ ...this.options, ...partialOptions }, patternSourceOptionProperty, facing);
+      this[wallImageGeneratorProperty] = undefined;
     }
-  } else {
-    this[wallImageGeneratorProperty] = undefined;
-  }
   }
 }
 
