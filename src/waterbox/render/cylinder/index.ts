@@ -10,15 +10,12 @@ import { RgbaColorScheme, rgbaColorToString } from '../../color';
 import { basePath, wallPath, separatorPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
 import { assertExhaustive, hasAnyKey } from '../../util';
+import { WallImageGenerator, PatternSourceOptionProperty } from './wall-image-generator';
 
-type PatternSourceOptionProperty =
-  | 'backPatternSource'
-  | 'waterPatternSource'
-  | 'frontPatternSource';
-type WallPatternSourceProperty =
-  | 'backWallPatternSource'
-  | 'waterWallPatternSource'
-  | 'frontWallPatternSource';
+type WallImageGeneratorProperty =
+| 'backWallImageGenerator'
+| 'waterWallImageGenerator'
+| 'frontWallImageGenerator';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   applyPatternToBases?: boolean;
@@ -28,36 +25,18 @@ export interface CylinderRenderingOptions extends BaseRenderingOptions {
 export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOptions, 'cylinder'> {
   readonly type = 'cylinder' as const;
 
-  private backWallPatternSource: ImageBitmap | undefined;
-  private waterWallPatternSource: ImageBitmap | undefined;
-  private frontWallPatternSource: ImageBitmap | undefined;
+  private backWallImageGenerator: WallImageGenerator | undefined;
+  private waterWallImageGenerator: WallImageGenerator | undefined;
+  private frontWallImageGenerator: WallImageGenerator | undefined;
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: CylinderRenderingOptions) {
     super(canvas, options);
-    this.initializeWallPatternSource('backPatternSource', 'backWallPatternSource', 'back');
-    this.initializeWallPatternSource('waterPatternSource', 'waterWallPatternSource', 'front');
-    this.initializeWallPatternSource('frontPatternSource', 'frontWallPatternSource', 'front');
+    this.initializeOrUpdateWallPatternImageGenerators({});
   }
 
   update(options: Partial<CylinderRenderingOptions>): void {
     super.update(options);
-    const needsPatternUpdate = hasAnyKey(options, [
-      'width',
-      'height',
-      'padding',
-      'tiltAngle',
-      'strokeWidths',
-    ]);
-
-    if (needsPatternUpdate || Object.hasOwn(options, 'backPatternSource')) {
-      this.initializeWallPatternSource('backPatternSource', 'backWallPatternSource', 'back');
-    }
-    if (needsPatternUpdate || Object.hasOwn(options, 'waterPatternSource')) {
-      this.initializeWallPatternSource('waterPatternSource', 'waterWallPatternSource', 'front');
-    }
-    if (needsPatternUpdate || Object.hasOwn(options, 'frontPatternSource')) {
-      this.initializeWallPatternSource('frontPatternSource', 'frontWallPatternSource', 'front');
-    }
+    this.initializeOrUpdateWallPatternImageGenerators(options);
   }
 
   render(): void {
@@ -81,9 +60,9 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     const waterPattern = makePattern(this.bufCtx, waterPatternSource);
     const frontPattern = makePattern(this.bufCtx, frontPatternSource);
 
-    const backWallPattern = makePattern(this.bufCtx, this.backWallPatternSource);
-    const waterWallPattern = makePattern(this.bufCtx, this.waterWallPatternSource);
-    const frontWallPattern = makePattern(this.bufCtx, this.frontWallPatternSource);
+    const backWallPattern = makePattern(this.bufCtx, this.backWallImageGenerator?.getSource());
+    const waterWallPattern = makePattern(this.bufCtx, this.waterWallImageGenerator?.getSource());
+    const frontWallPattern = makePattern(this.bufCtx, this.frontWallImageGenerator?.getSource());
 
     const [rect, size] = calculateRectAndSize(this.options);
 
@@ -150,72 +129,30 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       return undefined;
     }
 
-    const sourceSize = getCanvasImageSourceSize(patternSource);
-    const [rect, size] = calculateRectAndSize(this.options);
-
-    const radiusX = size.w / 2;
-    const radiusY = size.h / 2;
-    const centerX = rect.x + radiusX;
-    const centerY = rect.y + radiusY;
-    const height = rect.h - size.h;
-
-    const mappedWidth = radiusX * Math.PI;
-    const uOffset =
-      (this.options.centerPatternHorizontally ?? false) ? (sourceSize.w - mappedWidth) / 2 : 0;
-
-    this.tmpCtx.reset();
-
-    const startX = centerX - radiusX;
-    const endX = centerX + radiusX;
-
-    for (let x = startX; x <= endX; x++) {
-      const normalizedX = Math.max(-1, Math.min(1, (x - centerX) / radiusX));
-
-      const angle = Math.asin(normalizedX);
-
-      const yTop = centerY + (facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
-      const yBottom = yTop + height;
-
-      const progress = (angle + Math.PI / 2) / Math.PI;
-      const w = 1 + (1 - Math.cos(angle)) * 4;
-
-      let u = (uOffset + progress * mappedWidth) % sourceSize.w;
-      while (u < 0) {
-        u += sourceSize.w;
-      }
-
-      for (let drawY = yBottom; drawY > yTop; drawY -= sourceSize.h) {
-        let displayHeight = Math.min(sourceSize.h, drawY - yTop);
-        let sourceY = sourceSize.h - displayHeight;
-
-        this.tmpCtx.clearRect(x, drawY - displayHeight, 1, displayHeight);
-
-        this.tmpCtx.drawImage(
-          patternSource,
-          u,
-          sourceY,
-          w,
-          displayHeight,
-          x,
-          drawY - displayHeight,
-          1,
-          displayHeight,
-        );
-      }
-    }
-
-    return this.tmpCtx.canvas.transferToImageBitmap();
   }
 
-  private initializeWallPatternSource(
+  private initializeOrUpdateWallPatternImageGenerators(    partialOptions: Partial<CylinderRenderingOptions>) {
+    this.initializeOrUpdateWallPatternImageGenerator('backPatternSource', 'backWallImageGenerator', partialOptions, 'back');
+    this.initializeOrUpdateWallPatternImageGenerator('waterPatternSource', 'waterWallImageGenerator', partialOptions, 'front');
+    this.initializeOrUpdateWallPatternImageGenerator('frontPatternSource', 'frontWallImageGenerator', partialOptions, 'front');
+  }
+
+  private initializeOrUpdateWallPatternImageGenerator(
     patternSourceOptionProperty: PatternSourceOptionProperty,
-    wallPatternSourceProperty: WallPatternSourceProperty,
+    wallImageGeneratorProperty: WallImageGeneratorProperty,
+    partialOptions: Partial<CylinderRenderingOptions>,
     facing: 'back' | 'front',
   ): void {
-    this[wallPatternSourceProperty] = this.generateWallPatternSource(
-      this.options[patternSourceOptionProperty],
-      facing,
-    );
+  const patternSource = this.options[patternSourceOptionProperty];
+  if (patternSource !== undefined) {
+    if (this[wallImageGeneratorProperty]) {
+      this[wallImageGeneratorProperty].update(partialOptions);
+    } else {
+      this[wallImageGeneratorProperty] = new WallImageGenerator({ ...this.options, ...partialOptions }, patternSourceOptionProperty, facing);
+    }
+  } else {
+    this[wallImageGeneratorProperty] = undefined;
+  }
   }
 }
 
