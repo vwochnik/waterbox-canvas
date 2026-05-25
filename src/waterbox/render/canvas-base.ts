@@ -1,14 +1,14 @@
 import { BaseRenderingOptions } from '.';
 import { RgbaColor, rgbaColorToString } from '../color';
 import { hasAnyKey } from '../util';
+import { RenderingOptions } from './rendering-options';
 import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from './util';
 
 export abstract class CanvasBaseRenderer<
   RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions,
   Type extends string = string,
-> {
+> extends RenderingOptions<RenderingOptions> {
   abstract readonly type: Type;
-  private _options: RenderingOptions;
 
   protected ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
@@ -16,17 +16,13 @@ export abstract class CanvasBaseRenderer<
   protected tmpCtx!: OffscreenCanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas, options: RenderingOptions) {
-    this._options = { ...options };
+    super(options);
     this.ctx = getContext(canvas);
     this.initializeContexts();
   }
 
-  get options(): RenderingOptions {
-    return this._options;
-  }
-
   update(options: Partial<RenderingOptions>): void {
-    this._options = { ...this._options, ...options };
+    super.update(options);
     if (hasAnyKey(options, ['width', 'height'])) {
       this.initializeContexts();
     }
