@@ -15,10 +15,8 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
     super(canvas, options);
   }
 
-  render(): void {
+  paint(): void {
     const {
-      width,
-      height,
       value,
       scale,
       backColorScheme,
@@ -40,7 +38,7 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
 
     this.bufCtx.reset();
 
-    this.paint(
+    this.paintLayer(
       [
         rhombusPath(rect, size, 0, 'bottom', alignPatternToEdges ?? false),
         wallPath(rect, size, 100, 'left', 'back', alignPatternToEdges ?? false),
@@ -59,7 +57,7 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
     );
 
     if (value > 0) {
-      this.paint(
+      this.paintLayer(
         [
           wallPath(rect, size, value, 'left', 'front', alignPatternToEdges ?? false),
           wallPath(rect, size, value, 'right', 'front', alignPatternToEdges ?? false),
@@ -79,7 +77,7 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
     }
 
     if (frontColorScheme) {
-      this.paint(
+      this.paintLayer(
         [
           wallPath(rect, size, 100, 'left', 'front', alignPatternToEdges ?? false),
           wallPath(rect, size, 100, 'right', 'front', alignPatternToEdges ?? false),
@@ -97,8 +95,5 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
         [frontPattern, frontPattern, frontPattern],
       );
     }
-
-    this.ctx.clearRect(0, 0, width, height);
-    this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
   }
 }

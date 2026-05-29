@@ -32,9 +32,19 @@ export abstract class CanvasBaseRenderer<
     }
   }
 
-  abstract render(): void;
+  public render(): void {
+    const { width, height } = this.options;
+    this.bufCtx.clearRect(0, 0, width, height);
 
-  protected paint(
+    this.paint();
+
+    this.ctx.clearRect(0, 0, width, height);
+    this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
+  }
+
+  abstract paint(): void;
+
+  protected paintLayer(
     fillPaths: PathFunction[],
     strokePaths: PathFunction[],
     outerPath: PathFunction,
@@ -48,17 +58,12 @@ export abstract class CanvasBaseRenderer<
     this.paintEdges([...fillPaths, ...strokePaths], outerPath, innerStrokeColor, outerStrokeColor);
   }
 
-  private clearTmp(): void {
-    const { width, height } = this.options;
-    this.tmpCtx.clearRect(0, 0, width, height);
-  }
-
   private paintFilling(
     paths: PathFunction[],
     fillStyles: FillStyle[],
     patterns: (CanvasPattern | undefined)[],
   ): void {
-    this.clearTmp();
+    this.clearTempContext();
 
     paths.forEach((path, index) => {
       this.tmpCtx.save();
@@ -90,7 +95,7 @@ export abstract class CanvasBaseRenderer<
     } = this.options;
 
     // Inner edges: stroke all paths, then punch out the outer outline.
-    this.clearTmp();
+    this.clearTempContext();
     this.tmpCtx.lineCap = 'round';
     this.tmpCtx.lineJoin = 'round';
     this.tmpCtx.lineWidth = innerStrokeWidth;
@@ -107,7 +112,7 @@ export abstract class CanvasBaseRenderer<
     copyEdges(this.bufCtx, this.tmpCtx, innerStrokeColor, clipEdges);
 
     // Outer edge.
-    this.clearTmp();
+    this.clearTempContext();
     this.tmpCtx.lineWidth = outerStrokeWidth;
     this.tmpCtx.strokeStyle = clipEdges ? OPAQUE_BLACK : opaque(outerStrokeColor);
     strokePath(this.tmpCtx)(outerPathFunction);
@@ -120,6 +125,12 @@ export abstract class CanvasBaseRenderer<
     this.bufCtx = createOffscreenRenderingContext(width, height);
     this.tmpCtx = createOffscreenRenderingContext(width, height);
   }
+
+  private clearTempContext(): void {
+    const { width, height } = this.options;
+    this.tmpCtx.clearRect(0, 0, width, height);
+  }
+
 }
 
 function opaque(color: RgbaColor): string {

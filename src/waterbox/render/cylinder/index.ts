@@ -39,10 +39,8 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     this.initializeOrUpdateWallPatternImageGenerators(options);
   }
 
-  render(): void {
+  paint(): void {
     const {
-      width,
-      height,
       value,
       scale,
       backColorScheme,
@@ -66,9 +64,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     const [rect, size] = calculateRectAndSize(this.options);
 
-    this.bufCtx.reset();
-
-    this.paint(
+    this.paintLayer(
       [basePath(rect, size, 0, 'bottom'), wallPath(rect, size, 100, 'back')],
       (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
         separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
@@ -84,7 +80,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     );
 
     if (value > 0) {
-      this.paint(
+      this.paintLayer(
         [wallPath(rect, size, value, 'front'), basePath(rect, size, value, 'top')],
         (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
@@ -101,7 +97,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     }
 
     if (frontColorScheme) {
-      this.paint(
+      this.paintLayer(
         [wallPath(rect, size, 100, 'front'), basePath(rect, size, 100, 'top')],
         (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
           separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
@@ -116,9 +112,6 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
         [frontWallPattern, applyPatternToBases ? frontPattern : undefined],
       );
     }
-
-    this.ctx.clearRect(0, 0, width, height);
-    this.ctx.drawImage(this.bufCtx.canvas, 0, 0);
   }
 
   private initializeOrUpdateWallPatternImageGenerators(    partialOptions: Partial<CylinderRenderingOptions>) {
