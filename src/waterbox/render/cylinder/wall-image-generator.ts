@@ -1,8 +1,7 @@
 import { CylinderRenderingOptions } from ".";
-import { createCanvasFromPattern, createPattern } from "../../pattern";
 import { hasAnyKey } from "../../util";
 import { RenderingOptions } from "../rendering-options";
-import { calculateRectAndSize, createOffscreenRenderingContext, getCanvasImageSourceSize, makePattern, Size } from "../util";
+import { calculateRectAndSize, clamp, createOffscreenRenderingContext, getCanvasImageSourceSize, makePattern, Size } from "../util";
 
 export type PatternSourceOptionProperty =
   | 'backPatternSource'
@@ -11,6 +10,8 @@ export type PatternSourceOptionProperty =
 
 export class WallImageGenerator extends RenderingOptions<CylinderRenderingOptions> {
   private readonly scaleFactor = 2;
+  /** Extra source-width sampled near the cylinder edges to reduce stretching artifacts. */
+  private readonly edgeSampleFactor = 4;
 
   private srcCtx: OffscreenCanvasRenderingContext2D | undefined = undefined;
   private srcValid = false;
@@ -75,14 +76,15 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     return this.destCtx.canvas;
   }
 
-  private render() {
-    const patternSource = this.srcCtx?.canvas;
-    if (!patternSource) {
-      return undefined;
+  private render(): void {
+    if (!this.srcCtx) {
+      return;
     }
 
     const s = this.scaleFactor;
     const sourceSize = this.srcSize!;
+    const scaledSrcW = s * sourceSize.w;
+    const scaledSrcH = s * sourceSize.h;
     const [rect, size] = calculateRectAndSize(this.options);
 
     const radiusX = s * size.w / 2;
@@ -93,7 +95,9 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     const mappedWidth = radiusX * Math.PI;
     const uOffset =
-      (this.options.centerPatternHorizontally ?? false) ? (s * sourceSize.w - mappedWidth) / 2 : 0;
+      (this.options.centerPatternHorizontally ?? false) ? (scaledSrcW - mappedWidth) / 2 : 0;
+
+    const facingSign = this.facing === 'back' ? -1 : 1;
 
     this.destCtx.reset();
 
@@ -101,29 +105,29 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     const endX = centerX + radiusX;
 
     for (let x = startX; x <= endX; x++) {
-      const normalizedX = Math.max(-1, Math.min(1, (x - centerX) / radiusX));
+      const normalizedX = clamp((x - centerX) / radiusX, -1, 1);
 
       const angle = Math.asin(normalizedX);
 
-      const yTop = centerY + (this.facing === 'back' ? -1 : 1) * Math.cos(angle) * radiusY;
+      const yTop = centerY + facingSign * Math.cos(angle) * radiusY;
       const yBottom = yTop + height;
 
       const progress = (angle + Math.PI / 2) / Math.PI;
-      const w = 1 + (1 - Math.cos(angle)) * 4;
+      const w = 1 + (1 - Math.cos(angle)) * this.edgeSampleFactor;
 
-      let u = (uOffset + progress * mappedWidth) % (s * sourceSize.w);
-      while (u < 0) {
-        u += s * sourceSize.w;
+      let u = (uOffset + progress * mappedWidth) % scaledSrcW;
+      if (u < 0) {
+        u += scaledSrcW;
       }
 
-      for (let drawY = yBottom; drawY > yTop; drawY -= s * sourceSize.h) {
-        let displayHeight = Math.min(s * sourceSize.h, drawY - yTop);
-        let sourceY = s * sourceSize.h - displayHeight;
+      for (let drawY = yBottom; drawY > yTop; drawY -= scaledSrcH) {
+        const displayHeight = Math.min(scaledSrcH, drawY - yTop);
+        const sourceY = scaledSrcH - displayHeight;
 
         this.destCtx.clearRect(x, drawY - displayHeight, 1, displayHeight);
 
         this.destCtx.drawImage(
-          this.srcCtx!.canvas,
+          this.srcCtx.canvas,
           u,
           sourceY,
           w,

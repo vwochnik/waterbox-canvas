@@ -19,6 +19,17 @@ export type PathFunction = (
 
 export type FillStyle = string | CanvasGradient | CanvasPattern;
 
+/**
+ * Restricts a value to lie within the inclusive range `[min, max]`.
+ * @param value - The value to clamp
+ * @param min - The lower bound
+ * @param max - The upper bound
+ * @returns `value` constrained to the range `[min, max]`
+ */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
 export function getContext(
   canvas: HTMLCanvasElement | OffscreenCanvas,
 ): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
