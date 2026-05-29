@@ -1,4 +1,4 @@
-import { BaseRenderingOptions } from '.';
+import { BaseRenderingOptions, RgbaColor } from './types';
 import { assertExhaustive } from '../util';
 
 const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
@@ -153,4 +153,8 @@ export function getCanvasImageSourceSize(source: CanvasImageSource): Size {
   }
 
   assertExhaustive(source);
+}
+export function rgbaColorToString(color: RgbaColor): string {
+  const { r, g, b, a } = color;
+  return `rgba(${r},${g},${b},${a})`;
 }

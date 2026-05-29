@@ -1,20 +1,6 @@
 import { darken, lighten, parseToRgba } from 'color2k';
 import { ColorScheme } from './options';
-
-export type RgbaColor = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-};
-
-export type RgbaColorScheme = {
-  innerStroke: RgbaColor;
-  outerStroke: RgbaColor;
-  fill: RgbaColor;
-  lighter: RgbaColor;
-  darker: RgbaColor;
-};
+import { RgbaColor, RgbaColorScheme } from './render/types';
 
 export function getRgbaColorScheme(colorScheme: ColorScheme): RgbaColorScheme {
   const { fill } = colorScheme;
@@ -33,11 +19,6 @@ export function getRgbaColorScheme(colorScheme: ColorScheme): RgbaColorScheme {
     lighter: stringToRgbaColor(lighter),
     darker: stringToRgbaColor(darker),
   };
-}
-
-export function rgbaColorToString(color: RgbaColor): string {
-  const { r, g, b, a } = color;
-  return `rgba(${r},${g},${b},${a})`;
 }
 
 function stringToRgbaColor(color: string): RgbaColor {

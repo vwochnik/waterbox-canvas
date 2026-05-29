@@ -1,25 +1,7 @@
-import { RgbaColorScheme } from '../color';
-import { Scale, StrokeWidths } from '../options';
 import { assertExhaustive } from '../util';
 import { CuboidRenderingOptions, CuboidRenderer } from './cuboid';
 import { CylinderRenderer, CylinderRenderingOptions } from './cylinder';
-
-export interface BaseRenderingOptions {
-  width: number;
-  height: number;
-  padding: number;
-  value: number;
-  tiltAngle?: number;
-  strokeWidths: StrokeWidths;
-  scale?: Scale;
-  backColorScheme: RgbaColorScheme;
-  waterColorScheme: RgbaColorScheme;
-  frontColorScheme?: RgbaColorScheme;
-  backPatternSource?: CanvasImageSource;
-  waterPatternSource?: CanvasImageSource;
-  frontPatternSource?: CanvasImageSource;
-  clipEdges: boolean;
-}
+import { BaseRenderingOptions } from './types';
 
 export interface Renderer<
   RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions,

@@ -1,23 +1,36 @@
 import { BaseOptions, Optionality } from './util';
 import { CuboidRenderingOptions } from './render/cuboid';
 import { CylinderRenderingOptions } from './render/cylinder';
+import { BaseRenderingOptions, Scale, StrokeWidths } from './render/types';
+
+/** Option keys that are forwarded to the renderer unchanged. */
+export const PASSTHROUGH_KEYS = [
+  'width',
+  'height',
+  'padding',
+  'value',
+  'tiltAngle',
+  'strokeWidths',
+  'scale',
+  'clipEdges',
+] as const;
 
 export interface Options extends BaseOptions {
   renderer: Renderer;
-  width: number;
-  height: number;
-  padding: number;
-  value: number;
-  tiltAngle?: number;
+  width: BaseRenderingOptions['width'];
+  height: BaseRenderingOptions['height'];
+  padding: BaseRenderingOptions['padding'];
+  value: BaseRenderingOptions['value'];
+  tiltAngle?: BaseRenderingOptions['tiltAngle'];
+  strokeWidths: BaseRenderingOptions['strokeWidths'];
+  scale?: BaseRenderingOptions['scale'];
+  clipEdges: BaseRenderingOptions['clipEdges'];
   backColorScheme: ColorScheme;
   waterColorScheme: ColorScheme;
   frontColorScheme?: ColorScheme;
   backPattern?: Pattern;
   waterPattern?: Pattern;
   frontPattern?: Pattern;
-  strokeWidths: StrokeWidths;
-  scale?: Scale;
-  clipEdges: boolean;
 }
 
 export type Renderer =
@@ -56,17 +69,6 @@ export type CustomPattern = {
 };
 
 export type Pattern = PredefinedPattern | CustomPattern;
-
-export type StrokeWidths = {
-  outer: number;
-  inner: number;
-};
-
-export interface Scale {
-  divisions: number;
-  size: number;
-  position?: 'back' | 'water' | 'front';
-}
 
 export const optionsWithOptionality: Optionality<Options> = {
   renderer: false,

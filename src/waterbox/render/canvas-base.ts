@@ -1,8 +1,13 @@
-import { BaseRenderingOptions } from '.';
-import { RgbaColor, rgbaColorToString } from '../color';
+import { BaseRenderingOptions, RgbaColor } from './types';
 import { hasAnyKey } from '../util';
 import { RenderingOptions } from './rendering-options';
-import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from './util';
+import {
+  createOffscreenRenderingContext,
+  FillStyle,
+  getContext,
+  PathFunction,
+  rgbaColorToString,
+} from './util';
 
 type Ctx2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
@@ -130,19 +135,13 @@ export abstract class CanvasBaseRenderer<
     const { width, height } = this.options;
     this.tmpCtx.clearRect(0, 0, width, height);
   }
-
 }
 
 function opaque(color: RgbaColor): string {
   return rgbaColorToString({ ...color, a: 1.0 });
 }
 
-function copyEdges(
-  ctx: Ctx2D,
-  tmp: Ctx2D,
-  strokeColor: RgbaColor,
-  clipEdges: boolean,
-) {
+function copyEdges(ctx: Ctx2D, tmp: Ctx2D, strokeColor: RgbaColor, clipEdges: boolean) {
   ctx.globalAlpha = strokeColor.a;
   ctx.globalCompositeOperation = clipEdges ? 'destination-out' : 'source-over';
   ctx.drawImage(tmp.canvas, 0, 0);

@@ -1,21 +1,19 @@
-import { BaseRenderingOptions } from '../index';
+import { BaseRenderingOptions, RgbaColorScheme } from '../types';
 import {
   calculateRectAndSize,
-  getCanvasImageSourceSize,
   makePattern,
   makeSteps,
   Rectangle,
+  rgbaColorToString,
 } from '../util';
-import { RgbaColorScheme, rgbaColorToString } from '../../color';
 import { basePath, wallPath, separatorPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
-import { assertExhaustive, hasAnyKey } from '../../util';
 import { WallImageGenerator, PatternSourceOptionProperty } from './wall-image-generator';
 
 type WallImageGeneratorProperty =
-| 'backWallImageGenerator'
-| 'waterWallImageGenerator'
-| 'frontWallImageGenerator';
+  | 'backWallImageGenerator'
+  | 'waterWallImageGenerator'
+  | 'frontWallImageGenerator';
 
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   applyPatternToBases?: boolean;
@@ -119,10 +117,27 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     }
   }
 
-  private initializeOrUpdateWallPatternImageGenerators(    partialOptions: Partial<CylinderRenderingOptions>) {
-    this.initializeOrUpdateWallPatternImageGenerator('backPatternSource', 'backWallImageGenerator', partialOptions, 'back');
-    this.initializeOrUpdateWallPatternImageGenerator('waterPatternSource', 'waterWallImageGenerator', partialOptions, 'front');
-    this.initializeOrUpdateWallPatternImageGenerator('frontPatternSource', 'frontWallImageGenerator', partialOptions, 'front');
+  private initializeOrUpdateWallPatternImageGenerators(
+    partialOptions: Partial<CylinderRenderingOptions>,
+  ) {
+    this.initializeOrUpdateWallPatternImageGenerator(
+      'backPatternSource',
+      'backWallImageGenerator',
+      partialOptions,
+      'back',
+    );
+    this.initializeOrUpdateWallPatternImageGenerator(
+      'waterPatternSource',
+      'waterWallImageGenerator',
+      partialOptions,
+      'front',
+    );
+    this.initializeOrUpdateWallPatternImageGenerator(
+      'frontPatternSource',
+      'frontWallImageGenerator',
+      partialOptions,
+      'front',
+    );
   }
 
   private initializeOrUpdateWallPatternImageGenerator(
@@ -136,7 +151,11 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
       if (this[wallImageGeneratorProperty]) {
         this[wallImageGeneratorProperty].update(partialOptions);
       } else {
-        this[wallImageGeneratorProperty] = new WallImageGenerator({ ...this.options, ...partialOptions }, patternSourceOptionProperty, facing);
+        this[wallImageGeneratorProperty] = new WallImageGenerator(
+          { ...this.options, ...partialOptions },
+          patternSourceOptionProperty,
+          facing,
+        );
       }
     } else {
       this[wallImageGeneratorProperty] = undefined;

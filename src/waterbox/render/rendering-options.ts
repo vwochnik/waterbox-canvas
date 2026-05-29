@@ -1,4 +1,4 @@
-import { BaseRenderingOptions } from '.';
+import { BaseRenderingOptions } from './types';
 
 /**
  * Base class that owns an immutable snapshot of rendering options.

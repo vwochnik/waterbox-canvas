@@ -1,4 +1,5 @@
-import { ColorScheme, Pattern, Renderer, Scale, StrokeWidths } from './options';
+import { ColorScheme, Pattern, Renderer } from './options';
+import { Scale, StrokeWidths } from './render/types';
 import { parseToRgba, ColorError } from 'color2k';
 
 export function validateRenderer(renderer: unknown): Renderer {

@@ -1,6 +1,5 @@
-import { BaseRenderingOptions } from '../index';
-import { calculateRectAndSize, makePattern, makeSteps } from '../util';
-import { rgbaColorToString } from '../../color';
+import { BaseRenderingOptions } from '../types';
+import { calculateRectAndSize, makePattern, makeSteps, rgbaColorToString } from '../util';
 import { rhombusPath, wallPath, separatorPath, outerPath } from './paths';
 import { CanvasBaseRenderer } from '../canvas-base';
 

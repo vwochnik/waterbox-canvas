@@ -1,7 +1,14 @@
-import { CylinderRenderingOptions } from ".";
-import { hasAnyKey } from "../../util";
-import { RenderingOptions } from "../rendering-options";
-import { calculateRectAndSize, clamp, createOffscreenRenderingContext, getCanvasImageSourceSize, makePattern, Size } from "../util";
+import { CylinderRenderingOptions } from '.';
+import { hasAnyKey } from '../../util';
+import { RenderingOptions } from '../rendering-options';
+import {
+  calculateRectAndSize,
+  clamp,
+  createOffscreenRenderingContext,
+  getCanvasImageSourceSize,
+  makePattern,
+  Size,
+} from '../util';
 
 export type PatternSourceOptionProperty =
   | 'backPatternSource'
@@ -36,11 +43,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       this.destValid = false;
     }
 
-    if (hasAnyKey(options, [
-      'padding',
-      'tiltAngle',
-      'strokeWidths',
-    ])) {
+    if (hasAnyKey(options, ['padding', 'tiltAngle', 'strokeWidths'])) {
       this.destValid = false;
     }
 
@@ -87,8 +90,8 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     const scaledSrcH = s * sourceSize.h;
     const [rect, size] = calculateRectAndSize(this.options);
 
-    const radiusX = s * size.w / 2;
-    const radiusY = s * size.h / 2;
+    const radiusX = (s * size.w) / 2;
+    const radiusY = (s * size.h) / 2;
     const centerX = s * rect.x + radiusX;
     const centerY = s * rect.y + radiusY;
     const height = s * rect.h - s * size.h;
@@ -155,18 +158,35 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     const scaledWidth = this.srcSize.w * this.scaleFactor;
     const scaledHeight = this.srcSize.h * this.scaleFactor;
 
-    if (this.srcCtx && this.srcCtx.canvas.width === scaledWidth && this.srcCtx.canvas.height === scaledHeight) {
+    if (
+      this.srcCtx &&
+      this.srcCtx.canvas.width === scaledWidth &&
+      this.srcCtx.canvas.height === scaledHeight
+    ) {
       this.srcCtx.reset();
     } else {
       this.srcCtx = createOffscreenRenderingContext(scaledWidth, scaledHeight);
     }
 
-    this.srcCtx.drawImage(patternSource, 0, 0, this.srcSize.w, this.srcSize.h, 0, 0, this.srcSize.w * this.scaleFactor, this.srcSize.h * this.scaleFactor);
+    this.srcCtx.drawImage(
+      patternSource,
+      0,
+      0,
+      this.srcSize.w,
+      this.srcSize.h,
+      0,
+      0,
+      this.srcSize.w * this.scaleFactor,
+      this.srcSize.h * this.scaleFactor,
+    );
 
     this.srcValid = true;
   }
 
   private initializeDestinationContext() {
-    this.destCtx = createOffscreenRenderingContext(this.options.width * this.scaleFactor, this.options.height * this.scaleFactor);
+    this.destCtx = createOffscreenRenderingContext(
+      this.options.width * this.scaleFactor,
+      this.options.height * this.scaleFactor,
+    );
   }
 }

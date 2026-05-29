@@ -5,7 +5,7 @@ import {
   defineReadonlyProperty,
   assertExhaustive,
 } from './util';
-import { Options, defaultOptions, optionsWithOptionality } from './options';
+import { PASSTHROUGH_KEYS, Options, defaultOptions, optionsWithOptionality } from './options';
 import {
   validateBoolean,
   validateColorScheme,
@@ -20,18 +20,9 @@ import {
   validateValue,
 } from './validator';
 import { createPattern } from './pattern';
-import { BaseRenderingOptions, createRenderer, Renderer } from './render';
-import { getRgbaColorScheme, RgbaColorScheme } from './color';
-
-  /** Option keys that are forwarded to the renderer unchanged. */
-  const PASSTHROUGH_KEYS = [
-    'padding',
-    'value',
-    'tiltAngle',
-    'strokeWidths',
-    'scale',
-    'clipEdges',
-  ] as const;
+import { createRenderer, Renderer } from './render';
+import { BaseRenderingOptions, RgbaColorScheme } from './render/types';
+import { getRgbaColorScheme } from './color';
 
 /**
  * Main waterbox type
@@ -61,11 +52,9 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
 
     if (changes.has('width')) {
       canvas.width = options.width;
-      renderingOptions.width = options.width;
     }
     if (changes.has('height')) {
       canvas.height = options.height;
-      renderingOptions.height = options.height;
     }
     if (changes.has('backColorScheme')) {
       backColorScheme = getRgbaColorScheme(options.backColorScheme);
@@ -102,7 +91,7 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
 
     if (changes.has('renderer')) {
       const fullRenderingOptions: BaseRenderingOptions = {
-        ...pick(options, ['width', 'height', ...PASSTHROUGH_KEYS]),
+        ...pick(options, PASSTHROUGH_KEYS),
         backColorScheme,
         waterColorScheme,
         frontColorScheme,
