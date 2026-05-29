@@ -38,15 +38,24 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
 
     this.bufCtx.reset();
 
+    const separators = (
+      position: 'back' | 'water' | 'front',
+      face: 'back' | 'front',
+      fillValue?: number,
+    ) =>
+      scale && scalePosition === position
+        ? makeSteps(scale.divisions, fillValue).map((step) =>
+            separatorPath(rect, size, scale.size, step, face),
+          )
+        : [];
+
     this.paintLayer(
       [
         rhombusPath(rect, size, 0, 'bottom', alignPatternToEdges ?? false),
         wallPath(rect, size, 100, 'left', 'back', alignPatternToEdges ?? false),
         wallPath(rect, size, 100, 'right', 'back', alignPatternToEdges ?? false),
       ],
-      (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
-        separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
-      ),
+      separators('back', 'back'),
       outerPath(rect, size, 100),
       [backColorScheme.fill, backColorScheme.lighter, backColorScheme.darker].map(
         rgbaColorToString,
@@ -63,9 +72,7 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
           wallPath(rect, size, value, 'right', 'front', alignPatternToEdges ?? false),
           rhombusPath(rect, size, value, 'top', alignPatternToEdges ?? false),
         ],
-        (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
-          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
-        ),
+        separators('water', 'front', value),
         outerPath(rect, size, value),
         [waterColorScheme.darker, waterColorScheme.lighter, waterColorScheme.fill].map(
           rgbaColorToString,
@@ -83,9 +90,7 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
           wallPath(rect, size, 100, 'right', 'front', alignPatternToEdges ?? false),
           rhombusPath(rect, size, 100, 'top', alignPatternToEdges ?? false),
         ],
-        (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
-          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
-        ),
+        separators('front', 'front'),
         outerPath(rect, size, 100),
         [frontColorScheme.darker, frontColorScheme.lighter, frontColorScheme.fill].map(
           rgbaColorToString,

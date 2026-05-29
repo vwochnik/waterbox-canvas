@@ -64,11 +64,20 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
 
     const [rect, size] = calculateRectAndSize(this.options);
 
+    const separators = (
+      position: 'back' | 'water' | 'front',
+      face: 'back' | 'front',
+      fillValue?: number,
+    ) =>
+      scale && scalePosition === position
+        ? makeSteps(scale.divisions, fillValue).map((step) =>
+            separatorPath(rect, size, scale.size, step, face),
+          )
+        : [];
+
     this.paintLayer(
       [basePath(rect, size, 0, 'bottom'), wallPath(rect, size, 100, 'back')],
-      (scale && scalePosition === 'back' ? makeSteps(scale.divisions) : []).map((step) =>
-        separatorPath(rect, size, scale?.size ?? 0, step, 'back'),
-      ),
+      separators('back', 'back'),
       wallPath(rect, size, 100, 'outer'),
       [
         rgbaColorToString(backColorScheme.fill),
@@ -82,9 +91,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     if (value > 0) {
       this.paintLayer(
         [wallPath(rect, size, value, 'front'), basePath(rect, size, value, 'top')],
-        (scale && scalePosition === 'water' ? makeSteps(scale.divisions, value) : []).map((step) =>
-          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
-        ),
+        separators('water', 'front', value),
         wallPath(rect, size, value, 'outer'),
         [
           makeWallGradient(this.bufCtx, rect, waterColorScheme),
@@ -99,9 +106,7 @@ export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOption
     if (frontColorScheme) {
       this.paintLayer(
         [wallPath(rect, size, 100, 'front'), basePath(rect, size, 100, 'top')],
-        (scale && scalePosition === 'front' ? makeSteps(scale.divisions) : []).map((step) =>
-          separatorPath(rect, size, scale?.size ?? 0, step, 'front'),
-        ),
+        separators('front', 'front'),
         wallPath(rect, size, 100, 'outer'),
         [
           makeWallGradient(this.bufCtx, rect, frontColorScheme),
