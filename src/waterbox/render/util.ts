@@ -99,7 +99,6 @@ export function makePattern(
   if (scale !== 1) {
     const transform = new DOMMatrix().scale(scale);
     pattern.setTransform(transform);
-    console.info("transformed");
   }
   return pattern;
 }

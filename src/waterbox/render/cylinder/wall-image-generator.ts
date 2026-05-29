@@ -1,7 +1,8 @@
 import { CylinderRenderingOptions } from ".";
+import { createCanvasFromPattern, createPattern } from "../../pattern";
 import { hasAnyKey } from "../../util";
 import { RenderingOptions } from "../rendering-options";
-import { calculateRectAndSize, createOffscreenRenderingContext, getCanvasImageSourceSize, Size } from "../util";
+import { calculateRectAndSize, createOffscreenRenderingContext, getCanvasImageSourceSize, makePattern, Size } from "../util";
 
 export type PatternSourceOptionProperty =
   | 'backPatternSource'
@@ -48,7 +49,17 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     }
   }
 
-  getSource(): CanvasImageSource | undefined {
+  getPattern(): CanvasPattern | undefined {
+    const source = this.getSource();
+    if (!source) {
+      return undefined;
+    }
+
+    const scale = 1 / this.scaleFactor;
+    return makePattern(this.destCtx, source, scale);
+  }
+
+  private getSource(): CanvasImageSource | undefined {
     if (this.destValid) {
       return this.destCtx.canvas;
     }
@@ -62,10 +73,6 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     this.render();
     return this.destCtx.canvas;
-  }
-
-  getScale(): number {
-    return 1 / this.scaleFactor;
   }
 
   private render() {
@@ -141,7 +148,14 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     this.srcSize = getCanvasImageSourceSize(patternSource);
 
-    this.srcCtx = createOffscreenRenderingContext(this.srcSize.w * this.scaleFactor, this.srcSize.h * this.scaleFactor);
+    const scaledWidth = this.srcSize.w * this.scaleFactor;
+    const scaledHeight = this.srcSize.h * this.scaleFactor;
+
+    if (this.srcCtx && this.srcCtx.canvas.width === scaledWidth && this.srcCtx.canvas.height === scaledHeight) {
+      this.srcCtx.reset();
+    } else {
+      this.srcCtx = createOffscreenRenderingContext(scaledWidth, scaledHeight);
+    }
 
     this.srcCtx.drawImage(patternSource, 0, 0, this.srcSize.w, this.srcSize.h, 0, 0, this.srcSize.w * this.scaleFactor, this.srcSize.h * this.scaleFactor);
 
