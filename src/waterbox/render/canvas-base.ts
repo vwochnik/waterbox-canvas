@@ -4,13 +4,17 @@ import { hasAnyKey } from '../util';
 import { RenderingOptions } from './rendering-options';
 import { createOffscreenRenderingContext, FillStyle, getContext, PathFunction } from './util';
 
+type Ctx2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+const OPAQUE_BLACK = 'black';
+
 export abstract class CanvasBaseRenderer<
   RenderingOptions extends BaseRenderingOptions = BaseRenderingOptions,
   Type extends string = string,
 > extends RenderingOptions<RenderingOptions> {
   abstract readonly type: Type;
 
-  protected ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+  protected ctx: Ctx2D;
 
   protected bufCtx!: OffscreenCanvasRenderingContext2D;
   protected tmpCtx!: OffscreenCanvasRenderingContext2D;
@@ -44,28 +48,33 @@ export abstract class CanvasBaseRenderer<
     this.paintEdges([...fillPaths, ...strokePaths], outerPath, innerStrokeColor, outerStrokeColor);
   }
 
+  private clearTmp(): void {
+    const { width, height } = this.options;
+    this.tmpCtx.clearRect(0, 0, width, height);
+  }
+
   private paintFilling(
     paths: PathFunction[],
     fillStyles: FillStyle[],
     patterns: (CanvasPattern | undefined)[],
   ): void {
-    const { width, height } = this.options;
+    this.clearTmp();
 
-    this.tmpCtx.clearRect(0, 0, width, height);
     paths.forEach((path, index) => {
       this.tmpCtx.save();
       path(this.tmpCtx);
       this.tmpCtx.fillStyle = fillStyles[index];
       this.tmpCtx.fill();
 
-      if (patterns[index]) {
+      const pattern = patterns[index];
+      if (pattern) {
         this.tmpCtx.globalCompositeOperation = 'overlay';
-        this.tmpCtx.fillStyle = patterns[index];
+        this.tmpCtx.fillStyle = pattern;
         this.tmpCtx.fill();
-        this.tmpCtx.globalCompositeOperation = 'source-over';
       }
       this.tmpCtx.restore();
     });
+
     this.bufCtx.drawImage(this.tmpCtx.canvas, 0, 0);
   }
 
@@ -76,66 +85,61 @@ export abstract class CanvasBaseRenderer<
     outerStrokeColor: RgbaColor,
   ): void {
     const {
-      width,
-      height,
       strokeWidths: { outer: outerStrokeWidth, inner: innerStrokeWidth },
+      clipEdges,
     } = this.options;
-    const clipEdges = this.options.clipEdges;
 
-    this.tmpCtx.clearRect(0, 0, width, height);
-
+    // Inner edges: stroke all paths, then punch out the outer outline.
+    this.clearTmp();
     this.tmpCtx.lineCap = 'round';
     this.tmpCtx.lineJoin = 'round';
     this.tmpCtx.lineWidth = innerStrokeWidth;
-    this.tmpCtx.strokeStyle = clipEdges
-      ? 'black'
-      : rgbaColorToString({ ...innerStrokeColor, a: 1.0 });
+    this.tmpCtx.strokeStyle = clipEdges ? OPAQUE_BLACK : opaque(innerStrokeColor);
 
     pathFunctions.forEach(strokePath(this.tmpCtx));
 
     this.tmpCtx.globalCompositeOperation = 'destination-out';
     this.tmpCtx.lineWidth = outerStrokeWidth;
-    this.tmpCtx.strokeStyle = 'black';
+    this.tmpCtx.strokeStyle = OPAQUE_BLACK;
     strokePath(this.tmpCtx)(outerPathFunction);
     this.tmpCtx.globalCompositeOperation = 'source-over';
 
     copyEdges(this.bufCtx, this.tmpCtx, innerStrokeColor, clipEdges);
 
-    this.tmpCtx.clearRect(0, 0, width, height);
-
-    this.tmpCtx.strokeStyle = clipEdges
-      ? 'black'
-      : rgbaColorToString({ ...outerStrokeColor, a: 1.0 });
+    // Outer edge.
+    this.clearTmp();
     this.tmpCtx.lineWidth = outerStrokeWidth;
+    this.tmpCtx.strokeStyle = clipEdges ? OPAQUE_BLACK : opaque(outerStrokeColor);
     strokePath(this.tmpCtx)(outerPathFunction);
 
     copyEdges(this.bufCtx, this.tmpCtx, outerStrokeColor, clipEdges);
   }
 
   private initializeContexts() {
-    this.bufCtx = createOffscreenRenderingContext(this.options.width, this.options.height);
-    this.tmpCtx = createOffscreenRenderingContext(this.options.width, this.options.height);
+    const { width, height } = this.options;
+    this.bufCtx = createOffscreenRenderingContext(width, height);
+    this.tmpCtx = createOffscreenRenderingContext(width, height);
   }
 }
 
+function opaque(color: RgbaColor): string {
+  return rgbaColorToString({ ...color, a: 1.0 });
+}
+
 function copyEdges(
-  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-  tmp: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+  ctx: Ctx2D,
+  tmp: Ctx2D,
   strokeColor: RgbaColor,
   clipEdges: boolean,
 ) {
   ctx.globalAlpha = strokeColor.a;
-  if (clipEdges) {
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.drawImage(tmp.canvas, 0, 0);
-    ctx.globalCompositeOperation = 'source-over';
-  } else {
-    ctx.drawImage(tmp.canvas, 0, 0);
-  }
+  ctx.globalCompositeOperation = clipEdges ? 'destination-out' : 'source-over';
+  ctx.drawImage(tmp.canvas, 0, 0);
+  ctx.globalCompositeOperation = 'source-over';
   ctx.globalAlpha = 1.0;
 }
 
-function strokePath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
+function strokePath(ctx: Ctx2D) {
   return function (pathFunction: PathFunction) {
     ctx.save();
     pathFunction(ctx);

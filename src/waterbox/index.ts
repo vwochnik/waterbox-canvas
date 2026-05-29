@@ -22,7 +22,16 @@ import {
 import { createPattern } from './pattern';
 import { BaseRenderingOptions, createRenderer, Renderer } from './render';
 import { getRgbaColorScheme, RgbaColorScheme } from './color';
-import { CuboidRenderingOptions } from './render/cuboid';
+
+  /** Option keys that are forwarded to the renderer unchanged. */
+  const PASSTHROUGH_KEYS = [
+    'padding',
+    'value',
+    'tiltAngle',
+    'strokeWidths',
+    'scale',
+    'clipEdges',
+  ] as const;
 
 /**
  * Main waterbox type
@@ -44,65 +53,56 @@ export function createWaterbox(canvas: HTMLCanvasElement | OffscreenCanvas): Wat
   let frontPatternSource: CanvasImageSource | undefined;
 
   // will be called when createOptionAccessors initializes
-  function update(changes: (keyof Options)[], newOptions: Options) {
+  function update(changedKeys: (keyof Options)[], newOptions: Options) {
     options = newOptions;
 
+    const changes = new Set(changedKeys);
     const renderingOptions: Partial<BaseRenderingOptions> = {};
 
-    if (changes.includes('width')) {
+    if (changes.has('width')) {
       canvas.width = options.width;
       renderingOptions.width = options.width;
     }
-    if (changes.includes('height')) {
+    if (changes.has('height')) {
       canvas.height = options.height;
       renderingOptions.height = options.height;
     }
-    if (changes.includes('backColorScheme')) {
+    if (changes.has('backColorScheme')) {
       backColorScheme = getRgbaColorScheme(options.backColorScheme);
       renderingOptions.backColorScheme = backColorScheme;
     }
-    if (changes.includes('waterColorScheme')) {
+    if (changes.has('waterColorScheme')) {
       waterColorScheme = getRgbaColorScheme(options.waterColorScheme);
       renderingOptions.waterColorScheme = waterColorScheme;
     }
-    if (changes.includes('frontColorScheme')) {
+    if (changes.has('frontColorScheme')) {
       frontColorScheme = options.frontColorScheme
         ? getRgbaColorScheme(options.frontColorScheme)
         : undefined;
       renderingOptions.frontColorScheme = frontColorScheme;
     }
-    if (changes.includes('backPattern')) {
+    if (changes.has('backPattern')) {
       backPatternSource = options.backPattern ? createPattern(options.backPattern) : undefined;
       renderingOptions.backPatternSource = backPatternSource;
     }
-    if (changes.includes('waterPattern')) {
+    if (changes.has('waterPattern')) {
       waterPatternSource = options.waterPattern ? createPattern(options.waterPattern) : undefined;
       renderingOptions.waterPatternSource = waterPatternSource;
     }
-    if (changes.includes('frontPattern')) {
+    if (changes.has('frontPattern')) {
       frontPatternSource = options.frontPattern ? createPattern(options.frontPattern) : undefined;
       renderingOptions.frontPatternSource = frontPatternSource;
     }
 
-    if (changes.includes('padding')) renderingOptions.padding = options.padding;
-    if (changes.includes('value')) renderingOptions.value = options.value;
-    if (changes.includes('tiltAngle')) renderingOptions.tiltAngle = options.tiltAngle;
-    if (changes.includes('strokeWidths')) renderingOptions.strokeWidths = options.strokeWidths;
-    if (changes.includes('scale')) renderingOptions.scale = options.scale;
-    if (changes.includes('clipEdges')) renderingOptions.clipEdges = options.clipEdges;
+    for (const key of PASSTHROUGH_KEYS) {
+      if (changes.has(key)) {
+        renderingOptions[key] = options[key] as never;
+      }
+    }
 
-    if (changes.includes('renderer')) {
+    if (changes.has('renderer')) {
       const fullRenderingOptions: BaseRenderingOptions = {
-        ...pick(options, [
-          'width',
-          'height',
-          'padding',
-          'value',
-          'tiltAngle',
-          'strokeWidths',
-          'scale',
-          'clipEdges',
-        ]),
+        ...pick(options, ['width', 'height', ...PASSTHROUGH_KEYS]),
         backColorScheme,
         waterColorScheme,
         frontColorScheme,
