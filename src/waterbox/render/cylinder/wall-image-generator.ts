@@ -129,18 +129,14 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       const yBottom = yTop + height;
 
       const progress = (angle + Math.PI / 2) / Math.PI;
-      const w = 1 + (1 - Math.cos(angle)) * this.edgeSampleFactor;
 
-      let u = (uOffset + progress * mappedWidth) % scaledSrcW;
-      if (u < 0) {
-        u += scaledSrcW;
-      }
+      const u = (uOffset + progress * mappedWidth) % scaledSrcW;
+      sourcePattern.setTransform(new DOMMatrix().scale(1, 1).translate(u, 0));
 
-      sourcePattern.setTransform(new DOMMatrix().scale(1 / w, 1).translate(u, 0));
       this.destCtx.save();
       this.destCtx.fillStyle = sourcePattern;
       this.destCtx.translate(x, yBottom);
-      this.destCtx.fillRect(0, -(yBottom - yTop), 1, yBottom - yTop);
+      this.destCtx.fillRect(0, -height, 1, height);
       this.destCtx.restore();
     }
 
