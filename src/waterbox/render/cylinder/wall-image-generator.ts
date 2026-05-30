@@ -17,7 +17,6 @@ export type PatternSourceOptionProperty =
 
 export class WallImageGenerator extends RenderingOptions<CylinderRenderingOptions> {
   private scaleFactor: number;
-  private readonly minSliceWidth = 10;
 
   private srcCtx: OffscreenCanvasRenderingContext2D | undefined = undefined;
   private srcValid = false;
@@ -129,7 +128,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       const cosAngle = Math.max(Math.sqrt(1 - normalizedX * normalizedX), 1 / radiusX);
       const sliceWidth = clamp(
         mappedWidth / (Math.PI * radiusX * cosAngle),
-        this.minSliceWidth,
+        1,
         mappedWidth,
       );
 
