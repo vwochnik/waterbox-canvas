@@ -113,6 +113,9 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     const startX = Math.floor(centerX - radiusX);
     const endX = Math.ceil(centerX + radiusX);
 
+    this.destCtx.save();
+    this.destCtx.fillStyle = sourcePattern;
+
     for (let x = startX; x <= endX; x++) {
       const normalizedX = clamp((x - centerX) / radiusX, -1, 1);
 
@@ -132,15 +135,12 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
         mappedWidth,
       );
 
-      sourcePattern.setTransform(new DOMMatrix().scale(1/sliceWidth, 1).translate(u, 0));
-
-      this.destCtx.save();
-      this.destCtx.fillStyle = sourcePattern;
-      this.destCtx.translate(x, yBottom);
+      sourcePattern.setTransform(new DOMMatrix().scale(1/sliceWidth, 1).translate(-u, 0));
+      this.destCtx.setTransform(1, 0, 0, 1, x, yBottom);
       this.destCtx.fillRect(0, -height, 1, height);
-      this.destCtx.restore();
     }
 
+    this.destCtx.restore();
     this.destValid = true;
   }
 
