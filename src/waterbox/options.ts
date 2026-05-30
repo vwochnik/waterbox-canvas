@@ -15,13 +15,15 @@ export const PASSTHROUGH_KEYS = [
   'clipEdges',
 ] as const;
 
+const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
+
 export interface Options extends BaseOptions {
   renderer: Renderer;
   width: BaseRenderingOptions['width'];
   height: BaseRenderingOptions['height'];
   padding: BaseRenderingOptions['padding'];
   value: BaseRenderingOptions['value'];
-  tiltAngle?: BaseRenderingOptions['tiltAngle'];
+  tiltAngle: BaseRenderingOptions['tiltAngle'];
   strokeWidths: BaseRenderingOptions['strokeWidths'];
   scale?: BaseRenderingOptions['scale'];
   clipEdges: BaseRenderingOptions['clipEdges'];
@@ -76,7 +78,7 @@ export const optionsWithOptionality: Optionality<Options> = {
   height: false,
   padding: false,
   value: false,
-  tiltAngle: true,
+  tiltAngle: false,
   backColorScheme: false,
   waterColorScheme: false,
   frontColorScheme: true,
@@ -94,6 +96,7 @@ export const defaultOptions: Options = {
   height: 200,
   padding: 2,
   value: 0,
+  tiltAngle: DEFAULT_TILT_ANGLE,
   backColorScheme: {
     fill: '#8d8d9f',
     stroke: '#8a8a9a',

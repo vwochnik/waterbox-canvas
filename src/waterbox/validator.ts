@@ -23,7 +23,7 @@ export function validateValue(value: unknown): number {
 }
 
 export function validateTiltAngle(tiltAngle: unknown): number {
-  assertIsNumber(tiltAngle, true, 0, 45);
+  assertIsNumber(tiltAngle, false, 0, 45);
   return tiltAngle;
 }
 

@@ -1,8 +1,6 @@
 import { BaseRenderingOptions, RgbaColor } from './types';
 import { assertExhaustive } from '../util';
 
-const DEFAULT_TILT_ANGLE = (Math.atan(1.0 / Math.sqrt(2.0)) * 180) / Math.PI;
-
 export type Size = {
   w: number;
   h: number;
@@ -60,7 +58,7 @@ export function calculateRectAndSize({
   width,
   height,
   padding,
-  tiltAngle = DEFAULT_TILT_ANGLE,
+  tiltAngle,
   strokeWidths: { outer: strokeWidth },
 }: BaseRenderingOptions): [Rectangle, Size] {
   const angleRad = (tiltAngle * Math.PI) / 180;

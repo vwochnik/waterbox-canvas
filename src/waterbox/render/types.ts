@@ -3,7 +3,7 @@ export interface BaseRenderingOptions {
   height: number;
   padding: number;
   value: number;
-  tiltAngle?: number;
+  tiltAngle: number;
   strokeWidths: StrokeWidths;
   scale?: Scale;
   clipEdges: boolean;
