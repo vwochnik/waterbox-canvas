@@ -16,6 +16,7 @@ options:
       type: 'cylinder',
       applyPatternToBases: false,
       centerPatternHorizontally: true,
+      wallPatternUpscaling: 2,
     })
 - name: width
   type: number

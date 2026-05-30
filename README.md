@@ -139,6 +139,7 @@ waterbox.renderer({
   type: 'cylinder',
   applyPatternToBases: false,
   centerPatternHorizontally: true,
+  wallPatternUpscaling: 2,
 })
 ```
 
