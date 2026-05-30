@@ -106,7 +106,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     const facingSign = this.facing === 'back' ? -1 : 1;
 
-    this.destCtx.clearRect(0, 0, scaledSrcW, scaledSrcH);
+    this.destCtx.clearRect(0, 0, s * rect.w, s * rect.h);
 
     const sourcePattern = makePattern(this.destCtx, this.srcCtx.canvas)!;
 
@@ -161,13 +161,11 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       this.srcCtx.canvas.width === scaledWidth &&
       this.srcCtx.canvas.height === scaledHeight
     ) {
-      this.srcCtx.reset();
+      this.srcCtx.clearRect(0, 0, scaledWidth, scaledHeight);
     } else {
       this.srcCtx = createOffscreenRenderingContext(scaledWidth, scaledHeight);
     }
 
-    this.srcCtx.imageSmoothingEnabled = true;
-    this.srcCtx.imageSmoothingQuality = 'high';
     this.srcCtx.drawImage(
       patternSource,
       0,
