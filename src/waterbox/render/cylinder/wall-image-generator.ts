@@ -110,6 +110,13 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     this.destCtx.clearRect(0, 0, scaledSrcW, scaledSrcH);
 
+    const sourcePattern = this.destCtx.createPattern(this.srcCtx.canvas, 'repeat');
+    if (!sourcePattern) {
+      return;
+    }
+
+    this.destCtx.clearRect(0, 0, this.destCtx.canvas.width, this.destCtx.canvas.height);
+
     const startX = centerX - radiusX;
     const endX = centerX + radiusX;
 
@@ -129,70 +136,15 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
         u += scaledSrcW;
       }
 
-      for (let drawY = yBottom; drawY > yTop; drawY -= scaledSrcH) {
-        const displayHeight = Math.min(scaledSrcH, drawY - yTop);
-        const sourceY = scaledSrcH - displayHeight;
-
-        this.destCtx.clearRect(x, drawY - displayHeight, 1, displayHeight);
-
-        this.drawWrappedImage(
-          u,
-          sourceY,
-          w,
-          displayHeight,
-          x,
-          drawY - displayHeight,
-          1,
-          displayHeight,
-        );
-      }
+      sourcePattern.setTransform(new DOMMatrix().scale(1 / w, 1).translate(u, 0));
+      this.destCtx.save();
+      this.destCtx.fillStyle = sourcePattern;
+      this.destCtx.translate(x, yBottom);
+      this.destCtx.fillRect(0, -(yBottom - yTop), 1, yBottom - yTop);
+      this.destCtx.restore();
     }
 
     this.destValid = true;
-  }
-
-  /**
-   * Draws a horizontal slice from the source canvas into the destination and
-   * wraps the sample back to x=0 when the requested source span crosses the
-   * right edge of the source canvas.
-   */
-  private drawWrappedImage(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    destX: number,
-    destY: number,
-    destWidth: number,
-    destHeight: number,
-  ): void {
-    const source = this.srcCtx!.canvas;
-    const sourceWidth = source.width;
-    const scale = destWidth / width;
-    let remainingWidth = width;
-    let currentSourceX = x;
-    let currentDestX = destX;
-
-    while (remainingWidth > 0) {
-      const segmentWidth = Math.min(remainingWidth, sourceWidth - currentSourceX);
-      const segmentDestWidth = segmentWidth * scale;
-
-      this.destCtx.drawImage(
-        source,
-        currentSourceX,
-        y,
-        segmentWidth,
-        height,
-        currentDestX,
-        destY,
-        segmentDestWidth,
-        destHeight,
-      );
-
-      remainingWidth -= segmentWidth;
-      currentDestX += segmentDestWidth;
-      currentSourceX = (currentSourceX + segmentWidth) % sourceWidth;
-    }
   }
 
   private initializeSourceContext() {
@@ -217,7 +169,8 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       this.srcCtx = createOffscreenRenderingContext(scaledWidth, scaledHeight);
     }
 
-    this.srcCtx.imageSmoothingEnabled = false;
+    this.srcCtx.imageSmoothingEnabled = true;
+    this.srcCtx.imageSmoothingQuality = 'high';
     this.srcCtx.drawImage(
       patternSource,
       0,
