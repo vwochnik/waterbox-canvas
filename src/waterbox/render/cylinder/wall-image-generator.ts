@@ -110,15 +110,10 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
     this.destCtx.clearRect(0, 0, scaledSrcW, scaledSrcH);
 
-    const sourcePattern = this.destCtx.createPattern(this.srcCtx.canvas, 'repeat');
-    if (!sourcePattern) {
-      return;
-    }
+    const sourcePattern = makePattern(this.destCtx, this.srcCtx.canvas)!;
 
-    this.destCtx.clearRect(0, 0, this.destCtx.canvas.width, this.destCtx.canvas.height);
-
-    const startX = centerX - radiusX;
-    const endX = centerX + radiusX;
+    const startX = Math.floor(centerX - radiusX);
+    const endX = Math.ceil(centerX + radiusX);
 
     for (let x = startX; x <= endX; x++) {
       const normalizedX = clamp((x - centerX) / radiusX, -1, 1);
@@ -131,7 +126,15 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       const progress = (angle + Math.PI / 2) / Math.PI;
 
       const u = (uOffset + progress * mappedWidth) % scaledSrcW;
-      sourcePattern.setTransform(new DOMMatrix().scale(1, 1).translate(u, 0));
+
+      const cosAngle = Math.max(Math.sqrt(1 - normalizedX * normalizedX), 1 / radiusX);
+      const sliceWidth = clamp(
+        mappedWidth / (Math.PI * radiusX * cosAngle),
+        0.1,
+        mappedWidth,
+      );
+
+      sourcePattern.setTransform(new DOMMatrix().scale(1/sliceWidth, 1).translate(u, 0));
 
       this.destCtx.save();
       this.destCtx.fillStyle = sourcePattern;
