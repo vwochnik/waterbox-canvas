@@ -97,9 +97,8 @@ export function createOptionAccessors<T extends BaseOptions, I extends OptionAcc
           try {
             newOptions[key] = validator ? validator(value) : value;
           } catch (err: unknown) {
-            if (err instanceof Error) {
-              throw new Error(`Invalid ${key as string}: ${err.message}`);
-            }
+            const message = err instanceof Error ? err.message : String(err);
+            throw new Error(`Invalid ${key as string}: ${message}`);
           }
         }
         return newOptions;

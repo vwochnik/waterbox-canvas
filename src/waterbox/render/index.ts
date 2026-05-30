@@ -16,8 +16,16 @@ export interface Renderer<
 }
 
 interface RendererMap {
-  cuboid: { renderer: CuboidRenderer; destination: HTMLCanvasElement | OffscreenCanvas; options: CuboidRenderingOptions };
-  cylinder: { renderer: CylinderRenderer; destination: HTMLCanvasElement | OffscreenCanvas; options: CylinderRenderingOptions };
+  cuboid: {
+    renderer: CuboidRenderer;
+    destination: HTMLCanvasElement | OffscreenCanvas;
+    options: CuboidRenderingOptions;
+  };
+  cylinder: {
+    renderer: CylinderRenderer;
+    destination: HTMLCanvasElement | OffscreenCanvas;
+    options: CylinderRenderingOptions;
+  };
 }
 
 export const createRenderer = <K extends keyof RendererMap>(

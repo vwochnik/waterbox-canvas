@@ -43,7 +43,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       this.destValid = false;
     }
 
-    if (hasAnyKey(options, ['padding', 'tiltAngle', 'strokeWidths'])) {
+    if (hasAnyKey(options, ['padding', 'tiltAngle', 'strokeWidths', 'centerPatternHorizontally'])) {
       this.destValid = false;
     }
 
