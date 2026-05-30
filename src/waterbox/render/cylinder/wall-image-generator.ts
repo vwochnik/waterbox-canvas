@@ -17,8 +17,7 @@ export type PatternSourceOptionProperty =
 
 export class WallImageGenerator extends RenderingOptions<CylinderRenderingOptions> {
   private scaleFactor: number;
-  /** Extra source-width sampled near the cylinder edges to reduce stretching artifacts. */
-  private readonly edgeSampleFactor = 4;
+  private readonly minSliceWidth = 10;
 
   private srcCtx: OffscreenCanvasRenderingContext2D | undefined = undefined;
   private srcValid = false;
@@ -130,7 +129,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
       const cosAngle = Math.max(Math.sqrt(1 - normalizedX * normalizedX), 1 / radiusX);
       const sliceWidth = clamp(
         mappedWidth / (Math.PI * radiusX * cosAngle),
-        0.1,
+        this.minSliceWidth,
         mappedWidth,
       );
 
