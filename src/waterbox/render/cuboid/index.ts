@@ -50,9 +50,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
 
     this.paintLayer(
       [
-        rhombusPath(rect, size, 0, 'bottom', alignPatternToEdges ?? false),
-        wallPath(rect, size, 100, 'left', 'back', alignPatternToEdges ?? false),
-        wallPath(rect, size, 100, 'right', 'back', alignPatternToEdges ?? false),
+        rhombusPath(rect, size, 0, 'bottom', alignPatternToEdges),
+        wallPath(rect, size, 100, 'left', 'back', alignPatternToEdges),
+        wallPath(rect, size, 100, 'right', 'back', alignPatternToEdges),
       ],
       separators('back', 'back'),
       outerPath(rect, size, 100),
@@ -67,9 +67,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
     if (value > 0) {
       this.paintLayer(
         [
-          wallPath(rect, size, value, 'left', 'front', alignPatternToEdges ?? false),
-          wallPath(rect, size, value, 'right', 'front', alignPatternToEdges ?? false),
-          rhombusPath(rect, size, value, 'top', alignPatternToEdges ?? false),
+          wallPath(rect, size, value, 'left', 'front', alignPatternToEdges),
+          wallPath(rect, size, value, 'right', 'front', alignPatternToEdges),
+          rhombusPath(rect, size, value, 'top', alignPatternToEdges),
         ],
         separators('water', 'front', value),
         outerPath(rect, size, value),
@@ -85,9 +85,9 @@ export class CuboidRenderer extends CanvasBaseRenderer<CuboidRenderingOptions, '
     if (frontColorScheme) {
       this.paintLayer(
         [
-          wallPath(rect, size, 100, 'left', 'front', alignPatternToEdges ?? false),
-          wallPath(rect, size, 100, 'right', 'front', alignPatternToEdges ?? false),
-          rhombusPath(rect, size, 100, 'top', alignPatternToEdges ?? false),
+          wallPath(rect, size, 100, 'left', 'front', alignPatternToEdges),
+          wallPath(rect, size, 100, 'right', 'front', alignPatternToEdges),
+          rhombusPath(rect, size, 100, 'top', alignPatternToEdges),
         ],
         separators('front', 'front'),
         outerPath(rect, size, 100),
