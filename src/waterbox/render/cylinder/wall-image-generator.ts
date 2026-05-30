@@ -135,8 +135,7 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
 
         this.destCtx.clearRect(x, drawY - displayHeight, 1, displayHeight);
 
-        this.destCtx.drawImage(
-          this.srcCtx.canvas,
+        this.drawWrappedImage(
           u,
           sourceY,
           w,
@@ -150,6 +149,50 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     }
 
     this.destValid = true;
+  }
+
+  /**
+   * Draws a horizontal slice from the source canvas into the destination and
+   * wraps the sample back to x=0 when the requested source span crosses the
+   * right edge of the source canvas.
+   */
+  private drawWrappedImage(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    destX: number,
+    destY: number,
+    destWidth: number,
+    destHeight: number,
+  ): void {
+    const source = this.srcCtx!.canvas;
+    const sourceWidth = source.width;
+    const scale = destWidth / width;
+    let remainingWidth = width;
+    let currentSourceX = x;
+    let currentDestX = destX;
+
+    while (remainingWidth > 0) {
+      const segmentWidth = Math.min(remainingWidth, sourceWidth - currentSourceX);
+      const segmentDestWidth = segmentWidth * scale;
+
+      this.destCtx.drawImage(
+        source,
+        currentSourceX,
+        y,
+        segmentWidth,
+        height,
+        currentDestX,
+        destY,
+        segmentDestWidth,
+        destHeight,
+      );
+
+      remainingWidth -= segmentWidth;
+      currentDestX += segmentDestWidth;
+      currentSourceX = (currentSourceX + segmentWidth) % sourceWidth;
+    }
   }
 
   private initializeSourceContext() {
