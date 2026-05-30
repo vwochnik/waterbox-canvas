@@ -16,20 +16,20 @@ export interface Renderer<
 }
 
 interface RendererMap {
-  cuboid: { renderer: CuboidRenderer; options: CuboidRenderingOptions };
-  cylinder: { renderer: CylinderRenderer; options: CylinderRenderingOptions };
+  cuboid: { renderer: CuboidRenderer; destination: HTMLCanvasElement | OffscreenCanvas; options: CuboidRenderingOptions };
+  cylinder: { renderer: CylinderRenderer; destination: HTMLCanvasElement | OffscreenCanvas; options: CylinderRenderingOptions };
 }
 
 export const createRenderer = <K extends keyof RendererMap>(
   type: K,
-  canvas: HTMLCanvasElement | OffscreenCanvas,
+  destination: RendererMap[K]['destination'],
   options: RendererMap[K]['options'],
 ): RendererMap[K]['renderer'] => {
   switch (type) {
     case 'cuboid':
-      return new CuboidRenderer(canvas, options as CuboidRenderingOptions);
+      return new CuboidRenderer(destination, options as CuboidRenderingOptions);
     case 'cylinder':
-      return new CylinderRenderer(canvas, options as CylinderRenderingOptions);
+      return new CylinderRenderer(destination, options as CylinderRenderingOptions);
     default:
       assertExhaustive(type);
   }
