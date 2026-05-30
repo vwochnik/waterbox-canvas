@@ -78,12 +78,15 @@ function assertIsRenderer(value: unknown): asserts value is Renderer {
       }
       break;
     case 'cylinder':
-      assertKeys(value, ['type'], ['applyPatternToBases', 'centerPatternHorizontally'], false);
+      assertKeys(value, ['type'], ['applyPatternToBases', 'centerPatternHorizontally', 'wallPatternUpscaling'], false);
       if (value.applyPatternToBases !== undefined) {
         assertIsBoolean(value.applyPatternToBases);
       }
       if (value.centerPatternHorizontally !== undefined) {
         assertIsBoolean(value.centerPatternHorizontally);
+      }
+      if (value.wallPatternUpscaling !== undefined) {
+        assertIsNumber(value.wallPatternUpscaling, true, 1, 8);
       }
       break;
     default:

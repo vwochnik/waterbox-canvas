@@ -16,7 +16,7 @@ export type PatternSourceOptionProperty =
   | 'frontPatternSource';
 
 export class WallImageGenerator extends RenderingOptions<CylinderRenderingOptions> {
-  private readonly scaleFactor = 2;
+  private scaleFactor: number;
   /** Extra source-width sampled near the cylinder edges to reduce stretching artifacts. */
   private readonly edgeSampleFactor = 4;
 
@@ -33,18 +33,24 @@ export class WallImageGenerator extends RenderingOptions<CylinderRenderingOption
     private facing: 'front' | 'back',
   ) {
     super(options);
+    this.scaleFactor = options.wallPatternUpscaling ?? 2;
     this.initializeDestinationContext();
   }
 
   update(options: Partial<CylinderRenderingOptions>): void {
     super.update(options);
-    if (hasAnyKey(options, ['width', 'height'])) {
+    if (hasAnyKey(options, ['width', 'height', 'wallPatternUpscaling'])) {
+      this.scaleFactor = options.wallPatternUpscaling ?? 2;
       this.initializeDestinationContext();
       this.destValid = false;
     }
 
     if (hasAnyKey(options, ['padding', 'tiltAngle', 'strokeWidths', 'centerPatternHorizontally'])) {
       this.destValid = false;
+    }
+
+    if (Object.hasOwn(options, 'wallPatternUpscaling')) {
+      this.srcValid = false;
     }
 
     if (Object.hasOwn(options, this.patternSourceOptionProperty)) {

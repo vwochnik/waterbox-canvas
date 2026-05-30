@@ -18,6 +18,7 @@ type WallImageGeneratorProperty =
 export interface CylinderRenderingOptions extends BaseRenderingOptions {
   applyPatternToBases?: boolean;
   centerPatternHorizontally?: boolean;
+  wallPatternUpscaling?: number;
 }
 
 export class CylinderRenderer extends CanvasBaseRenderer<CylinderRenderingOptions, 'cylinder'> {
